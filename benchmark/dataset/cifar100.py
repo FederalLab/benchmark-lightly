@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torchvision.transforms as transforms
 from openfed.common import logger
-from openfed.data import FederatedDataset
+from openfed.data import FederatedDataset, Analysis
 from openfed.data.utils import *
 
 DEFAULT_TRAIN_CLIENTS_NUM = 500
@@ -103,6 +103,4 @@ def get_cifar100(root, train: bool = True):
 
 if __name__ == '__main__':
     dataset = get_cifar100(root='data/Federated_CIFAR100_TFF')
-    for p in range(dataset.total_parts):
-        dataset.set_part_id(p)
-        print(f"Part: {p}, Total Samples: {len(dataset)}")
+    Analysis.digest(dataset)

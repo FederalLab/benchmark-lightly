@@ -7,7 +7,7 @@ from openfed.data import (Analysis, IIDPartitioner, Partitioner,
 def get_mnist(root, total_parts: int, train: bool = True, partitioner: Partitioner = None):
     if not partitioner:
         partitioner = IIDPartitioner()
-    return PartitionerDataset(MNIST(root, train, ToTensor, download=True), total_parts, partitioner)
+    return PartitionerDataset(MNIST(root, train, ToTensor(), download=True), total_parts, partitioner)
 
 
 if __name__ == '__main__':

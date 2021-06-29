@@ -35,21 +35,21 @@ Run `bash download.sh` to download all datasets.
 
 ```bash
 cd $BENCHMARK
-python benchmark/dataset/cifar100.py
+python benchmark/datasets/cifar100.py
 +-------+---------+--------+------+
 | Parts | Samples |  Mean  | Var  |
 +-------+---------+--------+------+
 |  500  |  50000  | 100.00 | 0.00 |
 +-------+---------+--------+------+
 
-python benchmark/dataset/emnist.py
+python benchmark/datasets/emnist.py
 +-------+---------+--------+---------+
 | Parts | Samples |  Mean  |   Var   |
 +-------+---------+--------+---------+
 |  3400 |  671585 | 197.53 | 5879.93 |
 +-------+---------+--------+---------+
 
-python benchmark/dataset/shapespeare.py
+python benchmark/datasets/shapespeare.py
 +-------+---------+---------+-------------+
 | Parts | Samples |   Mean  |     Var     |
 +-------+---------+---------+-------------+

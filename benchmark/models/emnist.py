@@ -1,6 +1,20 @@
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
+
+
+def conv_block(in_ch, out_ch, kz, pd, mpz: None):
+    l = [nn.Conv2d(in_ch, out_ch, kz, pd), nn.ReLU()]
+    if not mpz:
+        l.append(nn.MaxPool2d(mpz))
+    return nn.Sequential(*l)
+
+
+def linear_block(in_f, out_f, re: None, dp: None):
+    l = [nn.Linear(in_f, out_f)]
+    if not re:
+        l.append(nn.ReLU())
+    if not dp:
+        l.append(nn.Dropout(dp))
+    return nn.Sequential(*l)
 
 
 class EMNIST(nn.Module):
@@ -11,26 +25,16 @@ class EMNIST(nn.Module):
     def __init__(self, only_digits: bool = True):
         super().__init__()
 
-        self.classifier = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=5, padding=2, bias=True),
-            nn.ReLU(),
-
-            nn.MaxPool2d(2),
-
-            nn.Conv2d(32, 64, kernel_size=5, padding=2, bias=True),
-            nn.ReLU(),
-
-            nn.MaxPool2d(2),
-
+        self.layers = nn.Sequential(
+            conv_block(1, 32, 5, 2, 2),
+            conv_block(32, 64, 5, 2, 2),
             nn.Flatten(start_dim=1),
-            nn.Linear(3136, 512, bias=True),
-            nn.ReLU(),
-
+            linear_block(3136, 512, True),
             nn.Linear(512, 10 if only_digits else 62),
         )
 
     def forward(self, x):
-        return self.classifier(x)
+        return self.layers(x)
 
 
 class EMNISTDropout(nn.Module):
@@ -41,27 +45,18 @@ class EMNISTDropout(nn.Module):
     def __init__(self, only_digits: bool = True):
         super().__init__()
 
-        self.classifier = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=3, bias=True),
-            nn.ReLU(),
-
-            nn.Conv2d(32, 64, kernel_size=3, bias=True),
-            nn.ReLU(),
-
-            nn.MaxPool2d(2),
-
+        self.layers = nn.Sequential(
+            conv_block(1, 32, 3, 0),
+            conv_block(32, 64, 3, 0, 2),
             nn.Dropout(0.25),
-
             nn.Flatten(start_dim=1),
-            nn.Linear(9216, 128),
-            nn.ReLU(),
 
-            nn.Dropout(0.5),
-            nn.Linear(128, 10 if only_digits else 62, bias=True),
+            linear_block(9216, 128, True, 0.5),
+            nn.Linear(128, 10 if only_digits else 62),
         )
 
     def forward(self, x):
-        return self.classifier(x)
+        return self.layers(x)
 
 
 class EMNISTLinear(nn.Module):
@@ -71,17 +66,14 @@ class EMNISTLinear(nn.Module):
 
     def __init__(self, only_digits: bool = True):
         super().__init__()
-        self.linear = nn.Sequential(
+        self.layers = nn.Sequential(
             nn.Flatten(start_dim=1),
 
-            nn.Linear(784, 200, bias=True),
-            nn.ReLU(),
+            linear_block(784, 200, True),
+            linear_block(200, 200, True),
 
-            nn.Linear(200, 200, bias=True),
-            nn.ReLU(),
-
-            nn.Linear(200, 10 if only_digits else 62, bias=True),
+            nn.Linear(200, 10 if only_digits else 62),
         )
 
     def forward(self, x):
-        return self.linear(x)
+        return self.layers(x)

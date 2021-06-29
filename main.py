@@ -1,7 +1,3 @@
-import os
-import sys
-
-sys.path.insert(0, "/Users/densechen/code/OpenFed")
 import random
 
 import openfed
@@ -17,8 +13,6 @@ from tqdm import tqdm
 
 from benchmark.datasets import get_mnist
 from benchmark.models import LogisticRegression
-
-# >>> Import OpenFed
 
 # >>> set log level
 openfed.logger.log_level(level="INFO")
@@ -67,7 +61,7 @@ openfed_api.set_aggregator_and_optimizer(aggregator, optimizer)
 openfed_api.set_state_dict(net.state_dict(keep_vars=True))
 
 # Load dataset and create dataloader
-train_dataset = get_mnist('data', total_parts=1000, train=True)
+train_dataset = get_mnist('data', total_parts=100, train=True)
 test_dataset = MNIST('data', train=False, transform=ToTensor())
 train_dataloader = DataLoader(
     train_dataset, batch_size=12, shuffle=True, num_workers=2)
@@ -93,7 +87,8 @@ with openfed_api:
         # Downloaded
         print(f"{time_string()}: Downloaded!")
 
-        train_dataset.set_part_id(random.randint(0, train_dataset.total_parts))
+        train_dataset.set_part_id(
+            random.randint(0, train_dataset.total_parts-1))
         process = tqdm(train_dataloader)
         for data in process:
             input, target = data

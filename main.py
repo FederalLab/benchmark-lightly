@@ -1,20 +1,22 @@
 import os
 import sys
+
 sys.path.insert(0, "/Users/densechen/code/OpenFed")
 import random
-from tqdm import tqdm
-from torch.utils.data import DataLoader
-import torch.nn.functional as F
-from torchvision.transforms import ToTensor
-from torchvision.datasets import MNIST
-import torch.optim as optim
+
 import openfed
 import openfed.aggregate as aggregate
+import torch.nn.functional as F
+import torch.optim as optim
 from openfed.unified.step import StepAt
 from openfed.utils import time_string
-from benchmark.models import LogisticRegression
-from benchmark.datasets import get_mnist
+from torch.utils.data import DataLoader
+from torchvision.datasets import MNIST
+from torchvision.transforms import ToTensor
+from tqdm import tqdm
 
+from benchmark.datasets import get_mnist
+from benchmark.models import LogisticRegression
 
 # >>> Import OpenFed
 
@@ -24,7 +26,7 @@ openfed.logger.log_level(level="INFO")
 # >>> Get default arguments from OpenFed
 args = openfed.parser.parse_args()
 
-epochs = 5
+epochs = 500
 
 # >>> Specify an API for building federated learning
 openfed_api = openfed.API(frontend=args.rank > 0)
@@ -32,7 +34,7 @@ openfed_api = openfed.API(frontend=args.rank > 0)
 # >>> Specify a aggregate trigger
 # It means that every 10 received models will make an aggregate operation.
 aggregate_trigger = openfed.AggregateCount(
-    count=1, checkpoint="/tmp/openfed-model")
+    count=args.world_size-1, checkpoint="/tmp/openfed-model")
 
 # >>> Set the aggregate trigger
 openfed_api.set_aggregate_triggers(aggregate_trigger)

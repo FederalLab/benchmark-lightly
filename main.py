@@ -1,18 +1,22 @@
+import os
+import sys
+sys.path.insert(0, '/Users/densechen/code/OpenFed')
+
+from openfed.federated.inform.functional import LRTracker
+from benchmark.models import LogisticRegression
+from benchmark.datasets import get_mnist
+from tqdm import tqdm
+from torchvision.transforms import ToTensor
+from torchvision.datasets import MNIST
+from torch.utils.data import DataLoader
+from openfed.utils import time_string
+from openfed.unified.step import StepAt
+import torch.optim as optim
+import torch.nn.functional as F
+import openfed.aggregate as aggregate
+import openfed
 import random
 
-import openfed
-import openfed.aggregate as aggregate
-import torch.nn.functional as F
-import torch.optim as optim
-from openfed.unified.step import StepAt
-from openfed.utils import time_string
-from torch.utils.data import DataLoader
-from torchvision.datasets import MNIST
-from torchvision.transforms import ToTensor
-from tqdm import tqdm
-
-from benchmark.datasets import get_mnist
-from benchmark.models import LogisticRegression
 
 # >>> set log level
 openfed.logger.log_level(level="INFO")
@@ -20,18 +24,10 @@ openfed.logger.log_level(level="INFO")
 # >>> Get default arguments from OpenFed
 args = openfed.parser.parse_args()
 
-epochs = 500
+epochs = 100
 
 # >>> Specify an API for building federated learning
 openfed_api = openfed.API(frontend=args.rank > 0)
-
-# >>> Specify a aggregate trigger
-# It means that every 10 received models will make an aggregate operation.
-aggregate_trigger = openfed.AggregateCount(
-    count=args.world_size-1, checkpoint="/tmp/openfed-model")
-
-# >>> Set the aggregate trigger
-openfed_api.set_aggregate_triggers(aggregate_trigger)
 
 # >>> Register more step functions.
 # You can register a step function to openfed_api like following:
@@ -41,9 +37,6 @@ openfed_api.set_aggregate_triggers(aggregate_trigger)
 with StepAt(openfed_api):
     # In other means, it will train for epochs.
     openfed.StopAtVersion(max_version=epochs)
-
-# >>> Connect to Address.
-openfed_api.build_connection(address=openfed.Address(args=args))
 
 # Build Network
 net = LogisticRegression(784, 10)
@@ -57,16 +50,36 @@ aggregator = aggregate.AverageAggregator(net.parameters())
 # >>> Set optimizer and aggregator for federated learning.
 openfed_api.set_aggregator_and_optimizer(aggregator, optimizer)
 
+# Define a LRScheduler
+lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(
+    optimizer, T_max=epochs,
+)
+
+# >>> Synchronize LR Scheduler between Frontend and Backend
+lr_tracker = LRTracker(lr_scheduler)
+openfed_api.add_informer_hook(lr_tracker)
+
 # >>> Tell OpenFed API which data should be transferred.
 openfed_api.set_state_dict(net.state_dict(keep_vars=True))
+
+# >>> Specify a aggregate trigger
+# It means that every 10 received models will make an aggregate operation.
+aggregate_trigger = openfed.AggregateCount(
+    count=args.world_size-1, checkpoint="/tmp/openfed-model", lr_scheduler=lr_scheduler)
+
+# >>> Set the aggregate trigger
+openfed_api.set_aggregate_triggers(aggregate_trigger)
+
+# >>> Connect to Address.
+openfed_api.build_connection(address=openfed.Address(args=args))
 
 # Load dataset and create dataloader
 train_dataset = get_mnist('data', total_parts=100, train=True)
 test_dataset = MNIST('data', train=False, transform=ToTensor())
 train_dataloader = DataLoader(
-    train_dataset, batch_size=12, shuffle=True, num_workers=2)
+    train_dataset, batch_size=12, shuffle=True, num_workers=0)
 test_dataloader = DataLoader(
-    test_dataset, batch_size=1000, shuffle=False, num_workers=2)
+    test_dataset, batch_size=1000, shuffle=False, num_workers=0)
 
 # Context `with openfed_api` will go into the specified settings about openfed_api.
 # Otherwise, will use the default one which shared by global OpenFed world.
@@ -84,6 +97,7 @@ with openfed_api:
         if not openfed_api.download():
             print(f"Downloading failed.")
             break
+
         # Downloaded
         print(f"{time_string()}: Downloaded!")
 
@@ -100,7 +114,7 @@ with openfed_api:
             loss.backward()
 
             optimizer.step()
-            process.set_description(f"loss: {loss:.2f}")
+            process.set_description(f"lr: {lr_scheduler.get_last_lr()[0]:.5f}, loss: {loss:.2f}")
 
         # Upload trained model
         print(f"{time_string()}: Uploading trained model to server.")

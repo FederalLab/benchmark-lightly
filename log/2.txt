@@ -1,0 +1,828 @@
+2021-07-02 19:41:06.357 | DEBUG    | openfed.core.federated.joint:safe_run:47 - Waiting
+[0;34m<OpenFed>[0m [0;35mAddress[0m
+@ Admirable
+
+2021-07-02 19:41:16.706 | DEBUG    | openfed.core.federated.joint:safe_run:113 - Connected
+[0;34m<OpenFed>[0m [0;35mAddress[0m
++---------+---------------------------+------------+------+-------+------------+
+| Backend |        Init Method        | World Size | Rank | Store | Group Name |
++---------+---------------------------+------------+------+-------+------------+
+|   gloo  | file:///tmp/openfed.sh... |     6      |  2   |  None | Admirable  |
++---------+---------------------------+------------+------+-------+------------+
+
+2021-07-02 19:41:16.734 | DEBUG    | openfed.common.thread:safe_exit:35 - 
++---------------+-----+---------------------+---------------------+
+| Exited thread | MSG |     Create time     |     Exited time     |
++---------------+-----+---------------------+---------------------+
+|        [0;34m<OpenFed>[0m [0;35mJoint[...        |   Success! [0;34m<OpenFed>[0m [0;3...   | 2021-07-02 19:41:06 | 2021-07-02 19:41:16 |
++---------------+-----+---------------------+---------------------+
+2021-07-02 19:41:18.298 | DEBUG    | openfed.common.task_info:set:21 - Reset version 0 as 1
+2021-07-02 19:41:18.299 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:18.299 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.1
+
+2021-07-02 19:41:18.632 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:18.632 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.1
+
+2021-07-02 19:41:20.110 | DEBUG    | openfed.common.task_info:set:21 - Reset version 0 as 1
+2021-07-02 19:41:20.111 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:20.112 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.1
+
+2021-07-02 19:41:20.328 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:20.329 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.1
+
+2021-07-02 19:41:21.752 | DEBUG    | openfed.common.task_info:set:21 - Reset version 0 as 1
+2021-07-02 19:41:21.752 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:21.752 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.1
+
+2021-07-02 19:41:21.974 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:21.974 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.1
+
+2021-07-02 19:41:23.441 | DEBUG    | openfed.common.task_info:set:21 - Reset version 1 as 2
+2021-07-02 19:41:23.442 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:23.442 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09972609476841367
+
+2021-07-02 19:41:23.890 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:23.890 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09972609476841367
+
+2021-07-02 19:41:25.282 | DEBUG    | openfed.common.task_info:set:21 - Reset version 1 as 2
+2021-07-02 19:41:25.283 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:25.283 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09972609476841367
+
+2021-07-02 19:41:25.631 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:25.632 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09972609476841367
+
+2021-07-02 19:41:27.002 | DEBUG    | openfed.common.task_info:set:21 - Reset version 1 as 2
+2021-07-02 19:41:27.003 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:27.003 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09972609476841367
+
+2021-07-02 19:41:27.277 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:27.278 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09972609476841367
+
+2021-07-02 19:41:29.418 | DEBUG    | openfed.common.task_info:set:21 - Reset version 2 as 3
+2021-07-02 19:41:29.419 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:29.419 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09890738003669028
+
+2021-07-02 19:41:30.059 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:30.060 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09890738003669028
+
+2021-07-02 19:41:31.631 | DEBUG    | openfed.common.task_info:set:21 - Reset version 2 as 3
+2021-07-02 19:41:31.632 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:31.632 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09890738003669028
+
+2021-07-02 19:41:32.041 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:32.041 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09890738003669028
+
+2021-07-02 19:41:33.377 | DEBUG    | openfed.common.task_info:set:21 - Reset version 2 as 3
+2021-07-02 19:41:33.378 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:33.378 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09890738003669028
+
+2021-07-02 19:41:33.802 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:33.803 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09890738003669028
+
+2021-07-02 19:41:35.063 | DEBUG    | openfed.common.task_info:set:21 - Reset version 3 as 4
+2021-07-02 19:41:35.064 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:35.065 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09755282581475767
+
+2021-07-02 19:41:35.366 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:35.366 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09755282581475767
+
+2021-07-02 19:41:36.845 | DEBUG    | openfed.common.task_info:set:21 - Reset version 3 as 4
+2021-07-02 19:41:36.846 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:36.846 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09755282581475767
+
+2021-07-02 19:41:37.224 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:37.225 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09755282581475767
+
+2021-07-02 19:41:38.729 | DEBUG    | openfed.common.task_info:set:21 - Reset version 3 as 4
+2021-07-02 19:41:38.729 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:38.729 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09755282581475767
+
+2021-07-02 19:41:39.075 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:39.076 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09755282581475767
+
+2021-07-02 19:41:40.691 | DEBUG    | openfed.common.task_info:set:21 - Reset version 4 as 5
+2021-07-02 19:41:40.692 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:40.693 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09567727288213003
+
+2021-07-02 19:41:40.993 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:40.994 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09567727288213003
+
+2021-07-02 19:41:42.553 | DEBUG    | openfed.common.task_info:set:21 - Reset version 4 as 5
+2021-07-02 19:41:42.554 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:42.554 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09567727288213003
+
+2021-07-02 19:41:42.890 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:42.891 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09567727288213003
+
+2021-07-02 19:41:44.284 | DEBUG    | openfed.common.task_info:set:21 - Reset version 4 as 5
+2021-07-02 19:41:44.285 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:44.285 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09567727288213003
+
+2021-07-02 19:41:44.625 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:44.625 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09567727288213003
+
+2021-07-02 19:41:46.157 | DEBUG    | openfed.common.task_info:set:21 - Reset version 5 as 6
+2021-07-02 19:41:46.158 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:46.158 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09330127018922194
+
+2021-07-02 19:41:46.487 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:46.487 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09330127018922194
+
+2021-07-02 19:41:48.185 | DEBUG    | openfed.common.task_info:set:21 - Reset version 5 as 6
+2021-07-02 19:41:48.186 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:48.186 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09330127018922194
+
+2021-07-02 19:41:48.491 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:48.491 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09330127018922194
+
+2021-07-02 19:41:50.265 | DEBUG    | openfed.common.task_info:set:21 - Reset version 5 as 6
+2021-07-02 19:41:50.266 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:50.267 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09330127018922194
+
+2021-07-02 19:41:50.709 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:50.709 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09330127018922194
+
+2021-07-02 19:41:52.280 | DEBUG    | openfed.common.task_info:set:21 - Reset version 6 as 7
+2021-07-02 19:41:52.281 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:52.281 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09045084971874737
+
+2021-07-02 19:41:52.636 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:52.637 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09045084971874737
+
+2021-07-02 19:41:54.221 | DEBUG    | openfed.common.task_info:set:21 - Reset version 6 as 7
+2021-07-02 19:41:54.222 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:54.222 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09045084971874737
+
+2021-07-02 19:41:54.616 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:54.617 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09045084971874737
+
+2021-07-02 19:41:56.085 | DEBUG    | openfed.common.task_info:set:21 - Reset version 6 as 7
+2021-07-02 19:41:56.086 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:56.086 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09045084971874737
+
+2021-07-02 19:41:56.527 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:56.528 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.09045084971874737
+
+2021-07-02 19:41:58.112 | DEBUG    | openfed.common.task_info:set:21 - Reset version 7 as 8
+2021-07-02 19:41:58.113 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:58.114 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0871572412738697
+
+2021-07-02 19:41:58.483 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:41:58.484 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0871572412738697
+
+2021-07-02 19:42:00.089 | DEBUG    | openfed.common.task_info:set:21 - Reset version 7 as 8
+2021-07-02 19:42:00.090 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:00.090 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0871572412738697
+
+2021-07-02 19:42:00.512 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:00.513 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0871572412738697
+
+2021-07-02 19:42:01.968 | DEBUG    | openfed.common.task_info:set:21 - Reset version 7 as 8
+2021-07-02 19:42:01.969 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:01.969 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0871572412738697
+
+2021-07-02 19:42:02.198 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:02.198 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0871572412738697
+
+2021-07-02 19:42:03.853 | DEBUG    | openfed.common.task_info:set:21 - Reset version 8 as 9
+2021-07-02 19:42:03.854 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:03.854 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0834565303179429
+
+2021-07-02 19:42:04.294 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:04.295 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0834565303179429
+
+2021-07-02 19:42:05.915 | DEBUG    | openfed.common.task_info:set:21 - Reset version 8 as 9
+2021-07-02 19:42:05.916 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:05.916 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0834565303179429
+
+2021-07-02 19:42:06.341 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:06.342 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0834565303179429
+
+2021-07-02 19:42:07.875 | DEBUG    | openfed.common.task_info:set:21 - Reset version 8 as 9
+2021-07-02 19:42:07.876 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:07.876 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0834565303179429
+
+2021-07-02 19:42:08.269 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:08.270 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0834565303179429
+
+2021-07-02 19:42:09.717 | DEBUG    | openfed.common.task_info:set:21 - Reset version 9 as 10
+2021-07-02 19:42:09.718 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:09.718 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07938926261462365
+
+2021-07-02 19:42:09.981 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:09.981 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07938926261462365
+
+2021-07-02 19:42:11.565 | DEBUG    | openfed.common.task_info:set:21 - Reset version 9 as 10
+2021-07-02 19:42:11.566 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:11.566 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07938926261462365
+
+2021-07-02 19:42:11.865 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:11.866 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07938926261462365
+
+2021-07-02 19:42:13.375 | DEBUG    | openfed.common.task_info:set:21 - Reset version 9 as 10
+2021-07-02 19:42:13.376 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:13.376 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07938926261462365
+
+2021-07-02 19:42:13.646 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:13.647 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07938926261462365
+
+2021-07-02 19:42:15.734 | DEBUG    | openfed.common.task_info:set:21 - Reset version 10 as 11
+2021-07-02 19:42:15.736 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:15.736 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07499999999999998
+
+2021-07-02 19:42:16.083 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:16.084 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07499999999999998
+
+2021-07-02 19:42:17.952 | DEBUG    | openfed.common.task_info:set:21 - Reset version 10 as 11
+2021-07-02 19:42:17.953 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:17.953 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07499999999999998
+
+2021-07-02 19:42:18.237 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:18.237 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07499999999999998
+
+2021-07-02 19:42:19.842 | DEBUG    | openfed.common.task_info:set:21 - Reset version 10 as 11
+2021-07-02 19:42:19.842 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:19.842 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07499999999999998
+
+2021-07-02 19:42:20.150 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:20.150 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07499999999999998
+
+2021-07-02 19:42:21.853 | DEBUG    | openfed.common.task_info:set:21 - Reset version 11 as 12
+2021-07-02 19:42:21.854 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:21.854 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07033683215379001
+
+2021-07-02 19:42:22.238 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:22.238 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07033683215379001
+
+2021-07-02 19:42:23.885 | DEBUG    | openfed.common.task_info:set:21 - Reset version 11 as 12
+2021-07-02 19:42:23.885 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:23.885 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07033683215379001
+
+2021-07-02 19:42:24.196 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:24.197 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07033683215379001
+
+2021-07-02 19:42:25.966 | DEBUG    | openfed.common.task_info:set:21 - Reset version 11 as 12
+2021-07-02 19:42:25.967 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:25.967 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07033683215379001
+
+2021-07-02 19:42:26.238 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:26.238 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.07033683215379001
+
+2021-07-02 19:42:27.974 | DEBUG    | openfed.common.task_info:set:21 - Reset version 12 as 13
+2021-07-02 19:42:27.975 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:27.975 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06545084971874737
+
+2021-07-02 19:42:28.275 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:28.276 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06545084971874737
+
+2021-07-02 19:42:29.968 | DEBUG    | openfed.common.task_info:set:21 - Reset version 12 as 13
+2021-07-02 19:42:29.969 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:29.969 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06545084971874737
+
+2021-07-02 19:42:30.276 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:30.277 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06545084971874737
+
+2021-07-02 19:42:31.867 | DEBUG    | openfed.common.task_info:set:21 - Reset version 12 as 13
+2021-07-02 19:42:31.868 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:31.868 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06545084971874737
+
+2021-07-02 19:42:32.158 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:32.158 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06545084971874737
+
+2021-07-02 19:42:33.943 | DEBUG    | openfed.common.task_info:set:21 - Reset version 13 as 14
+2021-07-02 19:42:33.944 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:33.944 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06039558454088796
+
+2021-07-02 19:42:34.307 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:34.307 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06039558454088796
+
+2021-07-02 19:42:35.922 | DEBUG    | openfed.common.task_info:set:21 - Reset version 13 as 14
+2021-07-02 19:42:35.923 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:35.924 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06039558454088796
+
+2021-07-02 19:42:36.212 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:36.213 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06039558454088796
+
+2021-07-02 19:42:37.968 | DEBUG    | openfed.common.task_info:set:21 - Reset version 13 as 14
+2021-07-02 19:42:37.969 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:37.969 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06039558454088796
+
+2021-07-02 19:42:38.487 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:38.487 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.06039558454088796
+
+2021-07-02 19:42:40.033 | DEBUG    | openfed.common.task_info:set:21 - Reset version 14 as 15
+2021-07-02 19:42:40.034 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:40.034 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05522642316338268
+
+2021-07-02 19:42:40.406 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:40.407 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05522642316338268
+
+2021-07-02 19:42:42.141 | DEBUG    | openfed.common.task_info:set:21 - Reset version 14 as 15
+2021-07-02 19:42:42.142 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:42.142 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05522642316338268
+
+2021-07-02 19:42:42.529 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:42.530 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05522642316338268
+
+2021-07-02 19:42:44.384 | DEBUG    | openfed.common.task_info:set:21 - Reset version 14 as 15
+2021-07-02 19:42:44.385 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:44.385 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05522642316338268
+
+2021-07-02 19:42:44.701 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:44.702 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05522642316338268
+
+2021-07-02 19:42:46.264 | DEBUG    | openfed.common.task_info:set:21 - Reset version 15 as 16
+2021-07-02 19:42:46.265 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:46.265 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05000000000000001
+
+2021-07-02 19:42:46.574 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:46.574 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05000000000000001
+
+2021-07-02 19:42:48.055 | DEBUG    | openfed.common.task_info:set:21 - Reset version 15 as 16
+2021-07-02 19:42:48.056 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:48.056 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05000000000000001
+
+2021-07-02 19:42:48.337 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:48.337 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05000000000000001
+
+2021-07-02 19:42:49.820 | DEBUG    | openfed.common.task_info:set:21 - Reset version 15 as 16
+2021-07-02 19:42:49.821 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:49.822 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05000000000000001
+
+2021-07-02 19:42:50.126 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:50.126 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.05000000000000001
+
+2021-07-02 19:42:51.650 | DEBUG    | openfed.common.task_info:set:21 - Reset version 16 as 17
+2021-07-02 19:42:51.651 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:51.651 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.04477357683661733
+
+2021-07-02 19:42:51.905 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:51.905 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.04477357683661733
+
+2021-07-02 19:42:53.346 | DEBUG    | openfed.common.task_info:set:21 - Reset version 16 as 17
+2021-07-02 19:42:53.347 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:53.347 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.04477357683661733
+
+2021-07-02 19:42:53.631 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:53.632 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.04477357683661733
+
+2021-07-02 19:42:55.088 | DEBUG    | openfed.common.task_info:set:21 - Reset version 16 as 17
+2021-07-02 19:42:55.088 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:55.088 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.04477357683661733
+
+2021-07-02 19:42:55.403 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:55.403 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.04477357683661733
+
+2021-07-02 19:42:56.895 | DEBUG    | openfed.common.task_info:set:21 - Reset version 17 as 18
+2021-07-02 19:42:56.895 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:56.896 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03960441545911203
+
+2021-07-02 19:42:57.190 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:57.191 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03960441545911203
+
+2021-07-02 19:42:58.695 | DEBUG    | openfed.common.task_info:set:21 - Reset version 17 as 18
+2021-07-02 19:42:58.696 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:58.696 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03960441545911203
+
+2021-07-02 19:42:58.950 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:42:58.950 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03960441545911203
+
+2021-07-02 19:43:00.441 | DEBUG    | openfed.common.task_info:set:21 - Reset version 17 as 18
+2021-07-02 19:43:00.441 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:00.442 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03960441545911203
+
+2021-07-02 19:43:00.722 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:00.722 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03960441545911203
+
+2021-07-02 19:43:02.189 | DEBUG    | openfed.common.task_info:set:21 - Reset version 18 as 19
+2021-07-02 19:43:02.190 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:02.190 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03454915028125263
+
+2021-07-02 19:43:02.480 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:02.480 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03454915028125263
+
+2021-07-02 19:43:04.032 | DEBUG    | openfed.common.task_info:set:21 - Reset version 18 as 19
+2021-07-02 19:43:04.033 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:04.033 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03454915028125263
+
+2021-07-02 19:43:04.344 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:04.344 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03454915028125263
+
+2021-07-02 19:43:05.872 | DEBUG    | openfed.common.task_info:set:21 - Reset version 18 as 19
+2021-07-02 19:43:05.873 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:05.873 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03454915028125263
+
+2021-07-02 19:43:06.138 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:06.138 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.03454915028125263
+
+2021-07-02 19:43:07.686 | DEBUG    | openfed.common.task_info:set:21 - Reset version 19 as 20
+2021-07-02 19:43:07.686 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:07.687 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.029663167846209995
+
+2021-07-02 19:43:08.030 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:08.030 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.029663167846209995
+
+2021-07-02 19:43:09.559 | DEBUG    | openfed.common.task_info:set:21 - Reset version 19 as 20
+2021-07-02 19:43:09.560 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:09.560 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.029663167846209995
+
+2021-07-02 19:43:09.907 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:09.908 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.029663167846209995
+
+2021-07-02 19:43:11.482 | DEBUG    | openfed.common.task_info:set:21 - Reset version 19 as 20
+2021-07-02 19:43:11.484 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:11.484 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.029663167846209995
+
+2021-07-02 19:43:11.815 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:11.816 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.029663167846209995
+
+2021-07-02 19:43:13.381 | DEBUG    | openfed.common.task_info:set:21 - Reset version 20 as 21
+2021-07-02 19:43:13.381 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:13.382 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.025000000000000015
+
+2021-07-02 19:43:13.711 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:13.712 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.025000000000000015
+
+2021-07-02 19:43:15.343 | DEBUG    | openfed.common.task_info:set:21 - Reset version 20 as 21
+2021-07-02 19:43:15.343 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:15.344 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.025000000000000015
+
+2021-07-02 19:43:15.610 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:15.610 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.025000000000000015
+
+2021-07-02 19:43:17.143 | DEBUG    | openfed.common.task_info:set:21 - Reset version 20 as 21
+2021-07-02 19:43:17.143 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:17.144 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.025000000000000015
+
+2021-07-02 19:43:17.478 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:17.478 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.025000000000000015
+
+2021-07-02 19:43:19.087 | DEBUG    | openfed.common.task_info:set:21 - Reset version 21 as 22
+2021-07-02 19:43:19.087 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:19.088 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.020610737385376353
+
+2021-07-02 19:43:19.378 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:19.379 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.020610737385376353
+
+2021-07-02 19:43:20.976 | DEBUG    | openfed.common.task_info:set:21 - Reset version 21 as 22
+2021-07-02 19:43:20.976 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:20.977 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.020610737385376353
+
+2021-07-02 19:43:21.267 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:21.268 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.020610737385376353
+
+2021-07-02 19:43:22.875 | DEBUG    | openfed.common.task_info:set:21 - Reset version 21 as 22
+2021-07-02 19:43:22.875 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:22.876 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.020610737385376353
+
+2021-07-02 19:43:23.173 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:23.173 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.020610737385376353
+
+2021-07-02 19:43:24.785 | DEBUG    | openfed.common.task_info:set:21 - Reset version 22 as 23
+2021-07-02 19:43:24.786 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:24.786 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.01654346968205711
+
+2021-07-02 19:43:25.083 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:25.084 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.01654346968205711
+
+2021-07-02 19:43:26.686 | DEBUG    | openfed.common.task_info:set:21 - Reset version 22 as 23
+2021-07-02 19:43:26.687 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:26.688 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.01654346968205711
+
+2021-07-02 19:43:26.962 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:26.963 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.01654346968205711
+
+2021-07-02 19:43:28.598 | DEBUG    | openfed.common.task_info:set:21 - Reset version 22 as 23
+2021-07-02 19:43:28.598 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:28.598 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.01654346968205711
+
+2021-07-02 19:43:28.976 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:28.976 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.01654346968205711
+
+2021-07-02 19:43:30.564 | DEBUG    | openfed.common.task_info:set:21 - Reset version 23 as 24
+2021-07-02 19:43:30.565 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:30.565 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.012842758726130304
+
+2021-07-02 19:43:30.882 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:30.883 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.012842758726130304
+
+2021-07-02 19:43:32.476 | DEBUG    | openfed.common.task_info:set:21 - Reset version 23 as 24
+2021-07-02 19:43:32.477 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:32.477 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.012842758726130304
+
+2021-07-02 19:43:32.795 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:32.796 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.012842758726130304
+
+2021-07-02 19:43:34.352 | DEBUG    | openfed.common.task_info:set:21 - Reset version 23 as 24
+2021-07-02 19:43:34.353 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:34.353 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.012842758726130304
+
+2021-07-02 19:43:34.666 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:34.667 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.012842758726130304
+
+2021-07-02 19:43:36.214 | DEBUG    | openfed.common.task_info:set:21 - Reset version 24 as 25
+2021-07-02 19:43:36.215 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:36.215 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.009549150281252637
+
+2021-07-02 19:43:36.581 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:36.581 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.009549150281252637
+
+2021-07-02 19:43:38.177 | DEBUG    | openfed.common.task_info:set:21 - Reset version 24 as 25
+2021-07-02 19:43:38.178 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:38.178 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.009549150281252637
+
+2021-07-02 19:43:38.449 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:38.449 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.009549150281252637
+
+2021-07-02 19:43:40.099 | DEBUG    | openfed.common.task_info:set:21 - Reset version 24 as 25
+2021-07-02 19:43:40.100 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:40.100 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.009549150281252637
+
+2021-07-02 19:43:40.444 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:40.445 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.009549150281252637
+
+2021-07-02 19:43:42.077 | DEBUG    | openfed.common.task_info:set:21 - Reset version 25 as 26
+2021-07-02 19:43:42.078 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:42.078 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.006698729810778068
+
+2021-07-02 19:43:42.424 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:42.424 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.006698729810778068
+
+2021-07-02 19:43:44.019 | DEBUG    | openfed.common.task_info:set:21 - Reset version 25 as 26
+2021-07-02 19:43:44.020 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:44.020 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.006698729810778068
+
+2021-07-02 19:43:44.298 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:44.299 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.006698729810778068
+
+2021-07-02 19:43:45.949 | DEBUG    | openfed.common.task_info:set:21 - Reset version 25 as 26
+2021-07-02 19:43:45.950 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:45.951 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.006698729810778068
+
+2021-07-02 19:43:46.297 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:46.298 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.006698729810778068
+
+2021-07-02 19:43:47.941 | DEBUG    | openfed.common.task_info:set:21 - Reset version 26 as 27
+2021-07-02 19:43:47.942 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:47.942 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.004322727117869953
+
+2021-07-02 19:43:48.205 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:48.206 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.004322727117869953
+
+2021-07-02 19:43:49.849 | DEBUG    | openfed.common.task_info:set:21 - Reset version 26 as 27
+2021-07-02 19:43:49.850 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:49.850 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.004322727117869953
+
+2021-07-02 19:43:50.079 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:50.080 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.004322727117869953
+
+2021-07-02 19:43:51.713 | DEBUG    | openfed.common.task_info:set:21 - Reset version 26 as 27
+2021-07-02 19:43:51.714 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:51.714 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.004322727117869953
+
+2021-07-02 19:43:51.992 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:51.992 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.004322727117869953
+
+2021-07-02 19:43:53.808 | DEBUG    | openfed.common.task_info:set:21 - Reset version 27 as 28
+2021-07-02 19:43:53.809 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:53.809 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.002447174185242324
+
+2021-07-02 19:43:54.245 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:54.245 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.002447174185242324
+
+2021-07-02 19:43:55.801 | DEBUG    | openfed.common.task_info:set:21 - Reset version 27 as 28
+2021-07-02 19:43:55.802 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:55.802 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.002447174185242324
+
+2021-07-02 19:43:56.290 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:56.290 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.002447174185242324
+
+2021-07-02 19:43:57.870 | DEBUG    | openfed.common.task_info:set:21 - Reset version 27 as 28
+2021-07-02 19:43:57.871 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:57.872 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.002447174185242324
+
+2021-07-02 19:43:58.219 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:58.219 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.002447174185242324
+
+2021-07-02 19:43:59.776 | DEBUG    | openfed.common.task_info:set:21 - Reset version 28 as 29
+2021-07-02 19:43:59.776 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:43:59.777 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0010926199633097158
+
+2021-07-02 19:44:00.133 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:00.134 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0010926199633097158
+
+2021-07-02 19:44:01.674 | DEBUG    | openfed.common.task_info:set:21 - Reset version 28 as 29
+2021-07-02 19:44:01.675 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:01.676 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0010926199633097158
+
+2021-07-02 19:44:02.118 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:02.118 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0010926199633097158
+
+2021-07-02 19:44:03.658 | DEBUG    | openfed.common.task_info:set:21 - Reset version 28 as 29
+2021-07-02 19:44:03.659 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:03.659 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0010926199633097158
+
+2021-07-02 19:44:04.121 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:04.121 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.0010926199633097158
+
+2021-07-02 19:44:05.664 | DEBUG    | openfed.common.task_info:set:21 - Reset version 29 as 30
+2021-07-02 19:44:05.665 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:05.665 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.00027390523158633
+
+2021-07-02 19:44:06.029 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:06.029 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.00027390523158633
+
+2021-07-02 19:44:07.556 | DEBUG    | openfed.common.task_info:set:21 - Reset version 29 as 30
+2021-07-02 19:44:07.557 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:07.557 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.00027390523158633
+
+2021-07-02 19:44:07.904 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:07.905 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.00027390523158633
+
+2021-07-02 19:44:09.387 | DEBUG    | openfed.common.task_info:set:21 - Reset version 29 as 30
+2021-07-02 19:44:09.388 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:09.388 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.00027390523158633
+
+2021-07-02 19:44:09.772 | DEBUG    | openfed.core.inform.collector:__call__:40 - Load already exists collector.
+2021-07-02 19:44:09.772 | DEBUG    | openfed.core.inform.informer:collect:273 - [0;34m<OpenFed>[0m [0;35mCollector.LRTracker[0m
+Lastest Learing Rate: 0.00027390523158633
+

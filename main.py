@@ -21,10 +21,11 @@ openfed.logger.log_level(level="INFO")
 
 # >>> Get default arguments from OpenFed
 args = openfed.parser.parse_args()
+openfed.logger.log_to_file(f"log/{args.rank}.txt")
 
-epochs = 100
+epochs = 30
 total_parts = 100
-samples = 10
+samples = 15
 
 # >>> Specify an API for building federated learning
 openfed_api = openfed.API(frontend=args.rank > 0)
@@ -62,13 +63,12 @@ openfed_api.set_state_dict(net.state_dict(keep_vars=True))
 # openfed_api.register_step(stop_at_version)
 # Or use the with context to add a sequence of step function to openfed_api automatically.
 with of_api.StepAt(openfed_api):
-    # In other means, it will train for epochs.
-    of_api.StopAtVersion(max_version=epochs)
     of_api.AggregateCount(
         count=samples, checkpoint="/tmp/openfed-model", lr_scheduler=lr_scheduler)
     of_api.AfterDownload()
     of_api.Dispatch(total_parts=total_parts, samples=samples)
 
+    of_api.StopAtVersion(max_version=epochs)
 # >>> Connect to Address.
 openfed_api.build_connection(address=openfed.Address(args=args))
 

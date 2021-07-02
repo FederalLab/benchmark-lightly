@@ -5,7 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: main",
+            "name": "Python: client",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "args": ["--rank", "1", "--world_size", "2"]
+        },
+        {
+            "name": "Python: server",
             "type": "python",
             "request": "launch",
             "program": "main.py",

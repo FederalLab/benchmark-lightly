@@ -148,4 +148,4 @@ with openfed_api:
 print(f"Finished.\nExit Client @{openfed_api.nick_name}.")
 
 # >>> Finished
-openfed_api.finish()
+openfed_api.finish(auto_exit=True)

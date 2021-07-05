@@ -21,7 +21,7 @@ parser = openfed.parser
 
 parser.add_argument("--epochs", default=30, type=int)
 parser.add_argument("--total_parts", default=100, type=int)
-parser.add_argument("--samples", default=15, type=int)
+parser.add_argument("--samples", default=15, type=float)
 parser.add_argument("--gpu", default=False, action="store_true")
 
 args = parser.parse_args()
@@ -127,6 +127,7 @@ def frontend_loop():
         correct = []
         for data in test_dataloader:
             input, target = data
+            input, target = input.to(args.device), target.to(args.device)
 
             # Start a standard forward inference pass.
             predict = net(input).max(1, keepdim=True)[1]

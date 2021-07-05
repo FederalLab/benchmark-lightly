@@ -18,9 +18,9 @@
             "program": "main.py",
             "console": "integratedTerminal",
             "args": [
-                "--rank",
+                "--fed_rank",
                 "1",
-                "--world_size",
+                "--fed_world_size",
                 "2"
             ]
         },
@@ -31,9 +31,9 @@
             "program": "main.py",
             "console": "integratedTerminal",
             "args": [
-                "--rank",
+                "--fed_rank",
                 "0",
-                "--world_size",
+                "--fed_world_size",
                 "2"
             ]
         }

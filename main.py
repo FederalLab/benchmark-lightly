@@ -14,7 +14,7 @@ from benchmark.datasets import get_mnist
 from benchmark.models import LogisticRegression
 
 # >>> set log level
-openfed.logger.log_level(level="INFO")
+openfed.logger.log_level(level="SUCCESS")
 
 # >>> Get default arguments from OpenFed
 parser = openfed.parser
@@ -70,12 +70,13 @@ openfed_api.set_state_dict(net.state_dict(keep_vars=True))
 # openfed_api.register_step(stop_at_version)
 # Or use the with context to add a sequence of step function to openfed_api automatically.
 with of_api.StepAt(openfed_api):
-    of_api.AggregateCount(
+    of_api.Aggregate(
         count=args.samples, checkpoint="/tmp/openfed-model", lr_scheduler=lr_scheduler)
-    of_api.AfterDownload()
-    of_api.Dispatch(total_parts=args.total_parts, samples=args.samples)
+    of_api.Download()
+    of_api.Dispatch(args.total_parts, samples=args.samples)
 
-    of_api.StopAtVersion(max_version=args.epochs)
+    of_api.Terminate(max_version=args.epochs)
+
 # >>> Connect to Address.
 openfed_api.build_connection(address=openfed.Address(args=args))
 

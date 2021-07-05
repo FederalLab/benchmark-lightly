@@ -24,11 +24,12 @@
 
 import h5py
 import numpy as np
+import os
 import torch
 import torchvision.transforms as transforms
-from openfed.common import logger
+from openfed.common.logging import logger
 from openfed.data import FederatedDataset, Analysis
-from openfed.data.utils import *
+from openfed.data.utils import wget_https, tar_xvf
 
 DEFAULT_TRAIN_CLIENTS_NUM = 500
 DEFAULT_TEST_CLIENTS_NUM = 100
@@ -46,7 +47,12 @@ class CIFAR100(FederatedDataset):
     """TFF version.
     """
 
-    def __init__(self, root: str, train: bool = True, transform=None, target_transform=None):
+    def __init__(self, 
+        root: str, 
+        train: bool = True, 
+        transform=None, 
+        target_transform=None, 
+        download: bool=False):
         data_file = os.path.join(
             root, DEFAULT_TRAIN_FILE if train else DEFAULT_TEST_FILE)
         if not os.path.isfile(data_file):

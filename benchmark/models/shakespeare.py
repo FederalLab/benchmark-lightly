@@ -24,7 +24,7 @@
 import torch.nn as nn
 
 
-class Shakespeare(nn.Module):
+class ShakespeareNCP(nn.Module):
     """Creates a RNN model using LSTM layers for Shakespeare language models (next character prediction task).
     This replicates the model structure in the paper:
         Communication-Efficient Learning of Deep Networks from Decentralized Data

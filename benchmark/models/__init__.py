@@ -1,7 +1,7 @@
 from .emnist import EMNIST, EMNISTDropout, EMNISTLinear
 from .emnist_ae import EMNISTAE
 from .lr import LogisticRegression
-from .shakespeare import Shakespeare
+from .shakespeare import ShakespeareNCP
 from .stackoverflow import StackOverFlowNWP
 
 del emnist

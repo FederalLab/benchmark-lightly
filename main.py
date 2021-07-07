@@ -1,4 +1,3 @@
-import enum
 import os
 from glob import glob
 
@@ -8,7 +7,7 @@ import openfed.container as fed_container
 import openfed.data as fed_data
 import openfed.pipe as fed_pipe
 import torch
-import torch.nn.functional as F
+from openfed.common.task_info import TaskInfo
 from openfed.core.inform import LRTracker
 from openfed.utils import time_string
 from torch.utils.data import DataLoader
@@ -64,6 +63,20 @@ parser.add_argument('--rounds',
                     type=int,
                     default=10,
                     help='The total rounds for federated training.')
+parser.add_argument('--samples',
+                    type=int,
+                    default=None,
+                    help='The number of parts used to train at each round.')
+parser.add_argument('--sample_ratio',
+                    type=float,
+                    default=None,
+                    help="The portion of parts used to train at each time, in [0, 1]."
+                         "If `samples` set at the same time, this flag will be ignored."
+                    )
+parser.add_argument('--test_samples',
+                    type=int,
+                    default=None,
+                    help="The number of parts used to test at each round. If not specified, use full test dataset.")
 parser.add_argument('--ft_optim',
                     '--frontend_optimizer',
                     type=str,
@@ -229,31 +242,32 @@ else:
 
 # >>> Define network for specified tasks.
 if args.network == 'lr':
-    from benchmark.models import LogisticRegression
+    from benchmark.models.lr import LogisticRegression, acc_fn, loss_fn
     network = LogisticRegression(**args.network_cfg)
 elif args.network == 'emnist':
-    from benchmark.models import EMNIST
+    from benchmark.models.emnist import EMNIST, acc_fn, loss_fn
     network = EMNIST(**args.network_cfg)
 elif args.network == 'emnist_dp':
-    from benchmark.models import EMNISTDropout
+    from benchmark.models.emnist import EMNISTDropout, acc_fn, loss_fn
     network = EMNISTDropout(**args.network_cfg)
 elif args.network == 'emnist_lr':
-    from benchmark.models import EMNISTLinear
+    from benchmark.models.emnist import EMNISTLinear, acc_fn, loss_fn
     network = EMNISTLinear(**args.network_cfg)
 elif args.network == 'emnist_ae':
-    from benchmark.models import EMNISTAE
+    from benchmark.models.emnist_ae import EMNISTAE, acc_fn, loss_fn
     network = EMNISTAE(**args.network_cfg)
 elif args.network == 'shakespeare_ncp':
-    from benchmark.models import ShakespeareNCP
+    from benchmark.models.shakespeare import ShakespeareNCP, acc_fn, loss_fn
     network = ShakespeareNCP(**args.network_cfg)
 elif args.network == 'stackoverflow_nwp':
-    from benchmark.models import StackOverFlowNWP
+    from benchmark.models.stackoverflow import (StackOverFlowNWP, acc_fn,
+                                                loss_fn)
     network = StackOverFlowNWP(**args.network_cfg)
 else:
     raise NotImplementedError
 
 network = network.to(args.device)
-
+loss_fn = loss_fn.to(args.device)
 
 # >>> Load pretrained model
 if os.path.exists(args.pretrained):
@@ -287,7 +301,7 @@ else:
     network.load_state_dict(ckpt['state_dict'])
 
     last_rounds = ckpt['last_rounds']
-        
+
 # >>> Optimizer
 if args.ft_optim == 'sgd':
     ft_optim = torch.optim.SGD(network.parameters(
@@ -369,100 +383,119 @@ elif args.pipe == 'scaffold':
 else:
     raise NotImplementedError
 
-# >>> Specify an API for building federated learning
-openfed_api = openfed.API(frontend=args.fed_rank > 0)
-
-# >>> Set optimizer, aggregator, pipe for federated learning.
-openfed_api.set_ft_optimizer(ft_optim)
-openfed_api.set_bk_optimizer(bk_optim)
-openfed_api.set_aggregator(aggregator)
-openfed_api.set_pipe(pipe)
-
-# >>> Set state dict to track between frontend and backend.
-openfed_api.set_state_dict(network.state_dict(keep_vars=True))
-
 # >>> Add an auto-reducer to compute task info
 auto_reducer = fed_container.AutoReducer(weight_key='instances')
-openfed_api.set_reducer(auto_reducer)
+
+# >>> Specify an API for building federated learning
+openfed_api = openfed.API(
+    frontend=args.fed_rank > 0,
+    state_dict=network.state_dict(keep_vars=True),
+    ft_optimizer=ft_optim,
+    aggregator=aggregator,
+    bk_optimizer=bk_optim,
+    pipe=pipe,
+    reducer=auto_reducer)
 
 # >>> Synchronize LR Scheduler between Frontend and Backend
 lr_tracker = LRTracker(ft_lr_sch)
 openfed_api.add_informer_hook(lr_tracker)
 
 # >>> Register more step functions.
-with of_api.StepAt(openfed_api):
+with openfed_api:
+    # Train samples at each round
+    assert args.samples or args.sample_ratio
+    test_samples = test_dataset.total_samples if args.test_samples is None else args.test_samples
+    samples = args.samples if args.samples is not None else int(
+        train_dataset.total_samples * args.sample_ratio)
+
     of_api.Aggregate(
-        count        = args.samples,
-        checkpoint   = args.ckpt,
-        lr_scheduler = [ft_lr_sch, bk_lr_sch])
+        count=[samples, test_samples],
+        checkpoint=args.ckpt,
+        lr_scheduler=[ft_lr_sch, bk_lr_sch])
 
     of_api.Download()
-    of_api.Dispatch(args.total_parts, samples=args.samples)
+    of_api.Dispatch(args.total_parts,
+                    samples=samples,
+                    total_test_parts=test_samples)
 
     of_api.Terminate(max_version=args.rounds)
 
 # >>> Connect to Address.
 openfed_api.build_connection(address=openfed.Address(args=args))
 
+
 def frontend_loop():
     while True:
+        task_info = TaskInfo()
         # Download latest model.
         print(f"{time_string()}: Downloading latest model from server.")
-        if not openfed_api.download():
+        if not openfed_api.transfer(to=False, task_info=task_info):
             print(f"Downloading failed.")
             break
 
         # Downloaded
         print(f"{time_string()}: Downloaded!")
 
-        task_info = openfed_api.get_task_info()
         part_id, version = task_info.part_id, task_info.version
 
         print(f"{time_string()}")
         print(task_info)
 
-        train_dataset.set_part_id(part_id)
-
-        # Train
         total_loss = []
-        for data in train_dataloader:
-            input, target = data
-            input, target = input.to(args.device), target.to(args.device)
-
-            # Start a standard forward/backward pass.
-            optimizer.zero_grad()
-            output = net(input)
-            loss = F.cross_entropy(output, target)
-            loss.backward()
-
-            optimizer.step()
-            total_loss.append(loss.item())
-        total_loss = sum(total_loss)/len(total_loss)
-
-        # Test
         correct = []
-        for data in test_dataloader:
-            input, target = data
-            input, target = input.to(args.device), target.to(args.device)
+        if task_info.train:
+            train_dataset.set_part_id(part_id)
+            task_info.instances = len(train_dataset)
+            # Train
+            network.train()
+            for data in train_dataloader:
+                input, target = data
+                input, target = input.to(args.device), target.to(args.device)
 
-            # Start a standard forward inference pass.
-            predict = net(input).max(1, keepdim=True)[1]
-            correct.append(predict.eq(target.view_as(
-                predict)).sum().item() / len(target))
+                # Start a standard forward/backward pass.
+                ft_optim.zero_grad()
+                output = network(input)
+                loss = loss_fn(output, target)
+
+                loss.backward()
+                if pipe is not None:
+                    pipe.step()
+
+                ft_optim.step()
+                correct.append(acc_fn(target, output))
+
+                total_loss.append(loss.item())
+
+        else:
+            test_dataset.set_part_id(part_id)
+            task_info.instances = len(test_dataset)
+            # Test
+            with torch.no_grad():
+                network.eval()
+                for data in test_dataloader:
+                    input, target = data
+                    input, target = input.to(
+                        args.device), target.to(args.device)
+
+                    # Start a standard forward inference pass.
+                    output = network(input)
+                    loss = loss_fn(output, target)
+                    correct.append(acc_fn(target, output))
+                    total_loss.append(loss.item())
+
+        total_loss = sum(total_loss)/len(total_loss)
         accuracy = sum(correct) / len(correct)
 
-        task_info.instances = len(train_dataloader.dataset)
         task_info.loss = total_loss
         task_info.accuracy = accuracy
         task_info.version = version + 1
 
         # Set task info
-        openfed_api.set_task_info(task_info)
         openfed_api.update_version(version + 1)
 
         # Upload trained model
         print(f"{time_string()}: Uploading trained model to server.")
-        if not openfed_api.upload():
+        if not openfed_api.transfer(to=True, task_info=task_info):
             print("Uploading failed.")
             break
         print(f"{time_string()}: Uploaded!")

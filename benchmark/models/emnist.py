@@ -23,6 +23,8 @@
 
 import torch.nn as nn
 
+from .utils import top_one_acc
+
 
 def conv_block(in_ch, out_ch, kz, pd, mpz: None):
     l = [nn.Conv2d(in_ch, out_ch, kz, pd), nn.ReLU()]
@@ -100,3 +102,11 @@ class EMNISTLinear(nn.Module):
 
     def forward(self, x):
         return self.layers(x)
+
+
+def loss_fn():
+    return nn.CrossEntropyLoss()
+
+
+def acc_fn():
+    return top_one_acc

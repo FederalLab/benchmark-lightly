@@ -24,6 +24,8 @@
 import torch
 import torch.nn as nn
 
+from .utils import top_one_acc
+
 
 class StackOverFlowNWP(nn.Module):
     """Creates a RNN model using LSTM layers for StackOverFlow (next word prediction task).
@@ -59,3 +61,11 @@ class StackOverFlowNWP(nn.Module):
         output = self.fc2(fc1_output)
         output = torch.transpose(output, 1, 2)
         return output
+
+
+def loss_fn():
+    return nn.CrossEntropyLoss()
+
+
+def acc_fn():
+    return top_one_acc

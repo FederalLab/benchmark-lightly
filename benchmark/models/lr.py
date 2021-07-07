@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 
+from .utils import top_one_acc
 import torch.nn as nn
 
 
@@ -34,3 +35,11 @@ class LogisticRegression(nn.Module):
 
     def forward(self, x):
         return self.linear(x)
+
+
+def loss_fn():
+    return nn.CrossEntropyLoss()
+
+
+def acc_fn():
+    return top_one_acc

@@ -57,3 +57,11 @@ class EMNISTAE(nn.Module):
 
     def forward(self, x):
         return self.layers(torch.flatten(x, start_dim=1)).reshape(*x.shape)
+
+
+def loss_fn():
+    return nn.MSELoss()
+
+
+def acc_fn():
+    return nn.MSELoss()

@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 
+from .utils import top_one_acc
 import torch.nn as nn
 
 
@@ -56,3 +57,11 @@ class ShakespeareNCP(nn.Module):
         final_hidden_state = lstm_out[:, -1]
         output = self.fc(final_hidden_state)
         return output
+
+
+def loss_fn():
+    return nn.CrossEntropyLoss()
+
+
+def acc_fn():
+    return top_one_acc

@@ -419,9 +419,11 @@ with openfed_api:
         lr_scheduler=[ft_lr_sch, bk_lr_sch])
 
     of_api.Download()
-    of_api.Dispatch(train_dataset.total_parts,
-                    samples=samples,
-                    total_test_parts=test_samples)
+    of_api.Dispatch(samples=samples,
+                    parts_list=train_dataset.total_parts,
+                    test_samples=test_samples, 
+                    test_parts_list=test_dataset.total_parts,
+                    )
 
     of_api.Terminate(max_version=args.rounds)
 

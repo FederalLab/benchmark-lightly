@@ -59,9 +59,5 @@ class EMNISTAE(nn.Module):
         return self.layers(torch.flatten(x, start_dim=1)).reshape(*x.shape)
 
 
-def loss_fn():
-    return nn.MSELoss()
-
-
-def acc_fn():
-    return nn.MSELoss()
+loss_fn = nn.MSELoss()
+acc_fn = nn.MSELoss()

@@ -1,4 +1,8 @@
 import os
+import sys
+
+sys.path.insert(0, "/Users/densechen/code/OpenFed")
+
 from glob import glob
 
 import openfed
@@ -106,7 +110,7 @@ parser.add_argument('--ft_lr',
                     default=0.1,
                     help='The learning rate of frontend optimizer.')
 parser.add_argument('--bk_lr',
-                    '--backend_optimizer',
+                    '--backend_learning_rate',
                     type=float,
                     default=0.1,
                     help='The learning rate of backend optimizer.')
@@ -175,6 +179,7 @@ parser.add_argument('--network',
                              'emnist_ae', 'lr', 'shakespeare_ncp', 'stackoverflow_nwp'],
                     help='Which network used to train.')
 parser.add_argument('--network_cfg',
+                    nargs='+',
                     type=str,
                     default='',
                     action=StoreDict,
@@ -358,13 +363,13 @@ else:
 
 if args.agg == 'average':
     aggregator = fed_container.AverageAgg(
-        network.state_dict(keep_vars=True), other_keys=other_keys)
+        network.parameters(), other_keys=other_keys)
 elif args.agg == 'naive':
     aggregator = fed_container.NaiveAgg(
-        network.state_dict(keep_vars=True), other_keys=other_keys)
+        network.parameters(), other_keys=other_keys)
 elif args.agg == 'elastic':
     aggregator = fed_container.ElasticAgg(
-        network.state_dict(keep_vars=True), other_keys=other_keys)
+        network.parameters(), other_keys=other_keys)
 else:
     raise NotImplementedError
 
@@ -396,17 +401,17 @@ openfed_api = openfed.API(
     pipe=pipe,
     reducer=auto_reducer)
 
-# >>> Synchronize LR Scheduler between Frontend and Backend
-lr_tracker = LRTracker(ft_lr_sch)
-openfed_api.add_informer_hook(lr_tracker)
-
 # >>> Register more step functions.
 with openfed_api:
+    # >>> Synchronize LR Scheduler across different Frontends
+    if ft_lr_sch is not None:
+        LRTracker(ft_lr_sch)
+
     # Train samples at each round
     assert args.samples or args.sample_ratio
-    test_samples = test_dataset.total_samples if args.test_samples is None else args.test_samples
+    test_samples = test_dataset.total_parts if args.test_samples is None else args.test_samples
     samples = args.samples if args.samples is not None else int(
-        train_dataset.total_samples * args.sample_ratio)
+        train_dataset.total_parts * args.sample_ratio)
 
     of_api.Aggregate(
         count=[samples, test_samples],
@@ -414,7 +419,7 @@ with openfed_api:
         lr_scheduler=[ft_lr_sch, bk_lr_sch])
 
     of_api.Download()
-    of_api.Dispatch(args.total_parts,
+    of_api.Dispatch(train_dataset.total_parts,
                     samples=samples,
                     total_test_parts=test_samples)
 

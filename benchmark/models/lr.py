@@ -37,9 +37,5 @@ class LogisticRegression(nn.Module):
         return self.linear(x)
 
 
-def loss_fn():
-    return nn.CrossEntropyLoss()
-
-
-def acc_fn():
-    return top_one_acc
+loss_fn = nn.CrossEntropyLoss()
+acc_fn = top_one_acc

@@ -21,7 +21,12 @@
                 "--fed_rank",
                 "1",
                 "--fed_world_size",
-                "2"
+                "2",
+                "--network_cfg", 
+                "input_dim:784",
+                "output_dim:10",
+                "--samples",
+                "10"
             ]
         },
         {
@@ -34,7 +39,12 @@
                 "--fed_rank",
                 "0",
                 "--fed_world_size",
-                "2"
+                "2",
+                "--network_cfg", 
+                "input_dim:784",
+                "output_dim:10",
+                "--samples",
+                "10"
             ]
         }
     ]

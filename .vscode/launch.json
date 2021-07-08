@@ -26,7 +26,9 @@
                 "input_dim:784",
                 "output_dim:10",
                 "--samples",
-                "10"
+                "10",
+                "--agg",
+                "elastic"
             ]
         },
         {
@@ -44,7 +46,9 @@
                 "input_dim:784",
                 "output_dim:10",
                 "--samples",
-                "10"
+                "10",
+                "--agg",
+                "elastic"
             ]
         }
     ]

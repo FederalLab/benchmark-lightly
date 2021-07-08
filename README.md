@@ -11,8 +11,24 @@ python setup.py install
 
 ## Run
 
-1. Run `python benchmark/datasets/mnist.py` to download MNIST dataset.
-2. Run `python -m openfed.tools.launch --nproc_per_node 6 --logdir /tmp main.py --fed_init_method file:///tmp/openfed.sharefile --gpu` to start a simulation with 6 node (1 server, 5 client). (Make sure `/tmp/openfed.sharefile` is not existed.)
+```bash
+python benchmark/datasets/mnist.py
+
+rm -rf /tmp/openfed*
+
+python -m openfed.tools.launch\
+    --nproc_per_node 6\
+    --logdir /tmp\
+    main.py\
+    --fed_init_method file:///tmp/openfed.sharefile\
+    --network_cfg\
+    input_dim:784\
+    output_dim:10\
+    --samples\
+    10\
+    --test_samples\
+    20
+```
 
 ## Dataset
 

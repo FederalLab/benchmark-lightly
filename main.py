@@ -1,8 +1,5 @@
 import os
 import sys
-
-sys.path.insert(0, "/Users/densechen/code/OpenFed")
-
 from glob import glob
 
 import openfed
@@ -19,7 +16,11 @@ from torch.utils.data import DataLoader
 from benchmark.datasets import (get_cifar100, get_emnist, get_mnist,
                                 get_shakespeare_ncp, get_shakespeare_nwp,
                                 get_stackoverflow_nwp, get_stackoverflow_tp)
+from benchmark.reducer import AutoReducerWanb, AutoReducerTb
 from benchmark.utils import StoreDict
+
+sys.path.insert(0, "/Users/densechen/code/OpenFed")
+
 
 # >>> set log level
 openfed.logger.log_level(level="SUCCESS")
@@ -389,7 +390,21 @@ else:
     raise NotImplementedError
 
 # >>> Add an auto-reducer to compute task info
-auto_reducer = fed_container.AutoReducer(weight_key='instances')
+if args.wandb:
+    auto_reducer = AutoReducerWanb(
+        weight_key='instances',
+        additional_keys=['version', 'train'],
+        project="OpenFed")
+elif args.tb:
+    auto_reducer = AutoReducerTb(
+        weight_key='instances',
+        additional_keys=['version', 'train'],
+        log_dir="tb_log")
+else:
+    # use default one.
+    auto_reducer = fed_container.AutoReducer(
+        weight_key='instances',
+        additional_keys=['version', 'train'])
 
 # >>> Specify an API for building federated learning
 openfed_api = openfed.API(
@@ -421,7 +436,7 @@ with openfed_api:
     of_api.Download()
     of_api.Dispatch(samples=samples,
                     parts_list=train_dataset.total_parts,
-                    test_samples=test_samples, 
+                    test_samples=test_samples,
                     test_parts_list=test_dataset.total_parts,
                     )
 

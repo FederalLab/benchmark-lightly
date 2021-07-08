@@ -135,3 +135,6 @@ data/Federated_Shakespeare_FedProx
 data/Federated_Shakespeare_TFF
 data/Federated_StackOverFlow_TFF
 data/MNIST
+
+wandb/
+tb_log/

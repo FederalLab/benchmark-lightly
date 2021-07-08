@@ -490,10 +490,11 @@ def frontend_loop():
                     input, target = input.to(args.device), target.to(args.device)
 
                     pipe.zero_grad()
-                    
-                    F.mse_loss(network(input), target).backward()
+                    output = network(input)
+                    F.mse_loss(output, torch.zeros_like(output)).backward()
 
-                    pipe.step()
+                    pipe.step(ft=True, acg=True)
+
             if args.pipe == 'scaffold' and args.scaffold_lr is None:
                 # accumulate gradient
                 network.train()
@@ -526,7 +527,8 @@ def frontend_loop():
 
                 total_loss.append(loss.item())
             # Round
-            pipe.round(ft=True)
+            if pipe is not None:
+                pipe.round(ft=True)
         else:
             test_dataset.set_part_id(part_id)
             task_info.instances = len(test_dataset)

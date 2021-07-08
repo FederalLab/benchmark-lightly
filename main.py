@@ -1,23 +1,26 @@
-from benchmark.utils import StoreDict
-from benchmark.reducer import AutoReducerTb, AutoReducerWanb
+import os
+import sys
+from glob import glob
+sys.path.insert(0, "/Users/densechen/code/OpenFed")
+
+import openfed
+import openfed.api as of_api
+import openfed.container as fed_container
+import openfed.data as fed_data
+import openfed.pipe as fed_pipe
+import torch
+import torch.nn.functional as F
+from openfed.common.task_info import TaskInfo
+from openfed.core.inform import LRTracker
+from openfed.utils import time_string
+from torch.utils.data import DataLoader
+
 from benchmark.datasets import (get_cifar100, get_emnist, get_mnist,
                                 get_shakespeare_ncp, get_shakespeare_nwp,
                                 get_stackoverflow_nwp, get_stackoverflow_tp)
-from torch.utils.data import DataLoader
-from openfed.utils import time_string
-from openfed.core.inform import LRTracker
-from openfed.common.task_info import TaskInfo
-import torch
-import openfed.pipe as fed_pipe
-import openfed.data as fed_data
-import openfed.container as fed_container
-import openfed.api as of_api
-import openfed
-from glob import glob
-import os
-import sys
+from benchmark.reducer import AutoReducerTb, AutoReducerWanb
+from benchmark.utils import StoreDict
 
-sys.path.insert(0, "/Users/densechen/code/OpenFed")
 
 
 # >>> set log level
@@ -97,6 +100,10 @@ parser.add_argument('--pipe',
                     default = 'none',
                     choices = ['none', 'elastic', 'prox', 'scaffold'],
                     help    = 'The pipe used to regularize training gradients.')
+parser.add_argument('--scaffold_lr',
+                    type    = float,
+                    default = None,
+                    help    = 'Learning rate for scaffold.')
 parser.add_argument('--agg',
                     '--aggregator',
                     type    = str,
@@ -390,7 +397,7 @@ elif args.pipe == 'elastic':
 elif args.pipe == 'prox':
     pipe = fed_pipe.ProxPipe(network.parameters(), mu=0.9)
 elif args.pipe == 'scaffold':
-    pipe = fed_pipe.ScaffoldPipe(network.parameters(), lr=args.ft_lr)
+    pipe = fed_pipe.ScaffoldPipe(network.parameters(), lr=args.scaffold_lr)
 else:
     raise NotImplementedError
 
@@ -473,6 +480,31 @@ def frontend_loop():
         if task_info.train:
             train_dataset.set_part_id(part_id)
             task_info.instances = len(train_dataset)
+            # Compute necessary infomation about dataset for federated learning.
+            if args.agg == 'elastic':
+                assert pipe, "pipe must be specified."
+                network.train()
+                
+                for data in train_dataloader:
+                    input, target = data
+                    input, target = input.to(args.device), target.to(args.device)
+
+                    pipe.zero_grad()
+                    
+                    F.mse_loss(network(input), target).backward()
+
+                    pipe.step()
+            if args.pipe == 'scaffold' and args.scaffold_lr is None:
+                # accumulate gradient
+                network.train()
+
+                for data in train_dataloader:
+                    input, target = data
+                    input, target = input.to(args.device), target.to(args.device)
+
+                    loss_fn(network(input), target).backward()
+                pipe.step(ft=True, acg=True)
+
             # Train
             network.train()
             for data in train_dataloader:
@@ -485,6 +517,7 @@ def frontend_loop():
                 loss   = loss_fn(output, target)
 
                 loss.backward()
+
                 if pipe is not None:
                     pipe.step()
 
@@ -492,7 +525,8 @@ def frontend_loop():
                 correct.append(acc_fn(target, output))
 
                 total_loss.append(loss.item())
-
+            # Round
+            pipe.round(ft=True)
         else:
             test_dataset.set_part_id(part_id)
             task_info.instances = len(test_dataset)
@@ -519,13 +553,17 @@ def frontend_loop():
 
         # Set task info
         openfed_api.update_version(version + 1)
-
+        
         # Upload trained model
         print(f"{time_string()}: Uploading trained model to server.")
         if not openfed_api.transfer(to=True, task_info=task_info):
             print("Uploading failed.")
             break
         print(f"{time_string()}: Uploaded!")
+
+        # Clear state
+        if pipe is not None and task_info.train:
+            pipe.clear_buffer()
 
 
 # Context `with openfed_api` will go into the specified settings about openfed_api.

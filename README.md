@@ -27,7 +27,9 @@ python -m openfed.tools.launch\
     --samples\
     10\
     --test_samples\
-    20
+    20\
+    --pipe\
+    prox
 ```
 
 ## Dataset

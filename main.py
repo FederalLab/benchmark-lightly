@@ -502,9 +502,9 @@ def frontend_loop():
                 for data in train_dataloader:
                     input, target = data
                     input, target = input.to(args.device), target.to(args.device)
-
+                    pipe.zero_grad()
                     loss_fn(network(input), target).backward()
-                pipe.step(ft=True, acg=True)
+                    pipe.step(ft=True, acg=True)
 
             # Train
             network.train()

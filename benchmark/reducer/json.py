@@ -1,45 +1,40 @@
+import json
 from typing import List, Union
 
 from openfed.common import TaskInfo
 from openfed.container import AutoReducer
 
-import wandb
 
-
-class AutoReducerWanb(AutoReducer):
+class AutoReducerJson(AutoReducer):
     def __init__(self,
                  weight_key: str = None,
                  reduce_keys: Union[str, List[str]] = None,
                  additional_keys: Union[str, List[str]] = None,
-                 project: str = 'OpenFed-benchmark'):
+                 log_file: str = None):
         super().__init__(weight_key, reduce_keys, additional_keys)
-        wandb.init(project=project)
 
-        self.project = project
-        self.best_test_accuracy = 0.0
+        self.log_file            = log_file
+        self.best_test_accuracy  = 0.0
         self.best_train_accuracy = 0.0
+
+        self.task_info_list = []
 
     def reduce(self) -> TaskInfo:
         reduced_task_info = super().reduce()
 
         # Log to wandb
         if reduced_task_info.train:
-            wandb.log(
-                {"train/version": reduced_task_info.version,
-                 "train/accuracy": reduced_task_info.accuracy,
-                 "train/loss": reduced_task_info.loss,
-                 }
-            )
             if reduced_task_info.accuracy > self.best_train_accuracy:
                 self.best_train_accuracy = reduced_task_info.accuracy
         else:
-            wandb.log(
-                {"test/version": reduced_task_info.version,
-                 "test/accuracy": reduced_task_info.accuracy,
-                 "test/loss": reduced_task_info.loss,
-                 }
-            )
             if reduced_task_info.accuracy > self.best_test_accuracy:
                 self.best_test_accuracy = reduced_task_info.accuracy
+        if self.log_file is not None:
+            with open(self.log_file, 'w') as f:
+                info_dict = reduced_task_info.info_dict
+                info_dict["best_train_accuracy"] = self.best_train_accuracy
+                info_dict["best_test_accuracy"]  = self.best_test_accuracy
+                self.task_info_list.append(info_dict)
+                json.dump(self.task_info_list, f)
 
         return reduced_task_info

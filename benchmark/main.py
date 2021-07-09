@@ -1,6 +1,7 @@
 import os
 import sys
 from glob import glob
+
 sys.path.insert(0, "/Users/densechen/code/OpenFed")
 
 import openfed
@@ -18,10 +19,8 @@ from torch.utils.data import DataLoader
 from benchmark.datasets import (get_cifar100, get_emnist, get_mnist,
                                 get_shakespeare_ncp, get_shakespeare_nwp,
                                 get_stackoverflow_nwp, get_stackoverflow_tp)
-from benchmark.reducer import AutoReducerTb, AutoReducerWanb
+from benchmark.reducer import AutoReducerJson
 from benchmark.utils import StoreDict
-
-
 
 # >>> set log level
 openfed.logger.log_level(level="SUCCESS")
@@ -148,6 +147,10 @@ parser.add_argument('--log_level',
                     default = 'SUCCESS',
                     choices = ['SUCCESS', 'INFO', 'DEBUG', 'ERROR'],
                     help    = 'The log level of openfed backend.')
+parser.add_argument('--log_file',
+                    type=str,
+                    default='logs/benchmark.json',
+                    help="The file to log train and test information.")
 parser.add_argument('--pretrained',
                     type    = str,
                     default = '',
@@ -156,15 +159,6 @@ parser.add_argument('--ckpt',
                     type    = str,
                     default = '/tmp/openfed',
                     help    = 'The folder to save checkpoints.')
-parser.add_argument('--wandb',
-                    action  = 'store_true',
-                    default = False,
-                    help    = 'Whether to enable wandb.')
-parser.add_argument('--tb',
-                    '--tensorboard',
-                    action  = 'store_true',
-                    default = False,
-                    help    = 'Whether to enable tensorboard.')
 
 # >>> Task related
 parser.add_argument('--task',
@@ -202,8 +196,9 @@ parser.add_argument('--seed',
 args = parser.parse_args()
 
 openfed.utils.seed_everything(args.seed)
+print(args)
 
-# >>> Config dataset
+print("# >>> Config Dataset...")
 if args.dataset == "cifar100":
     train_dataset = get_cifar100(root=args.data_root, train=True)
     test_dataset  = get_cifar100(root=args.data_root, train=False)
@@ -244,21 +239,23 @@ elif args.dataset == 'stackoverflow':
 else:
     raise NotImplementedError
 
-# >>> Create DataLoader
+print('# >>> Create DataLoader...')
 train_dataloader = DataLoader(
     train_dataset, batch_size=args.bz, shuffle=True, num_workers=0, drop_last=False)
 test_dataloader = DataLoader(
     test_dataset, batch_size=args.bz, shuffle=False, num_workers=0, drop_last=False)
 
-# >>> Specify device
-if args.gpu:
+print('# >>> Specify device...')
+if args.gpu and torch.cuda.is_available():
     args.gpu    = args.fed_rank % torch.cuda.device_count()
     args.device = torch.device(args.gpu)
     torch.cuda.set_device(args.gpu)
 else:
     args.device = torch.device('cpu')
 
-# >>> Define network for specified tasks.
+print(f"Use {args.device}")
+
+print('# >>> Define network for specified tasks...')
 if args.network == 'lr':
     from benchmark.models.lr import LogisticRegression, acc_fn, loss_fn
     network = LogisticRegression(**args.network_cfg)
@@ -287,7 +284,7 @@ else:
 network = network.to(args.device)
 loss_fn = loss_fn.to(args.device)
 
-# >>> Load pretrained model
+print('# >>> Load pretrained model...')
 if os.path.exists(args.pretrained):
     pretrained = torch.load(args.pretrained)
     if 'state_dict' in pretrained:
@@ -297,7 +294,7 @@ if os.path.exists(args.pretrained):
     network.load_state_dict(state_dict)
     print("Loaded pretrained model.")
 
-# >>> Load checkpoint
+print('# >>> Load checkpoint...')
 # get the latest checkpoint name
 ckpt_files = glob(os.path.join(args.ckpt))
 if len(ckpt_files) == 0:
@@ -320,7 +317,7 @@ else:
 
     last_rounds = ckpt['last_rounds']
 
-# >>> Optimizer
+print('# >>> Optimizer...')
 if args.ft_optim == 'sgd':
     ft_optim = torch.optim.SGD(network.parameters(
     ), lr=args.ft_lr, momentum=0.9, weight_decay=1e-4)
@@ -339,7 +336,7 @@ elif args.bk_optim == 'adam':
 else:
     raise NotImplementedError
 
-# >>> Scheduler
+print('# >>> Scheduler...')
 if args.ft_lr_sch == 'none':
     ft_lr_sch = None
 elif args.ft_lr_sch == 'cosine':
@@ -364,7 +361,7 @@ elif args.bk_lr_sch == 'multi_step':
 else:
     raise NotImplementedError
 
-# >>> Aggregator
+print('# >>> Aggregator...')
 
 # compute other keys to track
 if args.ft_optim == 'sgd':
@@ -386,7 +383,7 @@ elif args.agg == 'elastic':
 else:
     raise NotImplementedError
 
-# Pipe
+print('# >>> Pipe...')
 if args.agg == 'elastic':
     # elastic aggregator needs elastic pipe.
     args.pipe = 'elastic'
@@ -401,24 +398,13 @@ elif args.pipe == 'scaffold':
 else:
     raise NotImplementedError
 
-# >>> Add an auto-reducer to compute task info
-if args.wandb:
-    auto_reducer = AutoReducerWanb(
-        weight_key      = 'instances',
-        additional_keys = ['version', 'train'],
-        project         = "OpenFed")
-elif args.tb:
-    auto_reducer = AutoReducerTb(
-        weight_key      = 'instances',
-        additional_keys = ['version', 'train'],
-        log_dir         = "tb_log")
-else:
-    # use default one.
-    auto_reducer = fed_container.AutoReducer(
-        weight_key      = 'instances',
-        additional_keys = ['version', 'train'])
+print('# >>> Add an auto-reducer to compute task info...')
+auto_reducer = AutoReducerJson(
+    weight_key      = 'instances',
+    additional_keys = ['version', 'train'],
+    log_file=args.log_file)
 
-# >>> Specify an API for building federated learning
+print('# >>> Specify an API for building federated learning...')
 openfed_api = openfed.API(
     frontend     = args.fed_rank > 0,
     state_dict   = network.state_dict(keep_vars=True),
@@ -428,9 +414,9 @@ openfed_api = openfed.API(
     pipe         = pipe,
     reducer      = auto_reducer)
 
-# >>> Register more step functions.
+print('# >>> Register more step functions...')
 with openfed_api:
-    # >>> Synchronize LR Scheduler across different Frontends
+    print('# >>> Synchronize LR Scheduler across different Frontends...')
     if ft_lr_sch is not None:
         LRTracker(ft_lr_sch)
 
@@ -454,9 +440,14 @@ with openfed_api:
 
     of_api.Terminate(max_version=args.rounds)
 
-# >>> Connect to Address.
+print('# >>> Connect to Address...')
 openfed_api.build_connection(address=openfed.Address(args=args))
 
+from openfed.data import Analysis
+print('# >>> Train Dataset')
+Analysis.digest(train_dataset)
+print('# >>> Test Dataset')
+Analysis.digest(test_dataset)
 
 def frontend_loop():
     while True:
@@ -576,5 +567,5 @@ with openfed_api:
 
 print(f"Finished.\nExit Client @{openfed_api.nick_name}.")
 
-# >>> Finished
+print('# >>> Finished.')
 openfed_api.finish(auto_exit=True)

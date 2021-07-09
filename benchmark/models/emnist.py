@@ -26,18 +26,18 @@ import torch.nn as nn
 from .utils import top_one_acc
 
 
-def conv_block(in_ch, out_ch, kz, pd, mpz: None):
-    l = [nn.Conv2d(in_ch, out_ch, kz, pd), nn.ReLU()]
-    if not mpz:
+def conv_block(in_ch, out_ch, kz, stride, pd, mpz=None):
+    l = [nn.Conv2d(in_ch, out_ch, kz, stride, pd), nn.ReLU()]
+    if mpz is not None:
         l.append(nn.MaxPool2d(mpz))
     return nn.Sequential(*l)
 
 
-def linear_block(in_f, out_f, re: None, dp: None):
+def linear_block(in_f, out_f, re=None, dp=None):
     l = [nn.Linear(in_f, out_f)]
-    if not re:
+    if re is not None:
         l.append(nn.ReLU())
-    if not dp:
+    if dp is not None:
         l.append(nn.Dropout(dp))
     return nn.Sequential(*l)
 
@@ -51,8 +51,8 @@ class EMNIST(nn.Module):
         super().__init__()
 
         self.layers = nn.Sequential(
-            conv_block(1, 32, 5, 2, 2),
-            conv_block(32, 64, 5, 2, 2),
+            conv_block(1, 32, 5, 1, 2, 2),
+            conv_block(32, 64, 5, 1, 2, 2),
             nn.Flatten(start_dim=1),
             linear_block(3136, 512, True),
             nn.Linear(512, 10 if only_digits else 62),
@@ -71,8 +71,8 @@ class EMNISTDropout(nn.Module):
         super().__init__()
 
         self.layers = nn.Sequential(
-            conv_block(1, 32, 3, 0),
-            conv_block(32, 64, 3, 0, 2),
+            conv_block(1, 32, 3, 1, 0),
+            conv_block(32, 64, 3, 0, 1,  2),
             nn.Dropout(0.25),
             nn.Flatten(start_dim=1),
 

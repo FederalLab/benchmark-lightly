@@ -2,7 +2,7 @@ import os
 import sys
 from glob import glob
 
-sys.path.insert(0, "/Users/densechen/code/OpenFed")
+# sys.path.insert(0, "/Users/densechen/code/OpenFed")
 
 import openfed
 import openfed.api as of_api
@@ -412,7 +412,9 @@ openfed_api = openfed.API(
     aggregator   = aggregator,
     bk_optimizer = bk_optim,
     pipe         = pipe,
-    reducer      = auto_reducer)
+    reducer      = auto_reducer,
+    dal          = False,
+    async_op     = False)
 
 print('# >>> Register more step functions...')
 with openfed_api:

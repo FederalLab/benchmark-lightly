@@ -26,10 +26,10 @@ python benchmark/datasets/mnist.py
 
 ```bash
 # How many processes do you want to start.
-NPROC_PER_NODE=6
-LOGDIR=/tmp
+export NPROC_PER_NODE=6
+export LOGDIR=/tmp
 # Make sure the file is not existed.
-FED_INIT_METHOD=file:///tmp/openfed.sharefile
+export FED_INIT_METHOD=file:///tmp/openfed.sharefile
 
 python -m openfed.tools.launch\
     --nproc_per_node $NPROC_PER_NODE\
@@ -43,7 +43,7 @@ python -m openfed.tools.launch\
 
 ```bash
 # Make sure the file is not existed.
-FED_INIT_METHOD=file:///tmp/openfed.sharefile
+export FED_INIT_METHOD=file:///tmp/openfed.sharefile
 
 # Terminal 1: Server
 python -m benchmark.main --fed_init_method $FED_INIT_METHOD --fed_rank 0 --fed_world_size 2 ... # Other parameters

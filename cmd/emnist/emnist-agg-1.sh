@@ -1,3 +1,5 @@
+rm -rf /tmp/openfed.sharefile.emnist-agg-1
+
 python -m openfed.tools.launch\
     --nproc_per_node 11\
     --logdir /tmp\

@@ -22,9 +22,6 @@ from benchmark.datasets import (get_cifar100, get_emnist, get_mnist,
 from benchmark.reducer import AutoReducerJson
 from benchmark.utils import StoreDict
 
-# >>> set log level
-openfed.logger.log_level(level="SUCCESS")
-
 # >>> Get default arguments from OpenFed
 parser = openfed.parser
 
@@ -194,7 +191,8 @@ parser.add_argument('--seed',
                     help    = "Seed for everything.")
 
 args = parser.parse_args()
-
+# >>> set log level
+openfed.logger.log_level(level=args.log_level)
 openfed.utils.seed_everything(args.seed)
 print(args)
 

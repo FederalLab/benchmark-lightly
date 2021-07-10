@@ -208,7 +208,7 @@ elif args.dataset == 'mnist':
         partitioner = fed_data.IIDPartitioner()
     elif args.partition == 'dirichlet':
         partitioner = fed_data.DirichletPartitioner()
-    elif args.partition == 'power-low':
+    elif args.partition == 'power-law':
         partitioner = fed_data.PowerLawPartitioner()
     else:
         raise NotImplementedError

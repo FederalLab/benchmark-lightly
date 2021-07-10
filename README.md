@@ -74,3 +74,17 @@ export BENCHMARK_ROOT=`pwd`
 | emnist-optim-3 |   adam   |  adam   |   none   |   naive    |    x     |                x                |              x              |   x    |
 
 1. Experiments on MNIST
+
+|       name        | partitioner | total parts | samples | aggregator | accuracy |  CMD  |  LOG  | NOTE  |
+| :---------------: | :---------: | :---------: | :-----: | :--------: | :------: | :---: | :---: | :---: |
+|    mnist-iid-1    |     iid     |     100     |   10    |  average   |    x     |   x   |   x   |   x   |
+|    mnist-iid-2    |     iid     |     100     |   10    |   naive    |    x     |   x   |   x   |   x   |
+|    mnist-iid-3    |     iid     |     100     |   10    |  elastic   |    x     |   x   |   x   |   x   |
+|         -         |      -      |      -      |    -    |     -      |    -     |   -   |   -   |   -   |
+| mnist-power_law-1 |  power law  |     100     |   10    |  average   |    x     |   x   |   x   |   x   |
+| mnist-power_law-2 |  power law  |     100     |   10    |   naive    |    x     |   x   |   x   |   x   |
+| mnist-power_law-3 |  power law  |     100     |   10    |  elastic   |    x     |   x   |   x   |   x   |
+|         -         |      -      |      -      |    -    |     -      |    -     |   -   |   -   |   -   |
+| mnist-dirichlet-1 |  dirichlet  |     100     |   10    |  average   |    x     |   x   |   x   |   x   |
+| mnist-dirichlet-2 |  dirichlet  |     100     |   10    |   naive    |    x     |   x   |   x   |   x   |
+| mnist-dirichlet-3 |  dirichlet  |     100     |   10    |  elastic   |    x     |   x   |   x   |   x   |

@@ -73,18 +73,18 @@ export BENCHMARK_ROOT=`pwd`
 | emnist-optim-2 |   sgd    |  adam   |   none   |   naive    |    x     |                x                |              x              |   x    |
 | emnist-optim-3 |   adam   |  adam   |   none   |   naive    |    x     |                x                |              x              |   x    |
 
-1. Experiments on MNIST
+1. Experiments on MNIST: ```bash cmd/mnist/run_all.sh```
 
-|       name        | partitioner | total parts | samples | aggregator | accuracy |  CMD  |  LOG  | NOTE  |
-| :---------------: | :---------: | :---------: | :-----: | :--------: | :------: | :---: | :---: | :---: |
-|    mnist-iid-1    |     iid     |     100     |   10    |  average   |    x     |   x   |   x   |   x   |
-|    mnist-iid-2    |     iid     |     100     |   10    |   naive    |    x     |   x   |   x   |   x   |
-|    mnist-iid-3    |     iid     |     100     |   10    |  elastic   |    x     |   x   |   x   |   x   |
-|         -         |      -      |      -      |    -    |     -      |    -     |   -   |   -   |   -   |
-| mnist-power_law-1 |  power law  |     100     |   10    |  average   |    x     |   x   |   x   |   x   |
-| mnist-power_law-2 |  power law  |     100     |   10    |   naive    |    x     |   x   |   x   |   x   |
-| mnist-power_law-3 |  power law  |     100     |   10    |  elastic   |    x     |   x   |   x   |   x   |
-|         -         |      -      |      -      |    -    |     -      |    -     |   -   |   -   |   -   |
-| mnist-dirichlet-1 |  dirichlet  |     100     |   10    |  average   |    x     |   x   |   x   |   x   |
-| mnist-dirichlet-2 |  dirichlet  |     100     |   10    |   naive    |    x     |   x   |   x   |   x   |
-| mnist-dirichlet-3 |  dirichlet  |     100     |   10    |  elastic   |    x     |   x   |   x   |   x   |
+|       name        | partitioner | total parts | samples | aggregator | accuracy |                    CMD                     |                   LOG                   | NOTE  |
+| :---------------: | :---------: | :---------: | :-----: | :--------: | :------: | :----------------------------------------: | :-------------------------------------: | :---: |
+|    mnist-iid-1    |     iid     |     100     |   10    |  average   |  93.80   |       [🦐](cmd/mnist/mnist-iid-1.sh)        |      [🦀️](logs/mnist-iid-1.sh.json)      |   x   |
+|    mnist-iid-2    |     iid     |     100     |   10    |   naive    |  93.80   |       [🦐](cmd/mnist/mnist-iid-2.sh)        |       [🦀️](logs/mnist-iid-2.json)        |   x   |
+|    mnist-iid-3    |     iid     |     100     |   10    |  elastic   |  93.00   |       [🦐](cmd/mnist/mnist-iid-3.sh)        |       [🦀️](logs/mnist-iid-3.json)        |   x   |
+|         -         |      -      |      -      |    -    |     -      |    -     |                     -                      |                    -                    |   -   |
+| mnist-power_law-1 |  power law  |     100     |   10    |  average   |  90.82   | [🦐](cmd/mnist/mnist-imnist-power_law-1.sh) | [🦀️](logs/mnist-imnist-power_law-1.json) |   x   |
+| mnist-power_law-2 |  power law  |     100     |   10    |   naive    |  85.46   | [🦐](cmd/mnist/mnist-imnist-power_law-2.sh) | [🦀️](logs/mnist-imnist-power_law-2.json) |   x   |
+| mnist-power_law-3 |  power law  |     100     |   10    |  elastic   |  88.66   | [🦐](cmd/mnist/mnist-imnist-power_law-3.sh) | [🦀️](logs/mnist-imnist-power_law-3.json) |   x   |
+|         -         |      -      |      -      |    -    |     -      |    -     |                     -                      |                    -                    |   -   |
+| mnist-dirichlet-1 |  dirichlet  |     100     |   10    |  average   |  90.98   |    [🦐](cmd/mnist/mnist-dirichlet-1.sh)     |    [🦀️](logs/mnist-dirichlet-1.json)     |   x   |
+| mnist-dirichlet-2 |  dirichlet  |     100     |   10    |   naive    |  90.98   |    [🦐](cmd/mnist/mnist-dirichlet-2.sh)     |    [🦀️](logs/mnist-dirichlet-2.json)     |   x   |
+| mnist-dirichlet-3 |  dirichlet  |     100     |   10    |  elastic   |  88.25   |    [🦐](cmd/mnist/mnist-dirichlet-3.sh)     |    [🦀️](logs/mnist-dirichlet-3.json)     |   x   |

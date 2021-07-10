@@ -411,7 +411,7 @@ openfed_api = openfed.API(
     bk_optimizer = bk_optim,
     pipe         = pipe,
     reducer      = auto_reducer,
-    dal          = False,
+    dal          = True,
     async_op     = False)
 
 print('# >>> Register more step functions...')

@@ -5,10 +5,8 @@ from glob import glob
 # sys.path.insert(0, "/Users/densechen/code/OpenFed")
 
 import openfed
-import openfed.api as of_api
-import openfed.container as fed_container
-import openfed.data as fed_data
-import openfed.pipe as fed_pipe
+from openfed import fed_api, fed_container, fed_data, fed_pipe
+
 import torch
 import torch.nn.functional as F
 from openfed.common.task_info import TaskInfo
@@ -426,19 +424,19 @@ with openfed_api:
     samples = args.samples if args.samples is not None else int(
         train_dataset.total_parts * args.sample_ratio)
 
-    of_api.Aggregate(
+    fed_api.Aggregate(
         count        = [samples, test_samples],
         checkpoint   = args.ckpt,
         lr_scheduler = [ft_lr_sch, bk_lr_sch])
 
-    of_api.Download()
-    of_api.Dispatch(
+    fed_api.Download()
+    fed_api.Dispatch(
         samples         = samples,
         parts_list      = train_dataset.total_parts,
         test_samples    = test_samples,
         test_parts_list = test_dataset.total_parts)
 
-    of_api.Terminate(max_version=args.rounds)
+    fed_api.Terminate(max_version=args.rounds)
 
 print('# >>> Connect to Address...')
 openfed_api.build_connection(address=openfed.Address(args=args))

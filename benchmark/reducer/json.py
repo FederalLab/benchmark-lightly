@@ -1,3 +1,5 @@
+# type: ignore
+
 import json
 from typing import List, Union
 
@@ -13,8 +15,8 @@ class AutoReducerJson(AutoReducer):
                  log_file: str = None):
         super().__init__(weight_key, reduce_keys, additional_keys)
 
-        self.log_file            = log_file
-        self.best_test_accuracy  = 0.0
+        self.log_file = log_file
+        self.best_test_accuracy = 0.0
         self.best_train_accuracy = 0.0
 
         self.task_info_list = []
@@ -22,7 +24,6 @@ class AutoReducerJson(AutoReducer):
     def reduce(self) -> TaskInfo:
         reduced_task_info = super().reduce()
 
-        # Log to wandb
         if reduced_task_info.train:
             if reduced_task_info.accuracy > self.best_train_accuracy:
                 self.best_train_accuracy = reduced_task_info.accuracy
@@ -33,7 +34,7 @@ class AutoReducerJson(AutoReducer):
             with open(self.log_file, 'w') as f:
                 info_dict = reduced_task_info.info_dict
                 info_dict["best_train_accuracy"] = self.best_train_accuracy
-                info_dict["best_test_accuracy"]  = self.best_test_accuracy
+                info_dict["best_test_accuracy"] = self.best_test_accuracy
                 self.task_info_list.append(info_dict)
                 json.dump(self.task_info_list, f)
 

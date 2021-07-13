@@ -1,3 +1,12 @@
 {
-    "python.pythonPath": "/home/tiger/anaconda3/envs/openfed/bin/python"
+    "python.pythonPath": "/home/tiger/anaconda3/envs/openfed/bin/python",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/__pycache__": true
+    },
+    "explorerExclude.backup": null
 }

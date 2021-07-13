@@ -27,7 +27,7 @@
                 "output_dim:10",
                 "--samples",
                 "10",
-                "--pipe",
+                "--penal",
                 "scaffold"
             ]
         },
@@ -47,7 +47,7 @@
                 "output_dim:10",
                 "--samples",
                 "10",
-                "--pipe",
+                "--penal",
                 "scaffold"
             ]
         }

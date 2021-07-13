@@ -34,7 +34,8 @@ def conv_block(in_ch, out_ch, kz, stride, pd, mpz=None):
 
 
 def linear_block(in_f, out_f, re=None, dp=None):
-    l = [nn.Linear(in_f, out_f)]
+    l = list()
+    l.append(nn.Linear(in_f, out_f))
     if re is not None:
         l.append(nn.ReLU())
     if dp is not None:

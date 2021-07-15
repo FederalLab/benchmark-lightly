@@ -6,7 +6,6 @@ import openfed
 import torch
 import torch.nn.functional as F
 from openfed import TaskInfo, time_string
-from openfed.core import LRTracker
 from openfed.data import Analysis
 from torch.utils.data import DataLoader
 
@@ -429,7 +428,7 @@ with openfed_api:
     print('# >>> Synchronize LR Scheduler across different Frontends...')
     lr_sch = []
     if ft_lr_sch is not None:
-        LRTracker(ft_lr_sch)
+        openfed.hooks.LRTracker(ft_lr_sch)
         lr_sch.append(ft_lr_sch)
     if bk_lr_sch is not None:
         lr_sch.append(bk_lr_sch)
@@ -440,19 +439,19 @@ with openfed_api:
     samples = args.samples if args.samples is not None else int(
         train_dataset.total_parts * args.sample_ratio)
 
-    openfed.Aggregate(
+    openfed.hooks.Aggregate(
         count=[samples, test_samples],
         checkpoint=args.ckpt,
         lr_scheduler=lr_sch)
 
-    openfed.Download()
-    openfed.Dispatch(
+    openfed.hooks.Download()
+    openfed.hooks.Dispatch(
         samples=samples,
         parts_list=train_dataset.total_parts,
         test_samples=test_samples,
         test_parts_list=test_dataset.total_parts)
 
-    openfed.Terminate(max_version=args.rounds)
+    openfed.hooks.Terminate(max_version=args.rounds)
 
 print('# >>> Connect to Address...')
 openfed_api.build_connection(address=openfed.Address(args=args))

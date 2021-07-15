@@ -13,7 +13,7 @@ python -m openfed.tools.launch\
     --test_samples 100\
     --ft_optim sgd\
     --bk_optim sgd\
-    --pipe none\
+    --penal none\
     --agg average\
     --ft_lr 0.001\
     --bk_lr 1.0\

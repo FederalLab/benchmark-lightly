@@ -18,6 +18,10 @@ python setup.py install
 cd data && bash download.sh && cd
 ## Download MNIST
 python benchmark/datasets/mnist.py
+
+# 4. Optionally
+# Download all data from AliYun
+# https://www.aliyundrive.com/s/GbbBFhfr5jg
 ```
 
 ## Run

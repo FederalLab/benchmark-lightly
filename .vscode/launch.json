@@ -12,7 +12,7 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: client",
+            "name": "Python: client-1",
             "type": "python",
             "request": "launch",
             "program": "benchmark/main.py",
@@ -21,14 +21,30 @@
                 "--fed_rank",
                 "1",
                 "--fed_world_size",
-                "2",
+                "3",
                 "--network_cfg", 
                 "input_dim:784",
                 "output_dim:10",
                 "--samples",
                 "10",
-                "--penal",
-                "scaffold"
+            ]
+        },
+        {
+            "name": "Python: client-2",
+            "type": "python",
+            "request": "launch",
+            "program": "benchmark/main.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--fed_rank",
+                "2",
+                "--fed_world_size",
+                "3",
+                "--network_cfg", 
+                "input_dim:784",
+                "output_dim:10",
+                "--samples",
+                "10",
             ]
         },
         {
@@ -41,14 +57,12 @@
                 "--fed_rank",
                 "0",
                 "--fed_world_size",
-                "2",
+                "3",
                 "--network_cfg", 
                 "input_dim:784",
                 "output_dim:10",
                 "--samples",
                 "10",
-                "--penal",
-                "scaffold"
             ]
         }
     ]

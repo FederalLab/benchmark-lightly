@@ -1,11 +1,14 @@
 # type: ignore
 import os
 from glob import glob
+import sys
+sys.path.insert(0, "/Users/densechen/code/OpenFed")
 
 import openfed
 import torch
 import torch.nn.functional as F
 from openfed import TaskInfo, time_string
+from openfed.core import follower, leader
 from openfed.data import Analysis
 from torch.utils.data import DataLoader
 
@@ -181,6 +184,7 @@ args = parser.parse_args()
 
 # >>> set log level
 openfed.logger.log_level(level=args.log_level)
+# openfed.logger.log_level(level="DEBUG")
 openfed.utils.seed_everything(args.seed)
 
 args.ft = args.fed_rank > 0
@@ -416,12 +420,13 @@ else:
 
 print('# >>> Specify an API for building federated learning...')
 openfed_api = openfed.API(
-    frontend=args.ft,
+    role=follower if args.ft else leader,
     state_dict=network.state_dict(keep_vars=True),
     pipe=pipe,
     container=container,
     dal=True,
-    async_op=False)
+    async_op=False,
+    max_try_times=1000)
 
 print('# >>> Register step functions...')
 with openfed_api:
@@ -475,11 +480,9 @@ def frontend_loop():
 
         # Downloaded
         print(f"{time_string()}: Downloaded!")
-
-        part_id, version = task_info.part_id, task_info.version
-
-        print(f"{time_string()}")
         print(task_info)
+        
+        part_id, version = task_info.part_id, task_info.version
 
         total_loss = []
         correct = []

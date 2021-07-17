@@ -1,7 +1,7 @@
 rm -rf /tmp/openfed.sharefile.emnist-agg-1
 
 python -m openfed.tools.launch\
-    --nproc_per_node 11\
+    --nproc_per_node 41\
     --logdir /tmp\
     $BENCHMARK_ROOT/benchmark/main.py\
     --fed_init_method file:///tmp/openfed.sharefile.emnist-agg-1\

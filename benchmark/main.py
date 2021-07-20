@@ -3,6 +3,7 @@ import os
 from glob import glob
 import sys
 sys.path.insert(0, "/Users/densechen/code/OpenFed")
+import argparse
 
 import openfed
 import torch
@@ -17,7 +18,34 @@ from benchmark.reducer import AutoReducerJson
 from benchmark.utils import StoreDict
 
 # >>> Get default arguments from OpenFed
-parser = openfed.parser
+parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser("OpenFed")
+
+# Add parser to address
+parser.add_argument(
+    "--fed_backend",
+    default="gloo",
+    type=str,
+    choices=["gloo", "mpi", "nccl"], )
+parser.add_argument(
+    "--fed_init_method",
+    default="tcp://localhost:1994",
+    type=str,
+    help="opt1: tcp://IP:PORT, opt2: file://PATH_TO_SHAREFILE, opt3:env://")
+parser.add_argument(
+    "--fed_world_size",
+    default=2,
+    type=int)
+parser.add_argument(
+    "--fed_rank",
+    "--fed_local_rank",
+    default=-1,
+    type=int)
+parser.add_argument(
+    "--fed_group_name",
+    default="Admirable",
+    type=str,
+    help="Add a group name to better recognize each address.")
 
 # >>> dataset related
 parser.add_argument("--dataset",
@@ -456,7 +484,14 @@ with openfed_api:
     openfed.hooks.Terminate(max_version=args.rounds)
 
 print('# >>> Connect to Address...')
-openfed_api.build_connection(address=openfed.build_address(args=args))
+openfed_api.build_connection(
+    address=openfed.build_address(
+        backend     = args.fed_backend,
+        init_method = args.fed_init_method,
+        world_size  = args.fed_world_size,
+        rank        = args.fed_rank,
+        group_name  = args.fed_group_name,
+    ))
 
 
 print('# >>> Train Dataset')

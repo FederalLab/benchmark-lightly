@@ -8,7 +8,7 @@ import openfed
 import torch
 import torch.nn.functional as F
 from openfed import TaskInfo, time_string
-from openfed.core import follower, leader
+from openfed.core import follower, leader, World
 from openfed.data import Analysis
 from torch.utils.data import DataLoader
 
@@ -420,13 +420,10 @@ else:
 
 print('# >>> Specify an API for building federated learning...')
 openfed_api = openfed.API(
-    role=follower if args.ft else leader,
+    world=World(role=follower if args.ft else leader),
     state_dict=network.state_dict(keep_vars=True),
     pipe=pipe,
-    container=container,
-    dal=True,
-    async_op=False,
-    max_try_times=1000)
+    container=container)
 
 print('# >>> Register step functions...')
 with openfed_api:
@@ -578,10 +575,10 @@ def frontend_loop():
 # Context `with openfed_api` will go into the specified settings about openfed_api.
 # Otherwise, will use the default one which shared by global OpenFed world.
 with openfed_api:
-    if not openfed_api.backend_loop():
+    if openfed_api.leader:
+        openfed_api.run()
+    else:
         frontend_loop()
 
-print(f"Finished.\nExit Client @{openfed_api.nick_name}.")
-
 print('# >>> Finished.')
-openfed_api.finish(auto_exit=True)
+openfed_api.finish()

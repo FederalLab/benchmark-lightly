@@ -32,10 +32,9 @@ class AutoReducerJson(AutoReducer):
                 self.best_test_accuracy = reduced_task_info.accuracy
         if self.log_file is not None:
             with open(self.log_file, 'w') as f:
-                info_dict = reduced_task_info.info_dict
-                info_dict["best_train_accuracy"] = self.best_train_accuracy
-                info_dict["best_test_accuracy"] = self.best_test_accuracy
-                self.task_info_list.append(info_dict)
+                reduced_task_info["best_train_accuracy"] = self.best_train_accuracy
+                reduced_task_info["best_test_accuracy"] = self.best_test_accuracy
+                self.task_info_list.append(reduced_task_info)
                 json.dump(self.task_info_list, f)
 
         return reduced_task_info

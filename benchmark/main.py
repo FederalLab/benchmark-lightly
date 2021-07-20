@@ -459,7 +459,7 @@ with openfed_api:
     openfed.hooks.Terminate(max_version=args.rounds)
 
 print('# >>> Connect to Address...')
-openfed_api.build_connection(address=openfed.Address(args=args))
+openfed_api.build_connection(address=openfed.build_address(args=args))
 
 
 print('# >>> Train Dataset')

@@ -420,18 +420,17 @@ if not args.ft:
         other_keys = ['exp_avg', 'exp_avg_sq']
     else:
         raise NotImplementedError
-    keep_keys = ['c_para'] if args.penal == 'scaffold' else None
     if args.penal == 'scaffold':
         other_keys.append('c_para')
     if args.agg == 'average':
         aggregator = openfed.container.AverageAgg(
-            network.parameters(), other_keys=other_keys, keep_keys=keep_keys)
+            network.parameters(), other_keys=other_keys)
     elif args.agg == 'naive':
         aggregator = openfed.container.NaiveAgg(
-            network.parameters(), other_keys=other_keys, keep_keys=keep_keys)
+            network.parameters(), other_keys=other_keys)
     elif args.agg == 'elastic':
         aggregator = openfed.container.ElasticAgg(
-            network.parameters(), other_keys=other_keys, keep_keys=keep_keys)
+            network.parameters(), other_keys=other_keys)
     else:
         raise NotImplementedError
 

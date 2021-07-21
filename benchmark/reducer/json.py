@@ -9,11 +9,11 @@ from openfed.container import AutoReducer
 
 class AutoReducerJson(AutoReducer):
     def __init__(self,
-                 weight_key: str = None,
                  reduce_keys: Union[str, List[str]] = None,
-                 additional_keys: Union[str, List[str]] = None,
+                 weight_key: str = None,
+                 ignore_keys: List[str] = None,
                  log_file: str = None):
-        super().__init__(weight_key, reduce_keys, additional_keys)
+        super().__init__(reduce_keys, weight_key, ignore_keys)
 
         self.log_file = log_file
         self.best_test_accuracy = 0.0

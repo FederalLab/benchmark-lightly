@@ -437,7 +437,8 @@ if not args.ft:
     print('# >>> AutoReducer...')
     auto_reducer = AutoReducerJson(
         weight_key='instances',
-        additional_keys=['version', 'train'],
+        reduce_keys=['accuracy', 'loss'],
+        ignore_keys=["part_id"],
         log_file=args.log_file)
 
     print("# >>> Build Container...")

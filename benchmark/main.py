@@ -4,7 +4,7 @@ from glob import glob
 import sys
 sys.path.insert(0, "/Users/densechen/code/OpenFed")
 import argparse
-
+import time
 import openfed
 import torch
 import torch.nn.functional as F
@@ -12,16 +12,14 @@ from openfed import TaskInfo, time_string
 from openfed.core import follower, leader, World
 from openfed.data import Analysis
 from torch.utils.data import DataLoader
-
+from pprint import pprint
 import benchmark.datasets as datasets
 from benchmark.reducer import AutoReducerJson
 from benchmark.utils import StoreDict
 
-# >>> Get default arguments from OpenFed
-parser = argparse.ArgumentParser()
 parser = argparse.ArgumentParser("OpenFed")
 
-# Add parser to address
+# address
 parser.add_argument(
     "--fed_backend",
     default="gloo",
@@ -47,7 +45,7 @@ parser.add_argument(
     type=str,
     help="Add a group name to better recognize each address.")
 
-# >>> dataset related
+# dataset
 parser.add_argument("--dataset",
                     type=str,
                     default='mnist',
@@ -78,7 +76,7 @@ parser.add_argument('--num_parts',
                     default=100,
                     help='The number of the parts to split into.')
 
-# >>> train related
+# train
 parser.add_argument('--epochs',
                     type=int,
                     default=1,
@@ -101,22 +99,20 @@ parser.add_argument('--test_samples',
                     type=int,
                     default=None,
                     help="The number of parts used to test at each round. If not specified, use full test dataset.")
-parser.add_argument('--ft_optim',
-                    '--frontend_optimizer',
+parser.add_argument('--follower_optim',
                     type=str,
                     default='sgd',
                     choices=['adam', 'sgd'],
-                    help='optimizer used in frontend.')
-parser.add_argument('--bk_optim',
-                    '--backend_optimizer',
+                    help='optimizer used in follower.')
+parser.add_argument('--leader_optim',
                     type=str,
                     default='sgd',
                     choices=['adam', 'sgd'],
-                    help='optimizer used in backend.')
+                    help='optimizer used in leader.')
 parser.add_argument('--penal',
                     type=str,
                     default='none',
-                    choices=['none', 'elastic', 'prox', 'scaffold'],
+                    choices=['none', 'prox', 'scaffold'],
                     help='The penal used to regularize training gradients.')
 parser.add_argument('--agg',
                     '--aggregator',
@@ -124,28 +120,24 @@ parser.add_argument('--agg',
                     default='average',
                     choices=['average', 'naive', 'elastic'],
                     help='The aggregator used to collect models.')
-parser.add_argument('--ft_lr',
-                    '--frontend_learning_rate',
+parser.add_argument('--follower_lr',
                     type=float,
                     default=1e-3,
-                    help='The learning rate of frontend optimizer.')
-parser.add_argument('--bk_lr',
-                    '--backend_learning_rate',
+                    help='The learning rate of follower optimizer.')
+parser.add_argument('--leader_lr',
                     type=float,
                     default=1.0,
-                    help='The learning rate of backend optimizer.')
-parser.add_argument('--ft_lr_sch',
-                    '--frontend_learning_rate_scheduler',
+                    help='The learning rate of leader optimizer.')
+parser.add_argument('--follower_lr_sch',
                     type=str,
                     default='none',
                     choices=['none', 'multi_step', 'cosine'],
-                    help='The frontend learning rate scheduler. (shared among all clients.)')
-parser.add_argument('--bk_lr_sch',
-                    '--backend_learning_rate_scheduler',
+                    help='The follower learning rate scheduler. (shared with all clients.)')
+parser.add_argument('--leader_lr_sch',
                     type=str,
                     default='none',
                     choices=['none', 'multi_step', 'cosine'],
-                    help='The backend learning rate scheduler. (used for server update.)')
+                    help='The leader learning rate scheduler. (used for server update.)')
 parser.add_argument('--bz',
                     '--batch_size',
                     type=int,
@@ -156,12 +148,12 @@ parser.add_argument('--gpu',
                     default=False,
                     help="Whether to use gpu.")
 
-# >>> log related
+# log
 parser.add_argument('--log_level',
                     type=str,
                     default='SUCCESS',
                     choices=['SUCCESS', 'INFO', 'DEBUG', 'ERROR'],
-                    help='The log level of openfed backend.')
+                    help='The log level of openfed bk.')
 parser.add_argument('--log_file',
                     type=str,
                     default='logs/benchmark.json',
@@ -175,7 +167,7 @@ parser.add_argument('--ckpt',
                     default='/tmp/openfed',
                     help='The folder to save checkpoints.')
 
-# >>> Task related
+# task
 parser.add_argument('--task',
                     type=str,
                     default='cls',
@@ -202,7 +194,6 @@ parser.add_argument('--network_cfg',
                     In : args1: 0.0 args2: "dict(a=1)"
                     Out: {'args1': 0.0, arg2: dict(a=1)}
                     ''')
-
 parser.add_argument('--seed',
                     type=int,
                     default=0,
@@ -210,14 +201,14 @@ parser.add_argument('--seed',
 
 args = parser.parse_args()
 
-# >>> set log level
+print('# >>> Set log level...')
 openfed.logger.log_level(level=args.log_level)
-# openfed.logger.log_level(level="DEBUG")
 openfed.utils.seed_everything(args.seed)
 
-args.ft = args.fed_rank > 0
-print(args)
-print("# >>> Config Dataset...")
+args.role = leader if args.fed_rank == 0 else follower
+pprint(args.__dict__)
+
+print("# >>> Dataset...")
 if args.dataset == "cifar100":
     train_dataset = datasets.get_cifar100(root=args.data_root, train=True)
     test_dataset = datasets.get_cifar100(root=args.data_root, train=False)
@@ -266,13 +257,19 @@ elif args.dataset == 'stackoverflow':
 else:
     raise NotImplementedError
 
-print('# >>> Create DataLoader...')
+print('# >>> Train Dataset:')
+Analysis.digest(train_dataset)
+
+print('# >>> Test Dataset:')
+Analysis.digest(test_dataset)
+
+print('# >>> DataLoader...')
 train_dataloader = DataLoader(
     train_dataset, batch_size=args.bz, shuffle=True, num_workers=0, drop_last=False)
 test_dataloader = DataLoader(
     test_dataset, batch_size=args.bz, shuffle=False, num_workers=0, drop_last=False)
 
-print('# >>> Specify device...')
+print('# >>> Device...')
 if args.gpu and torch.cuda.is_available():
     args.gpu = args.fed_rank % torch.cuda.device_count()
     args.device = torch.device(args.gpu)
@@ -280,9 +277,9 @@ if args.gpu and torch.cuda.is_available():
 else:
     args.device = torch.device('cpu')
 
-print(f"Use {args.device}")
+print(f"Let's use {args.device}.")
 
-print('# >>> Define network for specified tasks...')
+print('# >>> Network...')
 if args.network == 'lr':
     from benchmark.models.lr import LogisticRegression, acc_fn, loss_fn
     network = LogisticRegression(**args.network_cfg)
@@ -308,10 +305,11 @@ elif args.network == 'stackoverflow_nwp':
 else:
     raise NotImplementedError
 
+print("# >>> Move to device...")
 network = network.to(args.device)
 loss_fn = loss_fn.to(args.device)
 
-print('# >>> Load pretrained model...')
+print('# >>> Try to load pretrained model...')
 if os.path.exists(args.pretrained):
     pretrained = torch.load(args.pretrained)
     if 'state_dict' in pretrained:
@@ -319,9 +317,9 @@ if os.path.exists(args.pretrained):
     else:
         state_dict = pretrained
     network.load_state_dict(state_dict)
-    print("Loaded pretrained model.")
+    print(f"Loaded pretrained model from {args.pretrained}")
 
-print('# >>> Load checkpoint...')
+print('# >>> Try to load checkpoint...')
 # get the latest checkpoint name
 ckpt_files = glob(os.path.join(args.ckpt))
 if len(ckpt_files) == 0:
@@ -335,102 +333,103 @@ else:
             break
     ckpt_file = ckpt_files[i]
 
-    print(f"Loaded checkpoint: {ckpt_file}")
-
     # Load checkpoint
     ckpt = torch.load(ckpt_file)
-
     network.load_state_dict(ckpt['state_dict'])
-
     last_rounds = ckpt['last_rounds']
+    print(f"Loaded checkpoint from {ckpt_file}")
 
 print('# >>> Optimizer...')
-if args.ft:
-    if args.ft_optim == 'sgd':
-        optimizer = torch.optim.SGD(network.parameters(
-        ), lr=args.ft_lr, momentum=0.9, weight_decay=1e-4)
-    elif args.ft_optim == 'adam':
-        optimizer = torch.optim.Adam(
-            network.parameters(), lr=args.ft_lr, betas=(0.9, 0.999))
-    else:
-        raise NotImplementedError
+if args.role == follower:
+    lr = args.follower_lr
+    optim = args.follower_optim
 else:
-    if args.bk_optim == 'sgd':
-        optimizer = torch.optim.SGD(network.parameters(
-        ), lr=args.bk_lr, momentum=0.9, weight_decay=1e-4)
-    elif args.bk_optim == 'adam':
-        optimizer = torch.optim.Adam(
-            network.parameters(), lr=args.bk_lr, betas=(0.9, 0.999))
-    else:
-        raise NotImplementedError
+    lr = args.leader_lr
+    optim = args.leader_optim
 
-
-print('# >>> Penal...')
-if args.agg == 'elastic':
-    # elastic aggregator needs elastic penal.
-    args.penal = 'elastic'
-if args.penal == 'none':
-    penalizer = None
-elif args.penal == 'elastic':
-    penalizer = openfed.pipe.ElasticPenalizer(ft=args.ft, momentum=0.9)
-elif args.penal == 'prox':
-    penalizer = openfed.pipe.ProxPenalizer(ft=args.ft, mu=0.9)
-elif args.penal == 'scaffold':
-    penalizer = openfed.pipe.ScaffoldPenalizer(ft=args.ft, lr=args.ft_lr)
+if optim == 'sgd':
+    optimizer = torch.optim.SGD(network.parameters(
+    ), lr=lr, momentum=0.9, weight_decay=1e-4)
+elif optim == 'adam':
+    optimizer = torch.optim.Adam(
+        network.parameters(), lr=lr, betas=(0.9, 0.999))
 else:
     raise NotImplementedError
 
-print('# >>> Build Pipe...')
+
+print('# >>> Penalizer...')
+if args.penal == 'none':
+    penalizer = None
+elif args.penal == 'prox':
+    penalizer = openfed.pipe.ProxPenalizer(role=args.role, mu=0.9)
+elif args.penal == 'scaffold':
+    penalizer = openfed.pipe.ScaffoldPenalizer(role=args.role, lr=args.follower_lr)
+else:
+    raise NotImplementedError
+
+if args.agg == 'elastic':
+    # elastic aggregator needs elastic penal.
+    elastic_penalizer = openfed.pipe.ElasticPenalizer(role=args.role, momentum=0.9)
+    if penalizer is not None:
+        penalizer = openfed.glue(elastic_penalizer, penalizer, extra_func=dict(acg_step=None))
+    else:
+        penalizer = elastic_penalizer
+
+print('# >>> Pipe...')
 pipe = openfed.pipe.build_pipe(optimizer, penalizer)
 
 if args.penal == 'scaffold':
     pipe.init_c_para()
 
+def build_lr_sch(lr_sch):
+    if lr_sch == 'none':
+        lr_sch = None
+    elif lr_sch == 'cosine':
+        lr_sch = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, 
+            T_max      = args.rounds,
+            last_epoch = last_rounds
+        )
+    elif lr_sch == 'multi_step':
+        lr_sch = torch.optim.lr_scheduler.MultiStepLR(
+            optimizer, 
+            milestones = [int(args.rounds * 0.5), int(args.rounds * 0.8)],
+            gamma      = 0.1,
+            last_epoch = last_rounds
+        )
+    else:
+        raise NotImplementedError
+    return lr_sch
+
 print('# >>> Scheduler...')
-if args.ft_lr_sch == 'none':
-    ft_lr_sch = None
-elif args.ft_lr_sch == 'cosine':
-    ft_lr_sch = torch.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer, T_max=args.rounds, last_epoch=last_rounds)
-elif args.ft_lr_sch == 'multi_step':
-    ft_lr_sch = torch.optim.lr_scheduler.MultiStepLR(
-        optimizer, milestones=[int(args.rounds * 0.5), int(args.rounds * 0.8)], gamma=0.1, last_epoch=last_rounds
-    )
-else:
-    raise NotImplementedError
+fl_lr_sch = build_lr_sch(args.follower_lr_sch)
+ld_lr_sch = build_lr_sch(args.leader_lr_sch)
 
-if args.bk_lr_sch == 'none':
-    bk_lr_sch = None
-elif args.bk_lr_sch == 'cosine':
-    bk_lr_sch = torch.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer, T_max=args.rounds, last_epoch=last_rounds)
-elif args.bk_lr_sch == 'multi_step':
-    bk_lr_sch = torch.optim.lr_scheduler.MultiStepLR(
-        optimizer, milestones=[int(args.rounds * 0.5), int(args.rounds * 0.8)], gamma=0.1, last_epoch=last_rounds
-    )
-else:
-    raise NotImplementedError
-
-print('# >>> Aggregator...')
-if not args.ft:
+if args.role == leader:
+    print('# >>> Aggregator...')
     # compute other keys to track
-    if args.ft_optim == 'sgd':
+    if optim == 'sgd':
         other_keys = ['momentum_buffer']
-    elif args.ft_optim == 'adam':
+    elif optim == 'adam':
         other_keys = ['exp_avg', 'exp_avg_sq']
     else:
         raise NotImplementedError
+
     if args.penal == 'scaffold':
         other_keys.append('c_para')
+
     if args.agg == 'average':
         aggregator = openfed.container.AverageAgg(
-            network.parameters(), other_keys=other_keys)
+            network.parameters(), 
+            other_keys=other_keys)
     elif args.agg == 'naive':
         aggregator = openfed.container.NaiveAgg(
-            network.parameters(), other_keys=other_keys)
+            network.parameters(), 
+            other_keys=other_keys)
     elif args.agg == 'elastic':
         aggregator = openfed.container.ElasticAgg(
-            network.parameters(), other_keys=other_keys)
+            network.parameters(), 
+            other_keys=other_keys)
     else:
         raise NotImplementedError
 
@@ -441,36 +440,37 @@ if not args.ft:
         ignore_keys=["part_id"],
         log_file=args.log_file)
 
-    print("# >>> Build Container...")
+    print("# >>> Container...")
     container = openfed.container.build_container(aggregator, auto_reducer)
 else:
     container = None
 
-print('# >>> Build a world...')
+print('# >>> World...')
 world = World(
-    role     = follower if args.ft else leader,
+    role     = args.role,
     async_op = 'false',
     dal      = False,
     mtt      = 5,
 )
 print(world)
 
-print('# >>> Specify an API for building federated learning...')
+print('# >>> API...')
 openfed_api = openfed.API(
-    world=world,
-    state_dict=network.state_dict(keep_vars=True),
-    pipe=pipe,
-    container=container)
+    world      = world,
+    state_dict = network.state_dict(keep_vars=True),
+    pipe       = pipe,
+    container  = container)
 
 print('# >>> Register step functions...')
 with openfed_api:
-    print('# >>> Synchronize LR Scheduler across different Frontends...')
+    print('# >>> Synchronize LR Scheduler across different devices...')
     lr_sch = []
-    if ft_lr_sch is not None:
-        openfed.hooks.LRTracker(ft_lr_sch)
-        lr_sch.append(ft_lr_sch)
-    if bk_lr_sch is not None:
-        lr_sch.append(bk_lr_sch)
+    if fl_lr_sch is not None:
+        # A hook to automatically load the latest learning rate from leader.
+        openfed.hooks.LRTracker(fl_lr_sch)
+        lr_sch.append(fl_lr_sch)
+    if ld_lr_sch is not None:
+        lr_sch.append(ld_lr_sch)
 
     # Train samples at each round
     assert args.samples or args.sample_ratio
@@ -478,39 +478,38 @@ with openfed_api:
     samples = args.samples if args.samples is not None else int(
         train_dataset.total_parts * args.sample_ratio)
 
+    # A trigger to alarm aggregate operation
     openfed.hooks.Aggregate(
         count=[samples, test_samples],
         checkpoint=args.ckpt,
         lr_scheduler=lr_sch)
 
+    # Some post process after download.
     openfed.hooks.Download()
+    # The core step that arrange simulation process.
     openfed.hooks.Dispatch(
         samples=samples,
         parts_list=train_dataset.total_parts,
         test_samples=test_samples,
         test_parts_list=test_dataset.total_parts)
-
+    # The condition to terminate the training process.
     openfed.hooks.Terminate(max_version=args.rounds)
 
-print('# >>> Connect to Address...')
-openfed_api.build_connection(
-    address=openfed.build_address(
-        backend     = args.fed_backend,
-        init_method = args.fed_init_method,
-        world_size  = args.fed_world_size,
-        rank        = args.fed_rank,
-        group_name  = args.fed_group_name,
-    ))
+print('# >>> Address...')
+address = openfed.build_address(
+    backend     = args.fed_backend,
+    init_method = args.fed_init_method,
+    world_size  = args.fed_world_size,
+    rank        = args.fed_rank,
+    group_name  = args.fed_group_name,
+)
+print(address)
 
+print("# >>> Connecting...")
+openfed_api.build_connection(address=address)
 
-print('# >>> Train Dataset')
-Analysis.digest(train_dataset)
-
-print('# >>> Test Dataset')
-Analysis.digest(test_dataset)
-
-
-def frontend_loop():
+@openfed.api.device_offline_care
+def follower_loop():
     while True:
         task_info = TaskInfo()
         # Download latest model.
@@ -531,19 +530,19 @@ def frontend_loop():
             train_dataset.set_part_id(part_id)
             task_info.instances = len(train_dataset)
             # Compute necessary infomation about dataset for federated learning.
-            if args.agg == 'elastic':
-                assert pipe, "pipe must be specified."
-                network.train()
+            # if args.agg == 'elastic':
+            #     assert pipe, "pipe must be specified."
+            #     network.train()
 
-                for data in train_dataloader:
-                    input, target = data
-                    input, target = input.to(
-                        args.device), target.to(args.device)
+            #     for data in train_dataloader:
+            #         input, target = data
+            #         input, target = input.to(
+            #             args.device), target.to(args.device)
 
-                    pipe.zero_grad()
-                    output = network(input)
-                    F.mse_loss(output, torch.zeros_like(output)).backward()
-                    pipe.acg()
+            #         pipe.zero_grad()
+            #         output = network(input)
+            #         F.mse_loss(output, torch.zeros_like(output)).backward()
+            #         pipe.acg()
 
             # if args.penal == 'scaffold':
             #     # accumulate gradient
@@ -612,17 +611,17 @@ def frontend_loop():
         print(f"{time_string()}: Uploaded!")
 
         # Clear state
-        if pipe is not None and task_info.train:
+        if task_info.train:
             pipe.clear_buffer()
 
 
 # Context `with openfed_api` will go into the specified settings about openfed_api.
 # Otherwise, will use the default one which shared by global OpenFed world.
-with openfed_api:
-    if openfed_api.leader:
-        openfed_api.run()
-    else:
-        frontend_loop()
-
-print('# >>> Finished.')
-openfed_api.finish()
+if openfed_api.leader:
+    openfed_api.run()
+    print('# >>> Finished.')
+    openfed_api.finish()
+    # Wait all nodes to exit.
+    time.sleep(1.0)
+else:
+    follower_loop()

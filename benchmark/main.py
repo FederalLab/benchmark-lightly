@@ -446,9 +446,18 @@ if not args.ft:
 else:
     container = None
 
+print('# >>> Build a world...')
+world = World(
+    role     = follower if args.ft else leader,
+    async_op = 'false',
+    dal      = False,
+    mtt      = 5,
+)
+print(world)
+
 print('# >>> Specify an API for building federated learning...')
 openfed_api = openfed.API(
-    world=World(role=follower if args.ft else leader),
+    world=world,
     state_dict=network.state_dict(keep_vars=True),
     pipe=pipe,
     container=container)

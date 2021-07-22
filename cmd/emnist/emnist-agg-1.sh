@@ -11,14 +11,14 @@ python -m openfed.tools.launch\
     --rounds 100\
     --samples 100\
     --test_samples 100\
-    --ft_optim sgd\
-    --bk_optim sgd\
+    --follower_optim sgd\
+    --leader_optim sgd\
     --penal none\
     --agg average\
-    --ft_lr 0.001\
-    --bk_lr 1.0\
-    --ft_lr_sch none\
-    --bk_lr_sch none\
+    --follower_lr 0.001\
+    --leader_lr 1.0\
+    --follower_lr_sch none\
+    --leader_lr_sch none\
     --bz 10\
     --gpu\
     --log_level SUCCESS\

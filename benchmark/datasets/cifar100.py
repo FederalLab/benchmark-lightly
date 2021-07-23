@@ -20,22 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 # type: ignore
+
+import os
+
 import h5py
 import numpy as np
-import os
 import torch
 import torchvision.transforms as transforms
 from openfed.common.logging import logger
-from openfed.data import FederatedDataset, Analysis
-from openfed.data.utils import wget_https, tar_xvf
+from openfed.data import Analysis, FederatedDataset
+from openfed.data.utils import tar_xvf, wget_https
 
-DEFAULT_TRAIN_CLIENTS_NUM = 500
-DEFAULT_TEST_CLIENTS_NUM = 100
-DEFAULT_BATCH_SIZE = 20
 DEFAULT_TRAIN_FILE = 'fed_cifar100_train.h5'
-DEFAULT_TEST_FILE = 'fed_cifar100_test.h5'
+DEFAULT_TEST_FILE  = 'fed_cifar100_test.h5'
 
 # group name defined by tff in h5 file
 _EXAMPLE = 'examples'
@@ -44,7 +42,36 @@ _LABEL = 'label'
 
 
 class CIFAR100(FederatedDataset):
-    """TFF version.
+    """Federated CIFAR100 Dataset from https://github.com/tensorflow/federated.
+
+    Loads a federated version of the CIFAR-100 dataset.
+    The dataset is downloaded and cached locally. If previously downloaded, it
+    tries to load the dataset from cache.
+    The dataset is derived from the [CIFAR-100 dataset](https://www.cs.toronto.edu/~kriz/cifar.html). The training and testing examples are partitioned across 500 and 100 clients (respectively). 
+    No clients share any data samples, so it is a true partition of CIFAR-100. 
+    The train clients have string client IDs in the range [0-499], while the test
+    clients have string client IDs in the range [0-99]. The train clients form a
+    true partition of the CIFAR-100 training split, while the test clients form a
+    true partition of the CIFAR-100 testing split.
+    The data partitioning is done using a hierarchical Latent Dirichlet Allocation
+    (LDA) process, referred to as the [Pachinko Allocation Method]
+    (https://people.cs.umass.edu/~mccallum/papers/pam-icml06.pdf) (PAM).
+    This method uses a two-stage LDA process, where each client has an associated
+    multinomial distribution over the coarse labels of CIFAR-100, and a
+    coarse-to-fine label multinomial distribution for that coarse label over the
+    labels under that coarse label. The coarse label multinomial is drawn from a
+    symmetric Dirichlet with parameter 0.1, and each coarse-to-fine multinomial
+    distribution is drawn from a symmetric Dirichlet with parameter 10. Each
+    client has 100 samples. To generate a sample for the client, we first select
+    a coarse label by drawing from the coarse label multinomial distribution, and
+    then draw a fine label using the coarse-to-fine multinomial distribution. We
+    then randomly draw a sample from CIFAR-100 with that label (without
+    replacement). If this exhausts the set of samples with this label, we
+    remove the label from the coarse-to-fine multinomial and renormalize the
+    multinomial distribution.
+    Data set sizes:
+        -   train: 50,000 examples
+        -   test: 10,000 examples
     """
 
     def __init__(self, 

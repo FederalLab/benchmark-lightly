@@ -26,19 +26,19 @@ import torch.nn as nn
 from .utils import top_one_acc
 
 
-def conv_block(in_ch, out_ch, kz, stride, pd, mpz=None):
+def conv_block(in_ch, out_ch, kz, stride, pd, mpz: int=0):
     l = [nn.Conv2d(in_ch, out_ch, kz, stride, pd), nn.ReLU()]
-    if mpz is not None:
+    if mpz > 0:
         l.append(nn.MaxPool2d(mpz))
     return nn.Sequential(*l)
 
 
-def linear_block(in_f, out_f, re=None, dp=None):
+def linear_block(in_f, out_f, re: bool=False, dp: float=0.0):
     l = list()
     l.append(nn.Linear(in_f, out_f))
-    if re is not None:
+    if re:
         l.append(nn.ReLU())
-    if dp is not None:
+    if dp > 0.0:
         l.append(nn.Dropout(dp))
     return nn.Sequential(*l)
 

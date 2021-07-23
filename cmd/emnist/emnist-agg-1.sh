@@ -7,7 +7,7 @@ python -m openfed.tools.launch\
     --fed_init_method file:///tmp/openfed.sharefile.emnist-agg-1\
     --dataset emnist\
     --data_root $BENCHMARK_ROOT/data/Federated_EMNIST_TFF\
-    --epochs 1\
+    --epochs 10\
     --rounds 100\
     --samples 100\
     --test_samples 10\
@@ -15,7 +15,7 @@ python -m openfed.tools.launch\
     --leader_optim sgd\
     --penal none\
     --agg average\
-    --follower_lr 0.1\
+    --follower_lr 0.01\
     --leader_lr 1.0\
     --follower_lr_sch none\
     --leader_lr_sch none\

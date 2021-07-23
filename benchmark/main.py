@@ -547,21 +547,22 @@ def follower_loop():
 
             # Train
             network.train()
-            for data in train_dataloader:
-                input, target = data
-                input, target = input.to(args.device), target.to(args.device)
+            for e in range(args.epochs):
+                for data in train_dataloader:
+                    input, target = data
+                    input, target = input.to(args.device), target.to(args.device)
 
-                # Start a standard forward/backward pass.
-                pipe.zero_grad()
-                output = network(input)
-                loss = loss_fn(output, target)
+                    # Start a standard forward/backward pass.
+                    pipe.zero_grad()
+                    output = network(input)
+                    loss = loss_fn(output, target)
 
-                loss.backward()
+                    loss.backward()
 
-                pipe.step()
-                correct.append(acc_fn(target, output))
+                    pipe.step()
+                    correct.append(acc_fn(target, output))
 
-                total_loss.append(loss.item())
+                    total_loss.append(loss.item())
             # Round
             if pipe is not None:
                 pipe.round()

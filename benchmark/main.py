@@ -356,14 +356,36 @@ elif optim == 'adam':
 else:
     raise NotImplementedError
 
+# compute other keys to track
+if optim == 'sgd':
+    other_keys = ['momentum_buffer']
+elif optim == 'adam':
+    other_keys = ['exp_avg', 'exp_avg_sq']
+else:
+    raise NotImplementedError
+
+if args.penal == 'scaffold':
+    other_keys.append('c_para')
 
 print('# >>> Penalizer...')
 if args.penal == 'none':
-    penalizer = None
+    penalizer = openfed.pipe.Penalizer(
+        role=args.role, 
+        pack_set=other_keys,
+        unpack_set=other_keys,
+    )
 elif args.penal == 'prox':
-    penalizer = openfed.pipe.ProxPenalizer(role=args.role, mu=0.9)
+    penalizer = openfed.pipe.ProxPenalizer(
+        role=args.role, 
+        mu=0.9, 
+        pack_set=other_keys, 
+        unpack_set=other_keys)
 elif args.penal == 'scaffold':
-    penalizer = openfed.pipe.ScaffoldPenalizer(role=args.role, lr=args.follower_lr)
+    penalizer = openfed.pipe.ScaffoldPenalizer(
+        role=args.role, 
+        lr=args.follower_lr,
+        pack_set=other_keys,
+        unpack_set=other_keys)
 else:
     raise NotImplementedError
 
@@ -407,17 +429,6 @@ ld_lr_sch = build_lr_sch(args.leader_lr_sch)
 
 if args.role == leader:
     print('# >>> Aggregator...')
-    # compute other keys to track
-    if optim == 'sgd':
-        other_keys = ['momentum_buffer']
-    elif optim == 'adam':
-        other_keys = ['exp_avg', 'exp_avg_sq']
-    else:
-        raise NotImplementedError
-
-    if args.penal == 'scaffold':
-        other_keys.append('c_para')
-
     if args.agg == 'average':
         aggregator = openfed.container.AverageAgg(
             network.parameters(), 

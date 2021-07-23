@@ -358,7 +358,8 @@ else:
 
 # compute other keys to track
 if optim == 'sgd':
-    other_keys = ['momentum_buffer']
+    # other_keys = ['momentum_buffer']
+    other_keys = []
 elif optim == 'adam':
     other_keys = ['exp_avg', 'exp_avg_sq']
 else:
@@ -393,7 +394,7 @@ if args.agg == 'elastic':
     # elastic aggregator needs elastic penal.
     elastic_penalizer = openfed.pipe.ElasticPenalizer(role=args.role, momentum=0.9)
     if penalizer is not None:
-        penalizer = openfed.glue(elastic_penalizer, penalizer, extra_func=dict(acg_step=None))
+        penalizer = openfed.pipe.PenalizerList([elastic_penalizer, penalizer])
     else:
         penalizer = elastic_penalizer
 
@@ -540,32 +541,9 @@ def follower_loop():
         if task_info.train:
             train_dataset.set_part_id(part_id)
             task_info.instances = len(train_dataset)
-            # Compute necessary infomation about dataset for federated learning.
-            # if args.agg == 'elastic':
-            #     assert pipe, "pipe must be specified."
-            #     network.train()
-
-            #     for data in train_dataloader:
-            #         input, target = data
-            #         input, target = input.to(
-            #             args.device), target.to(args.device)
-
-            #         pipe.zero_grad()
-            #         output = network(input)
-            #         F.mse_loss(output, torch.zeros_like(output)).backward()
-            #         pipe.acg()
-
-            # if args.penal == 'scaffold':
-            #     # accumulate gradient
-            #     network.train()
-
-            #     for data in train_dataloader:
-            #         input, target = data
-            #         input, target = input.to(
-            #             args.device), target.to(args.device)
-            #         pipe.zero_grad()
-            #         loss_fn(network(input), target).backward()
-            #         pipe.acg()
+            
+            # Accumulate gradients
+            pipe.acg(network, train_dataloader, loss_fn=loss_fn, device=args.device)
 
             # Train
             network.train()

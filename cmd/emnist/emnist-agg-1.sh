@@ -1,7 +1,7 @@
 rm -rf /tmp/openfed.sharefile.emnist-agg-1
 
 python -m openfed.tools.launch\
-    --nproc_per_node 41\
+    --nproc_per_node 11\
     --logdir /tmp\
     $BENCHMARK_ROOT/benchmark/main.py\
     --fed_init_method file:///tmp/openfed.sharefile.emnist-agg-1\
@@ -10,12 +10,12 @@ python -m openfed.tools.launch\
     --epochs 1\
     --rounds 100\
     --samples 100\
-    --test_samples 100\
+    --test_samples 10\
     --follower_optim sgd\
     --leader_optim sgd\
     --penal none\
     --agg average\
-    --follower_lr 0.001\
+    --follower_lr 0.1\
     --leader_lr 1.0\
     --follower_lr_sch none\
     --leader_lr_sch none\

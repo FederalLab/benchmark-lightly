@@ -11,7 +11,7 @@ python -m openfed.tools.launch\
     --partition dirichlet\
     --num_parts 100\
     --epochs 1\
-    --rounds 10\
+    --rounds 100\
     --samples 10\
     --test_samples 10\
     --follower_optim sgd\

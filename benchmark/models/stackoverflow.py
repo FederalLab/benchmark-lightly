@@ -24,10 +24,11 @@
 import torch
 import torch.nn as nn
 
+from .base import Model
 from .utils import top_one_acc
 
 
-class StackOverFlowNWP(nn.Module):
+class StackOverFlowNWP(Model):
     """Creates a RNN model using LSTM layers for StackOverFlow (next word prediction task).
         This replicates the model structure in the paper:
     "Adaptive Federated Optimization. ICML 2020" (https://arxiv.org/pdf/2003.00295.pdf)
@@ -54,6 +55,9 @@ class StackOverFlowNWP(nn.Module):
         self.fc1 = nn.Linear(latent_size, embedding_size)
         self.fc2 = nn.Linear(embedding_size, extended_vocab_size)
 
+        self.loss_fn = nn.CrossEntropyLoss()
+        self.acc_fn = top_one_acc
+
     def forward(self, input_seq, hidden_state=None):
         embeds = self.word_embeddings(input_seq)
         lstm_out, hidden_state = self.lstm(embeds, hidden_state)
@@ -61,7 +65,3 @@ class StackOverFlowNWP(nn.Module):
         output = self.fc2(fc1_output)
         output = torch.transpose(output, 1, 2)
         return output
-
-
-loss_fn = nn.CrossEntropyLoss()
-acc_fn = top_one_acc

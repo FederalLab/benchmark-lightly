@@ -1,35 +1,29 @@
-# MIT License
+import argparse
+import os
+os.sys.path.insert(0, '/Users/densechen/code/benchmark')
+from torchvision import transforms
 
-# Copyright (c) 2021 FederalLab
+from benchmark.datasets.simulation_dataset import SimulationDataset
+from benchmark.datasets.utils.transforms import LoadImage, LongTensor
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+IMAGE_SIZE = 84
 
 
-from openfed.data import Analysis
-from openfed.data.vision import EMNIST
-from torchvision.transforms import ToTensor
+def get_femnit(root, train: bool = True):
+    data_root = os.path.join(root, 'train' if train else 'test')
 
-
-def get_emnist(root, train: bool = True):
-    return EMNIST(root, train=train, transform=ToTensor())
+    return SimulationDataset(data_root, LongTensor(), LongTensor())
 
 
 if __name__ == '__main__':
-    dataset = get_emnist(root='data/Federated_EMNIST_TFF', train=True)
-    Analysis.digest(dataset)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('root', type=str, help='root directory')
+    args = parser.parse_args()
+    dataset = get_femnit(root=args.root, train=True)
+
+    print(dataset)
+
+    # fetch data
+    x, y = dataset[0]
+
+    print(x.shape, y.shape)

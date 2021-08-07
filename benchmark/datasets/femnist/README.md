@@ -32,3 +32,11 @@ i.e.
   3. 'user_data', an object with user names as keys and their respective data as values; for each user, data is represented as a list of images, with each image represented as a size-784 integer list (flattened from 28 by 28)
 - Run ```./stats.sh``` to get statistics of data (data/all_data/all_data.json must have been generated already)
 - In order to run reference implementations in ```../models``` directory, the ```-t sample``` tag must be used when running ```./preprocess.sh```
+
+## Test
+
+```bash
+python benchmark/datasets/femnist/femnist.py benchmark/datasets/femnist/data
+>>> SimulationDataset(total_parts: 682, total_samples: 179346, current_parts: 0)
+>>> torch.Size([784]) torch.Size([])
+```

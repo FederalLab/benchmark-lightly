@@ -17,6 +17,8 @@ tar -xvf stackoverflow.tar.bz2 && rm -rf stackoverflow.tar.bz2
 
 ## Test
 
+It will take about 30 minutes to load the stackoverflow dataset from disk.
+
 ```bash
 python benchmark/datasets/stackoverflow/stackoverflow.py
 +--------+-----------+--------+------------+

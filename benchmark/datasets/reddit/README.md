@@ -66,5 +66,6 @@ bash run_reddit.sh
 
 ```bash
 python benchmark/datasets/reddit/reddit.py benchmark/datasets/reddit/data
-
+>>> Reddit(total_parts: 570951, total_samples: 3884341, current_parts: 0)
+>>> torch.Size([10]) torch.Size([10])
 ```

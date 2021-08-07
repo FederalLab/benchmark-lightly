@@ -1,0 +1,3 @@
+from .simulation_dataset import SimulationDataset
+
+del simulation_dataset

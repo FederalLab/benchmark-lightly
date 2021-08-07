@@ -10,7 +10,7 @@ class Synthetic(Model):
 
         self.logits = nn.Linear(input_dim, num_classes)
 
-        self.loss_fn = nn.CrossEntropyLoss()
+        self.loss_fn     = nn.CrossEntropyLoss()
         self.accuracy_fn = top_one_acc
 
     def forward(self, x):

@@ -27,7 +27,7 @@ from .base import Model
 from .utils import top_one_acc
 
 
-class ShakespeareNCP(Model):
+class Shakespeare(Model):
     """Creates a RNN model using LSTM layers for Shakespeare language models (next character prediction task).
     This replicates the model structure in the paper:
         Communication-Efficient Learning of Deep Networks from Decentralized Data
@@ -44,15 +44,19 @@ class ShakespeareNCP(Model):
     def __init__(self, embedding_dim=8, vocab_size=90, hidden_size=256):
         super().__init__()
         self.embeddings = nn.Embedding(
-            num_embeddings=vocab_size, embedding_dim=embedding_dim, padding_idx=0)
-        self.lstm = nn.LSTM(input_size=embedding_dim,
-                            hidden_size=hidden_size, num_layers=2, batch_first=True)
+            num_embeddings = vocab_size,
+            embedding_dim  = embedding_dim,
+            padding_idx    = 0)
+        self.lstm = nn.LSTM(
+            input_size  = embedding_dim,
+            hidden_size = hidden_size,
+            num_layers  = 2,
+            batch_first = True)
         self.logits = nn.Linear(hidden_size, vocab_size)
 
 
         self.loss_fn = nn.CrossEntropyLoss()
-        self.acc_fn = top_one_acc
-
+        self.acc_fn  = top_one_acc
 
     def forward(self, input_seq):
         embeds = self.embeddings(input_seq)

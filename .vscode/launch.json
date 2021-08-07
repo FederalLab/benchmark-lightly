@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["benchmark/datasets/femnist/data"]
+            "args": ["benchmark/datasets/reddit/data"]
         },
         {
             "name": "Python: client",

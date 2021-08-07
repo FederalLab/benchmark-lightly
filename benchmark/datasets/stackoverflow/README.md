@@ -14,3 +14,10 @@ tar -xvf stackoverflow.tag_count.tar.bz2 && rm -rf stackoverflow.tag_count.tar.b
 tar -xvf stackoverflow.word_count.tar.bz2 && rm -rf stackoverflow.word_count.tar.bz2
 tar -xvf stackoverflow.tar.bz2 && rm -rf stackoverflow.tar.bz2
 ```
+
+## Test
+
+```bash
+python benchmark/datasets/stackoverflow/stackoverflow.py
+
+```

@@ -20,6 +20,8 @@ class SimulationDataset(data.FederatedDataset):
 
     def __init__(self, data_root: str, transform=None, transform_target=None):
         super().__init__()
+        self.data_root = data_root
+        
         self.parts, self.groups, self.data = read_dir(data_root)
 
         self.total_parts = len(self.parts)

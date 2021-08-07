@@ -29,8 +29,9 @@ import h5py
 import numpy as np
 import torch
 from openfed.common import logger
-from openfed.data.datasets import FederatedDataset
+from openfed.data import Analysis, FederatedDataset
 from openfed.data.utils import *
+from torchvision.transforms import ToTensor
 
 word_count_file_path = None
 word_dict            = None
@@ -398,19 +399,21 @@ class StackOverFlowNWP(StackOverFlow):
 
         return sum(samples)
 
-def get_stackoverflow_nwp(root, train: bool = True):
-    return StackOverFlowNWP(root, train=train, transform=ToTensor())
-
-
-def get_stackoverflow_tp(root, train: bool = True):
-    return StackOverFlowTP(root, train=train, transform=ToTensor())
-
+def get_stackoverflow(root, mode='tp', train: bool = True):
+    assert mode in ['tp', 'nwp']
+    root = os.path.join(root, 'raw')
+    if mode == 'tp':
+        return StackOverFlowTP(root, train=train, transform=ToTensor())
+    elif mode == 'nwp':
+        return StackOverFlowNWP(root, train=train, transform=ToTensor())
+    else:
+        raise NotImplementedError('')
 
 if __name__ == '__main__':
-    dataset = get_stackoverflow_nwp(
-        root='data/Federated_StackOverFlow_TFF', train=True)
+    dataset = get_stackoverflow(
+        root='benchmark/datasets/stackoverflow/data', mode='tp', train=True)
     Analysis.digest(dataset)
 
-    dataset = get_stackoverflow_tp(
-        root='data/Federated_StackOverFlow_TFF', train=True)
+    dataset = get_stackoverflow(
+        root='benchmark/datasets/stackoverflow/data', mode='nwp', train=True)
     Analysis.digest(dataset)

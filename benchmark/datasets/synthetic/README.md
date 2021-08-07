@@ -31,3 +31,11 @@ i.e.
   3. 'user_data', an object with user names as keys and their respective data as values.
 - Run ```./stats.sh``` to get statistics of data (data/all_data/all_data.json must have been generated already)
 - In order to run reference implementations in ```../models``` directory, the ```-t sample``` tag must be used when running ```./preprocess.sh```
+
+## Test
+
+```bash
+python benchmark/datasets/synthetic/synthetic.py benchmark/datasets/synthetic/data
+>>> SimulationDataset(total_parts: 1000, total_samples: 64153, current_parts: 0)
+>>> torch.Size([60]) torch.Size([])
+```

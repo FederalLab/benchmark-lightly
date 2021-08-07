@@ -61,3 +61,10 @@ Preprocess:
 cd preprocess
 bash run_reddit.sh
 ```
+
+## Test
+
+```bash
+python benchmark/datasets/reddit/reddit.py benchmark/datasets/reddit/data
+
+```

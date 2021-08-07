@@ -20,3 +20,10 @@ class LongTensor(object):
 
     def __repr__(self):
         return self.__class__.__name__ + '()'
+
+class FloatTensor(object):
+    def __call__(self, x):
+        return torch.tensor(x).float()
+
+    def __repr__(self):
+        return self.__class__.__name__ + '()'

@@ -2,7 +2,7 @@ import hashlib
 import os
 import sys
 
-from utils import load_obj, save_obj
+from .utils import load_obj, save_obj
 
 utils_dir = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))

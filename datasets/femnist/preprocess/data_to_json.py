@@ -12,7 +12,7 @@ import sys
 import numpy as np
 from PIL import Image
 
-from utils import load_obj
+from .utils import load_obj
 
 utils_dir = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))

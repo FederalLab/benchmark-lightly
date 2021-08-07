@@ -10,7 +10,7 @@ the directories written into the files are of the form 'raw_data/...'
 import os
 import sys
 
-from utils import save_obj
+from .utils import save_obj
 
 utils_dir = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))

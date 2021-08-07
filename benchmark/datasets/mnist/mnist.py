@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import argparse
+import os
 
 from openfed.data import (Analysis, IIDPartitioner, Partitioner,
                           PartitionerDataset)
@@ -29,6 +30,7 @@ from torchvision.transforms import ToTensor
 
 
 def get_mnist(root, total_parts: int, train: bool = True, partitioner: Partitioner = None):
+    root = os.path.join(root, 'raw')
     if not partitioner:
         partitioner = IIDPartitioner()
     return PartitionerDataset(MNIST(root, train, ToTensor(), download=True), total_parts, partitioner)

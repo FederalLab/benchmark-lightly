@@ -2,10 +2,12 @@ import os
 import pickle
 import random
 
-DIR              = os.path.join('data', 'reddit_raw')
+data_root = os.path.join(os.path.dirname(
+    os.path.dirname(os.path.realpath(__file__))), "data")
+DIR              = os.path.join(data_root, 'reddit_raw')
 USERS_PER_REPEAT = 200000
 USERS_PER_FILE   = 20000
-FINAL_DIR        = os.path.join('data', 'reddit_merged')
+FINAL_DIR        = os.path.join(data_root, 'reddit_merged')
 
 if not os.path.exists(FINAL_DIR):
     os.makedirs(FINAL_DIR)

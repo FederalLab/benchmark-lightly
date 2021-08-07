@@ -14,6 +14,7 @@ pip install -r requirements.txt
 
 ### Download dataset
 
+`md5sum` is required in your system path.
 Refer to `datasets/xxx/README.md` for more details about preparing dataset.
 
 ## Experiment

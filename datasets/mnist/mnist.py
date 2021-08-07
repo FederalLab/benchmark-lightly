@@ -20,11 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import argparse
 
-from torchvision.transforms import ToTensor
-from torchvision.datasets import MNIST
 from openfed.data import (Analysis, IIDPartitioner, Partitioner,
                           PartitionerDataset)
+from torchvision.datasets import MNIST
+from torchvision.transforms import ToTensor
 
 
 def get_mnist(root, total_parts: int, train: bool = True, partitioner: Partitioner = None):
@@ -34,5 +35,8 @@ def get_mnist(root, total_parts: int, train: bool = True, partitioner: Partition
 
 
 if __name__ == '__main__':
-    dataset = get_mnist(root='data', train=True, total_parts=100)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('root', type=str, help='root directory')
+    args = parser.parse_args()
+    dataset = get_mnist(root=args.root, train=True, total_parts=100)
     Analysis.digest(dataset)

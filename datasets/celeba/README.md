@@ -46,5 +46,5 @@ TARGET_NAME=[
   1. 'users', a list of users
   2. 'num_samples', a list of the number of samples for each user, and
   3. 'user_data', an object with user names as keys and their respective data as values.
-- Run ```./stats.sh``` to get statistics of data (data/all_data/all_data.json must have been generated already)
+- Run ```./stats.sh``` to get statistics of data (`data/all_data/all_data.json` must have been generated already)
 - In order to run reference implementations in ```../models``` directory, the ```-t sample``` tag must be used when running ```./preprocess.sh```

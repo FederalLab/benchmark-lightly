@@ -5,8 +5,10 @@ from glob import glob
 
 import numpy as np
 
-DATA_DIR  = os.path.join('data', 'reddit_json')
-FINAL_DIR = os.path.join('data', 'reddit_leaf')
+data_root = os.path.join(os.path.dirname(
+    os.path.dirname(os.path.realpath(__file__))), "data")
+DATA_DIR  = os.path.join(data_root, 'reddit_json')
+FINAL_DIR = os.path.join(data_root, 'reddit_leaf')
 SEQ_LEN   = 10
 
 

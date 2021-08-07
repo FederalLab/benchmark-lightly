@@ -23,7 +23,7 @@
 # type: ignore
 
 import os
-
+import argparse
 import h5py
 import numpy as np
 import torch
@@ -139,6 +139,7 @@ class CIFAR100(FederatedDataset):
 
 
 def get_cifar100(root, train: bool = True):
+    root = os.path.join(root, 'raw')
     mean, std = [0.507, 0.486, 0.441], [0.267, 0.256, 0.276]
     if train:
         transform = transforms.Compose(
@@ -159,5 +160,8 @@ def get_cifar100(root, train: bool = True):
 
 
 if __name__ == '__main__':
-    dataset = get_cifar100(root='data/Federated_CIFAR100_TFF')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('root', type=str, help='root directory')
+    args = parser.parse_args()
+    dataset = get_cifar100(root=args.root)
     Analysis.digest(dataset)

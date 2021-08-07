@@ -39,3 +39,14 @@ mkdir -pv data/raw && cd data/raw && wget --no-check-certificate --no-proxy http
 
 tar -xvf fed_cifar100.tar.bz2 && rm fed_cifar100.tar.bz2
 ```
+
+## Test
+
+```bash
+python benchmark/datasets/cifar100/cifar100.py benchmark/datasets/cifar100/data
++-------+---------+--------+------+
+| Parts | Samples |  Mean  | Var  |
++-------+---------+--------+------+
+|  500  |  50000  | 100.00 | 0.00 |
++-------+---------+--------+------+
+```

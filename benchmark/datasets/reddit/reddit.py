@@ -34,7 +34,7 @@ class Reddit(SimulationDataset):
         data = self.data[self.parts[self.part_id]]
         x, y = data['x'][index], data['y'][index]  # type: ignore
 
-        x, y = self._tokens_to_ids(x), self._tokens_to_ids(y)
+        x, y = self._tokens_to_ids(x[0]), self._tokens_to_ids(y['target_tokens'][0])
 
         if self.transform is not None:
             x = self.transform(x)

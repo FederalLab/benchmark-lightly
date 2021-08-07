@@ -33,3 +33,10 @@ i.e.
   4. 'user_data', an object with user names as keys; the values are represented as objects with keys 'x', 'y', and 'raw'. 'x' and 'y' refer to strings and their corresponding next character. 'raw' refers to the text data from which the model data was extracted; this key appears only in all_data.json, and only when the '--raw' tag is used.
 - Run ```./stats.sh``` to get statistics of data (data/all_data/all_data.json must have been generated already)
 - In order to run reference implementations in ```../models``` directory, the ```-t sample``` tag must be used when running ```./preprocess.sh```
+
+## Test
+
+```bash
+python benchmark/datasets/shakespeare/shakespeare.py benchmark/datasets/shakespeare/dataShakespeare(total_parts: 660, total_samples: 3678451, current_parts: 0)
+torch.Size([80]) torch.Size([80])
+```

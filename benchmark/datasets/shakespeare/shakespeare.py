@@ -1,41 +1,44 @@
-# MIT License
+import argparse
+import os
 
-# Copyright (c) 2021 FederalLab
+os.sys.path.insert(0, '/Users/densechen/code/benchmark')
+from benchmark.datasets.simulation_dataset import SimulationDataset
+from benchmark.datasets.utils.language_utils import (word_to_indices, letter_to_vec)
+from benchmark.datasets.utils.transforms import FloatTensor, LongTensor
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
+VOCAB_DIR = 'embs.json'
 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+class Shakespeare(SimulationDataset):
+    def __getitem__(self, index):
+        data = self.data[self.parts[self.part_id]]
 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+        x, y = data['x'][index], data['y'][index]  # type: ignore
 
+        x = word_to_indices(x)
+        y = letter_to_vec(y)
 
-from openfed.data import Analysis
-from openfed.data.nlp import ShakespeareNCP, ShakespeareNWP
-from torchvision.transforms import ToTensor
+        if self.transform is not None:
+            x = self.transform(x)
+        if self.transform_target is not None:
+            y = self.transform_target(y)
+        return x, y
 
+def get_shakespeare(root, train: bool = True):
 
-def get_shakespeare_ncp(root, train: bool = True):
-    return ShakespeareNCP(root, train=train, transform=ToTensor())
+    data_root = os.path.join(root, 'train' if train else 'test')
 
-def get_shakespeare_nwp(root, train: bool = True):
-    return ShakespeareNWP(root, train=train, transform=ToTensor())
+    return Shakespeare(data_root, FloatTensor(), LongTensor())
 
 
 if __name__ == '__main__':
-    dataset = get_shakespeare_ncp(root='data/Federated_Shakespeare_FedProx', train=True)
-    Analysis.digest(dataset)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('root', type=str, help='root directory')
+    args = parser.parse_args()
+    dataset = get_shakespeare(root=args.root, train=True)
 
-    dataset = get_shakespeare_nwp(root='data/Federated_Shakespeare_TFF', train=True)
-    Analysis.digest(dataset)
+    print(dataset)
+
+    # fetch data
+    x, y = dataset[0]
+
+    print(x.shape, y.shape) # type: ignore

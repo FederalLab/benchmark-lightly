@@ -48,3 +48,12 @@ TARGET_NAME=[
   3. 'user_data', an object with user names as keys and their respective data as values.
 - Run ```./stats.sh``` to get statistics of data (`data/all_data/all_data.json` must have been generated already)
 - In order to run reference implementations in ```../models``` directory, the ```-t sample``` tag must be used when running ```./preprocess.sh```
+
+## Test
+
+```bash
+python benchmark/datasets/celeba/celeba.py benchmark/datasets/celeba/data
+
+>>> SimulationDataset(total_parts: 9343, total_samples: 177457, current_parts: 0)
+>>> torch.Size([3, 102, 84]) torch.Size([])
+```

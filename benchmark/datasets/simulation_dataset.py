@@ -29,7 +29,7 @@ class SimulationDataset(data.FederatedDataset):
 
     @property
     def total_samples(self):
-        return sum([len(x['x']) for x in self.data])
+        return sum([len(x['x']) for x in self.data.values()]) # type:ignore
 
     def __len__(self):
         return len(self.data[self.parts[self.part_id]]['x'])  # type:ignore

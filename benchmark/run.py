@@ -141,7 +141,7 @@ parser.add_argument('--log_level',
                     help='The log level of openfed bk.')
 parser.add_argument('--log_dir',
                     type=str,
-                    default=f'logs/mnist/',
+                    default=f'logs/',
                     help="The dir to log train and test information.")
 parser.add_argument('--pretrained',
                     type=str,
@@ -149,7 +149,7 @@ parser.add_argument('--pretrained',
                     help='The path to pretrained model.')
 parser.add_argument('--ckpt',
                     type=str,
-                    default='/tmp/mnist',
+                    default='',
                     help='The folder to save checkpoints.')
 
 parser.add_argument('--seed',

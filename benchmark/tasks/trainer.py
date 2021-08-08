@@ -29,7 +29,7 @@ class Trainer(object):
                 x, y = x.to(self.device), y.to(self.device)
                 output = self.model(x)
                 loss = self.model.loss_fn(output, y)
-                acc = self.model.acc_fn(output, y)
+                acc = self.model.accuracy_fn(y, output)
 
                 self.optimizer.zero_grad()
                 loss.backward()
@@ -39,26 +39,17 @@ class Trainer(object):
         toc = time.time()
         return sum(accuracies)/len(accuracies), sum(losses)/len(losses), toc-tic
 
-    def acg_epoch(self, max_samples=-1):
+    def acg_epoch(self, max_acg_step=-1):
         """Do acg step to accumulate gradient for some federated optimizer.
         Returns:
             duration: time in seconds
         """
-        dataset = self.dataloader.dataset
-
-        if max_samples > 0:
-            acg_subdataset, _ = random_split(dataset, [max_samples, -1])
-        else:
-            acg_subdataset = dataset
-
-        self.dataloader.dataset = acg_subdataset
         tic = time.time()
+        self.optimizer.max_acg_step = max_acg_step
+
         self.optimizer.acg(self.model, self.dataloader,
                            loss_fn=self.model.loss_fn, device=self.device)
         toc = time.time()
-
-        self.dataloader.dataset = dataset
-
         return toc - tic
 
     def finish_training(self, task_info):
@@ -76,4 +67,4 @@ class Trainer(object):
 
     def start_training(self, task_info):
         part_id = task_info.part_id  # type: ignore
-        self.dataloader.set_part_id(part_id)
+        self.dataloader.dataset.set_part_id(part_id)

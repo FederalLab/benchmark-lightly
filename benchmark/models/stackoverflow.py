@@ -62,7 +62,7 @@ class Stackoverflow(Model):
         self.fc2 = nn.Linear(embedding_size, extended_vocab_size)
 
         self.loss_fn = nn.CrossEntropyLoss()
-        self.acc_fn  = top_one_acc
+        self.accuracy_fn  = top_one_acc
 
     def forward(self, input_seq, hidden_state=None):
         embeds = self.word_embeddings(input_seq)

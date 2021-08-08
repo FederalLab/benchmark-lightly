@@ -56,7 +56,7 @@ class Shakespeare(Model):
 
 
         self.loss_fn = nn.CrossEntropyLoss()
-        self.acc_fn  = top_one_acc
+        self.accuracy_fn  = top_one_acc
 
     def forward(self, input_seq):
         embeds = self.embeddings(input_seq)

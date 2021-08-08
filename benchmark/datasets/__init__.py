@@ -21,7 +21,7 @@ del stackoverflow
 del synthetic
 
 
-def get_datasets(name, *args, **kwargs):
+def build_dataset(name, *args, **kwargs):
     if name == 'celeba':
         return get_celeba(*args, **kwargs)
     elif name == 'cifar100':

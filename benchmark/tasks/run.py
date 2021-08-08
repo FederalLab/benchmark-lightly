@@ -1,28 +1,25 @@
-# type: ignore
 import os
+import sys
 
 sys.path.insert(0, "/Users/densechen/code/OpenFed")
+sys.path.insert(0, "/Users/densechen/code/benchmark")
 
 import argparse
 import json
-import sys
 import time
 from glob import glob
 from pprint import pprint
 
 import openfed
 import torch
-import torch.nn.functional as F
 from benchmark.datasets import build_dataset
 from benchmark.models import build_model
-from benchmark.reducer import AutoReducerJson
 from benchmark.tasks import Tester, Trainer, build_optim
-from benchmark.utils import StoreDict
-from openfed import TaskInfo, time_string
+from benchmark.utils import AutoReducerJson, StoreDict
 from openfed.core import World, follower, leader
 from torch.utils.data import DataLoader
 
-parser = argparse.ArgumentParser("Mnist")
+parser = argparse.ArgumentParser("benchmark-lightly")
 
 # address
 parser.add_argument(
@@ -53,12 +50,12 @@ parser.add_argument(
 parser.add_argument('--task',
                     type=str,
                     default="mnist",
-                    help=[
-                    'celeba', 'cifar100', 
-                    'femnist', 'mnist', 
-                    'reddit', 'sent140', 
-                    'shakespeare', 'stackoverflow', 
-                    'synthetic'])
+                    choices=[
+                        'celeba', 'cifar100',
+                        'femnist', 'mnist',
+                        'reddit', 'sent140',
+                        'shakespeare', 'stackoverflow',
+                        'synthetic'])
 parser.add_argument('--network_args',
                     nargs='+',
                     action=StoreDict,
@@ -110,10 +107,10 @@ parser.add_argument('--test_samples',
                     type=int,
                     default=None,
                     help="The number of parts used to test at each round. If not specified, use full test dataset.")
-parser.add_argument('--acg_samples',
+parser.add_argument('--max_acg_step',
                     type=int,
                     default=-1,
-                    help="The number of samples used to compute acg.")
+                    help="The number of samples used to compute acg. -1 used all train data.")
 parser.add_argument('--optim',
                     type=str,
                     default='fedsgd',
@@ -144,7 +141,7 @@ parser.add_argument('--log_level',
                     help='The log level of openfed bk.')
 parser.add_argument('--log_dir',
                     type=str,
-                    default=f'logs/mnist/{time_string()}',
+                    default=f'logs/mnist/',
                     help="The dir to log train and test information.")
 parser.add_argument('--pretrained',
                     type=str,
@@ -168,6 +165,10 @@ openfed.utils.seed_everything(args.seed)
 
 args.role = leader if args.fed_rank == 0 else follower
 
+os.makedirs(args.log_dir, exist_ok=True)
+with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
+    json.dump(args.__dict__, f)
+
 print('# >>> Device...')
 if args.gpu and torch.cuda.is_available():
     args.gpu = args.fed_rank % torch.cuda.device_count()
@@ -178,15 +179,11 @@ else:
 
 pprint(args.__dict__)
 
-os.makedirs(args.log_dir, exist_ok=True)
-with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
-    json.dump(args.__dict__, f)
-    
 print(f"Let's use {args.device}.")
 
 print("# >>> Dataset...")
 
-if args.task == mnist:
+if args.task == 'mnist':
     if args.partition == 'iid':
         partitioner = openfed.data.IIDPartitioner()
     elif args.partition == 'dirichlet':
@@ -197,7 +194,7 @@ if args.task == mnist:
         raise NotImplementedError
     train_args = dict(
         total_parts=args.num_parts,
-        partition=partitioner
+        partitioner=partitioner
     )
     test_args = dict(
         total_parts=args.num_parts,
@@ -210,25 +207,28 @@ else:
     train_args = dict(train=True)
     test_args = dict(train=False)
 
-train_dataset = build_dataset(args.task, root=args.data_root, **train_args, **args.dataset_args)
-test_dataset = build_dataset(args.task, root=args.data_root, **test_args, **args.dataset_args)
+train_dataset = build_dataset(
+    args.task, root=args.data_root, **train_args, **args.dataset_args)
+test_dataset = build_dataset(
+    args.task, root=args.data_root, **test_args, **args.dataset_args)
 
 print('# >>> DataLoader...')
 train_dataloader = DataLoader(
-    train_dataset, 
-    batch_size  = args.bz,
-    shuffle     = True,
-    num_workers = 0,
-    drop_last   = False)
+    train_dataset,
+    batch_size=args.bz,
+    shuffle=True,
+    num_workers=0,
+    drop_last=False)
 test_dataloader = DataLoader(
-    test_dataset, 
-    batch_size  = args.bz,
-    shuffle     = False,
-    num_workers = 0,
-    drop_last   = False)
+    test_dataset,
+    batch_size=args.bz,
+    shuffle=False,
+    num_workers=0,
+    drop_last=False)
 
 print('# >>> Network...')
 network = build_model(args.task, **args.network_args)
+pprint(network)
 
 print("# >>> Move to device...")
 network = network.to(args.device)
@@ -252,6 +252,7 @@ if len(ckpt_files) == 0:
 else:
     versions = [int(n.split('.')[-1]) for n in ckpt_files]
     latest_vertion = max(versions)
+    i = 0
     for i, v in enumerate(versions):
         if v == latest_vertion:
             break
@@ -264,13 +265,6 @@ else:
     print(f"Loaded checkpoint from {ckpt_file}")
 
 print('# >>> Federated Optimizer...')
-if args.role == follower:
-    lr = args.follower_lr
-    optim = args.follower_optim
-else:
-    lr = args.leader_lr
-    optim = args.leader_optim
-
 optimizer, aggregator = build_optim(
     args.optim,
     network.parameters(),
@@ -287,7 +281,7 @@ if args.role == leader:
         log_file=os.path.join(args.log_dir, f'{args.task}.json'))
 
     print("# >>> Container...")
-    container = openfed.container.build_container(aggregator, auto_reducer)
+    container = openfed.container.build_container(aggregator, auto_reducer) # type:ignore
 else:
     container = None
 
@@ -304,20 +298,11 @@ print('# >>> API...')
 openfed_api = openfed.API(
     world=world,
     state_dict=network.state_dict(keep_vars=True),
-    pipe=pipe,
+    fed_optim=optimizer,
     container=container)
 
 print('# >>> Register step functions...')
 with openfed_api:
-    print('# >>> Synchronize LR Scheduler across different devices...')
-    lr_sch = []
-    if fl_lr_sch is not None:
-        # A hook to automatically load the latest learning rate from leader.
-        openfed.hooks.LRTracker(fl_lr_sch)
-        lr_sch.append(fl_lr_sch)
-    if ld_lr_sch is not None:
-        lr_sch.append(ld_lr_sch)
-
     # Train samples at each round
     assert args.samples or args.sample_ratio
     test_samples = test_dataset.total_parts if args.test_samples is None else args.test_samples
@@ -327,8 +312,7 @@ with openfed_api:
     # A trigger to alarm aggregate operation
     openfed.hooks.Aggregate(
         count=[samples, test_samples],
-        checkpoint=args.ckpt,
-        lr_scheduler=lr_sch)
+        checkpoint=args.ckpt)
 
     # Some post process after download.
     openfed.hooks.Download()
@@ -369,14 +353,19 @@ def follower_loop():
         if task_info.train:
             trainer.start_training(task_info)
 
-            duraton_acg = trainer.acg_epoch(max_samples=args.acg_samples)
+            duration_acg = trainer.acg_epoch(max_acg_step=args.max_acg_step)
             acc, loss, duration = trainer.train_epoch(epoch=args.epochs)
 
-            task_info.accuracy = acc
-            task_info.loss = loss
-            task_info.duration = duration
-            task_info.duration_acg = duration_acg
-            task_info.version += 1
+            train_info = dict(
+                accuracy=acc,
+                loss=loss,
+                duration=duration,
+                duration_acg=duration_acg,
+                version = task_info.version + 1, # type: ignore
+                instances = len(trainer.dataloader.dataset), # type: ignore
+            )
+
+            task_info.update(train_info)
 
             trainer.finish_training(task_info)
         else:
@@ -384,10 +373,14 @@ def follower_loop():
 
             acc, loss, duration = tester.test_epoch()
 
-            task_info.accuracy = acc
-            task_info.loss = loss
-            task_info.duration = duration
-            task_info.version += 1
+            test_info = dict(
+                accuracy  = acc,
+                loss      = loss,
+                duration  = duration,
+                version   = task_info.version + 1,          # type: ignore
+                instances = len(tester.dataloader.dataset), # type: ignore
+            )
+            task_info.update(test_info)
 
             tester.finish_testing(task_info)
 

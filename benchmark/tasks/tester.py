@@ -1,5 +1,5 @@
 import time
-
+import torch
 
 class Tester(object):
     def __init__(self, openfed_api, model, dataloader):
@@ -9,6 +9,7 @@ class Tester(object):
         self.dataloader = dataloader
         self.device = next(self.model.parameters()).device
 
+    @torch.no_grad()
     def test_epoch(self):
         """Train model for several epochs. 
         Returns:
@@ -16,7 +17,7 @@ class Tester(object):
             average training loss
             duration: time in seconds
         """
-        self.model.test()
+        self.model.eval()
         accuracies = []
         losses = []
         tic = time.time()
@@ -25,7 +26,7 @@ class Tester(object):
             x, y = x.to(self.device), y.to(self.device)
             output = self.model(x)
             loss = self.model.loss_fn(output, y)
-            acc = self.model.acc_fn(output, y)
+            acc = self.model.accuracy_fn(y, output)
             accuracies.append(acc.item())
             losses.append(loss.item())
         toc = time.time()
@@ -40,4 +41,4 @@ class Tester(object):
 
     def start_testing(self, task_info):
         part_id = task_info.part_id  # type: ignore
-        self.dataloader.set_part_id(part_id)
+        self.dataloader.dataset.set_part_id(part_id)

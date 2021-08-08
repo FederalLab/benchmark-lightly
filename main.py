@@ -281,25 +281,25 @@ print(f"Let's use {args.device}.")
 
 print('# >>> Network...')
 if args.network == 'lr':
-    from benchmark.models.lr import LogisticRegression, acc_fn, loss_fn
+    from benchmark.models.lr import LogisticRegression, accuracy_fn, loss_fn
     network = LogisticRegression(**args.network_cfg)
 elif args.network == 'emnist':
-    from benchmark.models.emnist import EMNIST, acc_fn, loss_fn
+    from benchmark.models.emnist import EMNIST, accuracy_fn, loss_fn
     network = EMNIST(**args.network_cfg)
 elif args.network == 'emnist_dp':
-    from benchmark.models.emnist import EMNISTDropout, acc_fn, loss_fn
+    from benchmark.models.emnist import EMNISTDropout, accuracy_fn, loss_fn
     network = EMNISTDropout(**args.network_cfg)
 elif args.network == 'emnist_lr':
-    from benchmark.models.emnist import EMNISTLinear, acc_fn, loss_fn
+    from benchmark.models.emnist import EMNISTLinear, accuracy_fn, loss_fn
     network = EMNISTLinear(**args.network_cfg)
 elif args.network == 'emnist_ae':
-    from benchmark.models.emnist_ae import EMNISTAE, acc_fn, loss_fn
+    from benchmark.models.emnist_ae import EMNISTAE, accuracy_fn, loss_fn
     network = EMNISTAE(**args.network_cfg)
 elif args.network == 'shakespeare_ncp':
-    from benchmark.models.shakespeare import ShakespeareNCP, acc_fn, loss_fn
+    from benchmark.models.shakespeare import ShakespeareNCP, accuracy_fn, loss_fn
     network = ShakespeareNCP(**args.network_cfg)
 elif args.network == 'stackoverflow_nwp':
-    from benchmark.models.stackoverflow import (StackOverFlowNWP, acc_fn,
+    from benchmark.models.stackoverflow import (StackOverFlowNWP, accuracy_fn,
                                                 loss_fn)
     network = StackOverFlowNWP(**args.network_cfg)
 else:
@@ -560,7 +560,7 @@ def follower_loop():
                     loss.backward()
 
                     pipe.step()
-                    correct.append(acc_fn(target, output))
+                    correct.append(accuracy_fn(target, output))
 
                     total_loss.append(loss.item())
             # Round
@@ -580,7 +580,7 @@ def follower_loop():
                     # Start a standard forward inference pass.
                     output = network(input)
                     loss = loss_fn(output, target)
-                    correct.append(acc_fn(target, output))
+                    correct.append(accuracy_fn(target, output))
                     total_loss.append(loss.item())
 
         total_loss = sum(total_loss)/len(total_loss)

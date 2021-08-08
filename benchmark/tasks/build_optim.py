@@ -5,6 +5,7 @@ import torch.optim as optim
 def build_fedsgd(parameters, lr, role, **kwargs):
     """Build fedsgd, return optimizer and aggregator (for leader).
     """
+    parameters = list(parameters)
     optimizer = optim.SGD(parameters, lr=lr, **kwargs)
     fed_optimizer = openfed.optim.build_fed_optim(optimizer)
     if openfed.core.is_leader(role):

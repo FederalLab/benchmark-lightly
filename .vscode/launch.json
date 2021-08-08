@@ -16,7 +16,7 @@
             "name": "Python: client",
             "type": "python",
             "request": "launch",
-            "program": "benchmark/main.py",
+            "program": "benchmark/tasks/run.py",
             "console": "integratedTerminal",
             "args": [
                 "--fed_rank",
@@ -25,7 +25,6 @@
                 "2",
                 "--network_args", 
                 "input_dim:784",
-                "output_dim:10",
                 "--samples",
                 "10",
             ]
@@ -34,7 +33,7 @@
             "name": "Python: server",
             "type": "python",
             "request": "launch",
-            "program": "benchmark/main.py",
+            "program": "benchmark/tasks/run.py",
             "console": "integratedTerminal",
             "args": [
                 "--fed_rank",
@@ -43,7 +42,6 @@
                 "2",
                 "--network_args", 
                 "input_dim:784",
-                "output_dim:10",
                 "--samples",
                 "10",
             ]

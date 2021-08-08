@@ -1,5 +1,6 @@
 # type: ignore
 import os
+from distutils.command.build import build
 
 sys.path.insert(0, "/Users/densechen/code/OpenFed")
 
@@ -10,20 +11,16 @@ import time
 from glob import glob
 from pprint import pprint
 
-import benchmark.datasets as datasets
-import benchmark.models as models
 import openfed
 import torch
 import torch.nn.functional as F
-from benchmark.datasets.mnist.mnist import get_mnist
+from benchmark.datasets import build_dataset
+from benchmark.models import build_model
 from benchmark.reducer import AutoReducerJson
-from benchmark.tasks.build_optim import build_optim
-from benchmark.tasks.tester import Tester
-from benchmark.tasks.trainer import Trainer
+from benchmark.tasks import Tester, Trainer, build_optim
 from benchmark.utils import StoreDict
 from openfed import TaskInfo, time_string
 from openfed.core import World, follower, leader
-from openfed.data import Analysis
 from torch.utils.data import DataLoader
 
 parser = argparse.ArgumentParser("Mnist")
@@ -53,6 +50,22 @@ parser.add_argument(
     type=str,
     help="Add a group name to better recognize each address.")
 
+# task
+parser.add_argument('--task',
+                    type=str,
+                    default="mnist",
+                    help=[
+                    'celeba', 'cifar100', 
+                    'femnist', 'mnist', 
+                    'reddit', 'sent140', 
+                    'shakespeare', 'stackoverflow', 
+                    'synthetic'])
+parser.add_argument('--network_args',
+                    nargs='+',
+                    action=StoreDict,
+                    default=dict(),
+                    help="extra network args passed in.")
+
 # dataset
 parser.add_argument('--data_root',
                     type=str,
@@ -69,6 +82,11 @@ parser.add_argument('--num_parts',
                     type=int,
                     default=100,
                     help='The number of the parts to split into.')
+parser.add_argument('--dataset_args',
+                    nargs='+',
+                    action=StoreDict,
+                    default=dict(),
+                    help="extra dataset args passed in.")
 
 # train
 parser.add_argument('--epochs',
@@ -151,33 +169,50 @@ openfed.utils.seed_everything(args.seed)
 
 args.role = leader if args.fed_rank == 0 else follower
 
+print('# >>> Device...')
+if args.gpu and torch.cuda.is_available():
+    args.gpu = args.fed_rank % torch.cuda.device_count()
+    args.device = torch.device(args.gpu)
+    torch.cuda.set_device(args.gpu)
+else:
+    args.device = torch.device('cpu')
+
 pprint(args.__dict__)
 
 os.makedirs(args.log_dir, exist_ok=True)
 with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
     json.dump(args.__dict__, f)
+    
+print(f"Let's use {args.device}.")
 
 print("# >>> Dataset...")
 
-if args.partition == 'iid':
-    partitioner = openfed.data.IIDPartitioner()
-elif args.partition == 'dirichlet':
-    partitioner = openfed.data.DirichletPartitioner()
-elif args.partition == 'power-law':
-    partitioner = openfed.data.PowerLawPartitioner()
+if args.task == mnist:
+    if args.partition == 'iid':
+        partitioner = openfed.data.IIDPartitioner()
+    elif args.partition == 'dirichlet':
+        partitioner = openfed.data.DirichletPartitioner()
+    elif args.partition == 'power-law':
+        partitioner = openfed.data.PowerLawPartitioner()
+    else:
+        raise NotImplementedError
+    train_args = dict(
+        total_parts=args.num_parts,
+        partition=partitioner
+    )
+    test_args = dict(
+        total_parts=args.num_parts,
+        partitioner=partitioner,
+    )
+elif args.task == 'reddit':
+    train_args = dict(mode='train')
+    test_args = dict(mode='test')
 else:
-    raise NotImplementedError
-train_dataset = datasets.get_mnist(
-    root=args.data_root, total_parts=args.num_parts, train=True, partitioner=partitioner)
-test_dataset = datasets.get_mnist(
-    root=args.data_root, total_parts=args.num_parts, train=False, partitioner=partitioner)
+    train_args = dict(train=True)
+    test_args = dict(train=False)
 
-
-print('# >>> Train Dataset:')
-Analysis.digest(train_dataset)
-
-print('# >>> Test Dataset:')
-Analysis.digest(test_dataset)
+train_dataset = build_dataset(args.task, root=args.data_root, **train_args, **args.dataset_args)
+test_dataset = build_dataset(args.task, root=args.data_root, **test_args, **args.dataset_args)
 
 print('# >>> DataLoader...')
 train_dataloader = DataLoader(
@@ -193,18 +228,8 @@ test_dataloader = DataLoader(
     num_workers = 0,
     drop_last   = False)
 
-print('# >>> Device...')
-if args.gpu and torch.cuda.is_available():
-    args.gpu = args.fed_rank % torch.cuda.device_count()
-    args.device = torch.device(args.gpu)
-    torch.cuda.set_device(args.gpu)
-else:
-    args.device = torch.device('cpu')
-
-print(f"Let's use {args.device}.")
-
 print('# >>> Network...')
-network = models.Mnist(num_classes=10, input_dim=784)
+network = build_model(args.task, **args.network_args)
 
 print("# >>> Move to device...")
 network = network.to(args.device)

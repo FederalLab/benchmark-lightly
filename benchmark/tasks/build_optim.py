@@ -70,7 +70,8 @@ def build_fedscaffold(parameters, lr, role, **kwargs):
         kwargs: other parameters for build optimizer.
     """
     optimizer = optim.SGD(parameters, lr=lr, **kwargs)
-    penalizer = openfed.optim.ScaffoldPenalizer(role)
+    penalizer = openfed.optim.ScaffoldPenalizer(
+        role, pack_set=['c_para'], unpack_set=['c_para'])
     fed_optimizer = openfed.optim.build_fed_optim(optimizer, penalizer)
 
     if openfed.core.is_leader(role):
@@ -79,3 +80,17 @@ def build_fedscaffold(parameters, lr, role, **kwargs):
         aggregator = None
 
     return fed_optimizer, aggregator
+
+def build_optim(name, *args, **kwargs):
+    if name == 'fedavg':
+        return build_fedavg(*args, **kwargs)
+    elif name == 'fedsgd':
+        return build_fedsgd(*args, **kwargs)
+    elif name == 'fedela':
+        return build_fedela(*args, **kwargs)
+    elif name == 'fedprox':
+        return build_fedprox(*args, **kwargs)
+    elif name == 'fedscaffold':
+        return build_fedscaffold(*args, **kwargs)
+    else:
+        raise ValueError('Unknown federated optimizer')

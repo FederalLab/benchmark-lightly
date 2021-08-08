@@ -28,7 +28,7 @@ from .base import Model
 from .utils import top_one_acc
 
 
-class StackOverFlow(Model):
+class Stackoverflow(Model):
     """Creates a RNN model using LSTM layers for StackOverFlow (next word prediction task).
         This replicates the model structure in the paper:
     "Adaptive Federated Optimization. ICML 2020" (https://arxiv.org/pdf/2003.00295.pdf)

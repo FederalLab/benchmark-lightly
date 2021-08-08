@@ -16,25 +16,12 @@ class AutoReducerJson(AutoReducer):
         super().__init__(reduce_keys, weight_key, ignore_keys)
 
         self.log_file = log_file
-        self.best_test_accuracy = 0.0
-        self.best_train_accuracy = 0.0
-
-        self.task_info_list = []
 
     def reduce(self) -> TaskInfo:
-        reduced_task_info = super().reduce()
+        r_task_info = super().reduce()
 
-        if reduced_task_info.train:
-            if reduced_task_info.accuracy > self.best_train_accuracy:
-                self.best_train_accuracy = reduced_task_info.accuracy
-        else:
-            if reduced_task_info.accuracy > self.best_test_accuracy:
-                self.best_test_accuracy = reduced_task_info.accuracy
         if self.log_file is not None:
-            with open(self.log_file, 'w') as f:
-                reduced_task_info["best_train_accuracy"] = self.best_train_accuracy
-                reduced_task_info["best_test_accuracy"] = self.best_test_accuracy
-                self.task_info_list.append(reduced_task_info)
-                json.dump(self.task_info_list, f)
+            with open(self.log_file, 'a') as f:
+                json.dump(r_task_info, f)
 
-        return reduced_task_info
+        return r_task_info

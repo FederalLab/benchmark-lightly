@@ -27,7 +27,7 @@ from .base import Model
 from .utils import top_one_acc
 
 
-class FEMNIST(Model):
+class Femnist(Model):
     """Used for classification.
         McMahan B, Moore E, Ramage D, et al. Communication-efficient learning of deep networks from decentralized data[C]//Artificial Intelligence and Statistics. PMLR, 2017: 1273-1282.
     """

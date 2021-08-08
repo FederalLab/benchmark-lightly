@@ -12,8 +12,6 @@ class Trainer(object):
         self.dataloader = dataloader
         self.device = next(self.model.parameters()).device
 
-        self.task_info = openfed.TaskInfo()
-
     def train_epoch(self, epoch=1):
         """Train model for several epochs. 
         Returns:
@@ -63,27 +61,19 @@ class Trainer(object):
 
         return toc - tic
 
-    @openfed.api.device_offline_care
-    def finish_training(self, **kwargs):
+    def finish_training(self, task_info):
         """
         Args: 
             kwargs: extra  information added to task info.
         """
         self.optimizer.round()
-
-        self.task_info.update(kwargs)
-
-        if not self.openfed_api.transfer(to=True, task_info=self.task_info):
+        self.openfed_api.update_version(task_info.version)
+        if not self.openfed_api.transfer(to=True, task_info=task_info):
             return False
         else:
             self.optimizer.clear_buffer()
             return True
 
-    @openfed.api.device_offline_care
-    def start_training(self):
-        if not self.openfed_api.transfer(to=False, task_info=self.task_info):
-            return False
-        else:
-            part_id = self.task_info.part_id  # type: ignore
-            self.dataloader.set_part_id(part_id)
-            return True
+    def start_training(self, task_info):
+        part_id = task_info.part_id  # type: ignore
+        self.dataloader.set_part_id(part_id)

@@ -1,7 +1,5 @@
 import time
 
-import openfed
-
 
 class Tester(object):
     def __init__(self, openfed_api, model, dataloader):
@@ -10,8 +8,6 @@ class Tester(object):
 
         self.dataloader = dataloader
         self.device = next(self.model.parameters()).device
-
-        self.task_info = openfed.TaskInfo()
 
     def test_epoch(self):
         """Train model for several epochs. 
@@ -35,24 +31,13 @@ class Tester(object):
         toc = time.time()
         return sum(accuracies)/len(accuracies), sum(losses)/len(losses), toc-tic
 
-    @openfed.api.device_offline_care
-    def finish_testing(self, **kwargs):
-        """
-        Args: 
-            kwargs: extra  information added to task info.
-        """
-        self.task_info.update(kwargs)
-
-        if not self.openfed_api.transfer(to=True, task_info=self.task_info):
+    def finish_testing(self, task_info):
+        self.openfed_api.update_version(task_info.version)
+        if not self.openfed_api.transfer(to=True, task_info=task_info):
             return False
         else:
             return True
 
-    @openfed.api.device_offline_care
-    def start_testing(self):
-        if not self.openfed_api.transfer(to=False, task_info=self.task_info):
-            return False
-        else:
-            part_id = self.task_info.part_id  # type: ignore
-            self.dataloader.set_part_id(part_id)
-            return True
+    def start_testing(self, task_info):
+        part_id = task_info.part_id  # type: ignore
+        self.dataloader.set_part_id(part_id)

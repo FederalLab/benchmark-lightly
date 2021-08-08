@@ -23,13 +23,11 @@
                 "1",
                 "--fed_world_size",
                 "2",
-                "--network_cfg", 
+                "--network_args", 
                 "input_dim:784",
                 "output_dim:10",
                 "--samples",
                 "10",
-                "--agg", 
-                "elastic",
             ]
         },
         {
@@ -43,13 +41,11 @@
                 "0",
                 "--fed_world_size",
                 "2",
-                "--network_cfg", 
+                "--network_args", 
                 "input_dim:784",
                 "output_dim:10",
                 "--samples",
                 "10",
-                "--agg", 
-                "elastic",
             ]
         }
     ]

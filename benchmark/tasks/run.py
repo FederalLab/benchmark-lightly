@@ -1,6 +1,5 @@
 # type: ignore
 import os
-from distutils.command.build import build
 
 sys.path.insert(0, "/Users/densechen/code/OpenFed")
 
@@ -285,7 +284,7 @@ if args.role == leader:
         weight_key='instances',
         reduce_keys=['accuracy', 'loss', 'duration', 'duration_acg'],
         ignore_keys=["part_id"],
-        log_file=os.path.join(args.log_dir, 'mnist.json'))
+        log_file=os.path.join(args.log_dir, f'{args.task}.json'))
 
     print("# >>> Container...")
     container = openfed.container.build_container(aggregator, auto_reducer)

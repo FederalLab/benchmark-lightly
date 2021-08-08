@@ -16,7 +16,7 @@
             "name": "Python: client",
             "type": "python",
             "request": "launch",
-            "program": "benchmark/tasks/run.py",
+            "program": "benchmark/run.py",
             "console": "integratedTerminal",
             "args": [
                 "--fed_rank",
@@ -33,7 +33,7 @@
             "name": "Python: server",
             "type": "python",
             "request": "launch",
-            "program": "benchmark/tasks/run.py",
+            "program": "benchmark/run.py",
             "console": "integratedTerminal",
             "args": [
                 "--fed_rank",

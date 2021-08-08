@@ -143,6 +143,10 @@ parser.add_argument('--log_dir',
                     type=str,
                     default=f'logs/',
                     help="The dir to log train and test information.")
+parser.add_argument('--exp_name', 
+                    type=str,
+                    default='default',
+                    help='The experiment name.')
 parser.add_argument('--pretrained',
                     type=str,
                     default='',
@@ -165,7 +169,10 @@ openfed.utils.seed_everything(args.seed)
 
 args.role = leader if args.fed_rank == 0 else follower
 
+args.log_dir = os.path.join(args.log_dir, args.task, args.exp_name)
+
 os.makedirs(args.log_dir, exist_ok=True)
+
 with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
     json.dump(args.__dict__, f)
 

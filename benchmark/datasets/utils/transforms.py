@@ -27,3 +27,10 @@ class FloatTensor(object):
 
     def __repr__(self):
         return self.__class__.__name__ + '()'
+
+class BinaryTensor(object):
+    def __call__(self, x):
+        return torch.tensor(x > 0).long()
+    
+    def __repr__(self):
+        return self.__class__.__name__ + '()'

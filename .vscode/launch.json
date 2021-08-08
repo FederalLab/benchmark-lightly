@@ -23,10 +23,12 @@
                 "1",
                 "--fed_world_size",
                 "2",
-                "--network_args", 
-                "input_dim:784",
+                "--task",
+                "celeba",
                 "--samples",
                 "10",
+                "--data_root",
+                "benchmark/datasets/celeba/data",
             ]
         },
         {
@@ -40,10 +42,12 @@
                 "0",
                 "--fed_world_size",
                 "2",
-                "--network_args", 
-                "input_dim:784",
+                "--task",
+                "celeba",
                 "--samples",
                 "10",
+                "--data_root",
+                "benchmark/datasets/celeba/data",
             ]
         }
     ]

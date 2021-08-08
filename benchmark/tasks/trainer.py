@@ -1,9 +1,5 @@
 import time
 
-import openfed
-from torch.utils.data import random_split
-
-
 class Trainer(object):
     def __init__(self, openfed_api, model, optimizer, dataloader):
         self.openfed_api = openfed_api

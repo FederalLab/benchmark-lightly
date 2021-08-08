@@ -4,7 +4,7 @@ os.sys.path.insert(0, '/Users/densechen/code/benchmark')
 from torchvision import transforms
 
 from benchmark.datasets.simulation_dataset import SimulationDataset
-from benchmark.datasets.utils.transforms import LoadImage, LongTensor
+from benchmark.datasets.utils.transforms import LoadImage, BinaryTensor
 
 IMAGE_SIZE = 84
 
@@ -13,11 +13,11 @@ def get_celeba(root, train: bool = True):
     transform = transforms.Compose(
         [
             LoadImage(os.path.join(root, 'raw', 'img_align_celeba')),
-            transforms.Resize(IMAGE_SIZE),
+            transforms.Resize([IMAGE_SIZE, IMAGE_SIZE]),
             transforms.ToTensor(),
         ]
     )
-    transform_target = LongTensor()
+    transform_target = BinaryTensor()
 
     data_root = os.path.join(root, 'train' if train else 'test')
 

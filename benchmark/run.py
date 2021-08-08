@@ -105,7 +105,7 @@ parser.add_argument('--sample_ratio',
                     )
 parser.add_argument('--test_samples',
                     type=int,
-                    default=None,
+                    default=10,
                     help="The number of parts used to test at each round. If not specified, use full test dataset.")
 parser.add_argument('--max_acg_step',
                     type=int,
@@ -117,7 +117,7 @@ parser.add_argument('--optim',
                     help='Specify fed optimizer.')
 parser.add_argument('--follower_lr',
                     type=float,
-                    default=1e-3,
+                    default=1e-2,
                     help='The learning rate of follower optimizer.')
 parser.add_argument('--leader_lr',
                     type=float,

@@ -318,7 +318,7 @@ with openfed_api:
 
     # A trigger to alarm aggregate operation
     openfed.hooks.Aggregate(
-        count=[samples, test_samples],
+        count=dict(train_phase=samples, test_phase=test_samples),
         checkpoint=args.ckpt)
 
     # Some post process after download.

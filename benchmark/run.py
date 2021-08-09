@@ -312,7 +312,7 @@ print('# >>> Register step functions...')
 with openfed_api:
     # Train samples at each round
     assert args.samples or args.sample_ratio
-    test_samples = test_dataset.total_parts if args.test_samples is None else args.test_samples
+    test_samples = test_dataset.total_parts if args.test_samples < 0 else args.test_samples
     samples = args.samples if args.samples is not None else int(
         train_dataset.total_parts * args.sample_ratio)
 

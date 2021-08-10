@@ -1,4 +1,5 @@
 import os
+from random import sample
 import sys
 
 sys.path.insert(0, "/Users/densechen/code/OpenFed")
@@ -12,12 +13,15 @@ from pprint import pprint
 
 import openfed
 import torch
+from openfed.core import World, follower, leader
+from openfed.tools import build_optim
+from torch.utils.data import DataLoader
+from openfed.container import AutoReducer
+
 from benchmark.datasets import build_dataset
 from benchmark.models import build_model
-from benchmark.tasks import Tester, Trainer, build_optim
-from benchmark.utils import AutoReducerJson, StoreDict
-from openfed.core import World, follower, leader
-from torch.utils.data import DataLoader
+from benchmark.tasks import Tester, Trainer
+from benchmark.utils import StoreDict
 
 parser = argparse.ArgumentParser("benchmark-lightly")
 
@@ -281,7 +285,7 @@ optimizer, aggregator = build_optim(
 
 if args.role == leader:
     print('# >>> AutoReducer...')
-    auto_reducer = AutoReducerJson(
+    auto_reducer = AutoReducer(
         weight_key='instances',
         reduce_keys=['accuracy', 'loss', 'duration', 'duration_acg'],
         ignore_keys=["part_id"],
@@ -315,22 +319,17 @@ with openfed_api:
     test_samples = test_dataset.total_parts if args.test_samples < 0 else args.test_samples
     samples = args.samples if args.samples is not None else int(
         train_dataset.total_parts * args.sample_ratio)
-
-    # A trigger to alarm aggregate operation
-    openfed.hooks.Aggregate(
-        count=dict(train_phase=samples, test_phase=test_samples),
-        checkpoint=args.ckpt)
-
-    # Some post process after download.
-    openfed.hooks.Download()
-    # The core step that arrange simulation process.
+        
     openfed.hooks.Dispatch(
-        samples=samples,
-        parts_list=train_dataset.total_parts,
-        test_samples=test_samples,
-        test_parts_list=test_dataset.total_parts)
-    # The condition to terminate the training process.
-    openfed.hooks.Terminate(max_version=args.rounds)
+        samples=dict(train=samples, test=test_samples),
+        parts_list=dict(
+            train=list(range(train_dataset.total_parts)), 
+            test=list(range(test_dataset.total_parts))),
+        count=dict(train_phase=samples, test_phase=samples),
+        checkpoint=args.ckpt,
+        max_version=args.rounds,
+    )
+
 
 print('# >>> Address...')
 address = openfed.build_address(
@@ -357,7 +356,7 @@ def follower_loop():
         if not openfed_api.transfer(to=False, task_info=task_info):
             break
 
-        if task_info.train:
+        if task_info.mode == 'train': # type: ignore
             trainer.start_training(task_info)
 
             duration_acg = trainer.acg_epoch(max_acg_step=args.max_acg_step)

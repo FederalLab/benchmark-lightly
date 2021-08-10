@@ -95,6 +95,8 @@
         "tippr",
         "tknzr",
         "tolist",
+        "tqdm",
+        "trange",
         "transcribersofreddit",
         "tuser",
         "unxz",

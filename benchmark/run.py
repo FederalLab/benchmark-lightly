@@ -294,8 +294,7 @@ optimizer, aggregator = build_optim(
 print('# >>> World...')
 world = World(
     role=args.role,
-    async_op='false',
-    dal=False,
+    dal=True,
     mtt=5,
 )
 print(world)

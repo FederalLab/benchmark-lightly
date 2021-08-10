@@ -1,5 +1,4 @@
 import os
-from random import sample
 import sys
 
 sys.path.insert(0, "/Users/densechen/code/OpenFed")
@@ -14,9 +13,9 @@ from pprint import pprint
 import openfed
 import torch
 from openfed.core import World, follower, leader
-from openfed.tools import build_optim
+from openfed.optim import AutoReducer
+from openfed.tools import build_optim, builder
 from torch.utils.data import DataLoader
-from openfed.container import AutoReducer
 
 from benchmark.datasets import build_dataset
 from benchmark.models import build_model
@@ -118,6 +117,7 @@ parser.add_argument('--max_acg_step',
 parser.add_argument('--optim',
                     type=str,
                     default='fedsgd',
+                    choices=list(builder.keys()),
                     help='Specify fed optimizer.')
 parser.add_argument('--follower_lr',
                     type=float,
@@ -275,26 +275,21 @@ else:
     last_rounds = ckpt['last_rounds']
     print(f"Loaded checkpoint from {ckpt_file}")
 
+print('# >>> AutoReducer...')
+auto_reducer = AutoReducer(
+    weight_key='instances',
+    reduce_keys=['accuracy', 'loss', 'duration', 'duration_acg'],
+    ignore_keys=["part_id"],
+    log_file=os.path.join(args.log_dir, f'{args.task}.json'))
+
 print('# >>> Federated Optimizer...')
 optimizer, aggregator = build_optim(
     args.optim,
     network.parameters(),
     lr=args.leader_lr if openfed.core.is_leader(
         args.role) else args.follower_lr,
-    role=args.role)
-
-if args.role == leader:
-    print('# >>> AutoReducer...')
-    auto_reducer = AutoReducer(
-        weight_key='instances',
-        reduce_keys=['accuracy', 'loss', 'duration', 'duration_acg'],
-        ignore_keys=["part_id"],
-        log_file=os.path.join(args.log_dir, f'{args.task}.json'))
-
-    print("# >>> Container...")
-    container = openfed.container.build_container(aggregator, auto_reducer) # type:ignore
-else:
-    container = None
+    role=args.role, 
+    reducer=auto_reducer)
 
 print('# >>> World...')
 world = World(
@@ -310,7 +305,7 @@ openfed_api = openfed.API(
     world=world,
     state_dict=network.state_dict(keep_vars=True),
     fed_optim=optimizer,
-    container=container)
+    aggregator=aggregator)
 
 print('# >>> Register step functions...')
 with openfed_api:

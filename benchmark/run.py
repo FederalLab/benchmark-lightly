@@ -13,7 +13,7 @@ from pprint import pprint
 import openfed
 import torch
 from openfed.core import World, follower, leader
-from openfed.optim import AutoReducer
+from openfed.optim import AutoReduceOp
 from openfed.tools import build_optim, builder
 from torch.utils.data import DataLoader
 
@@ -276,7 +276,7 @@ else:
     print(f"Loaded checkpoint from {ckpt_file}")
 
 print('# >>> AutoReducer...')
-auto_reducer = AutoReducer(
+auto_reducer = AutoReduceOp(
     weight_key='instances',
     reduce_keys=['accuracy', 'loss', 'duration', 'duration_acg'],
     ignore_keys=["part_id"],

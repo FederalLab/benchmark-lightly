@@ -7,7 +7,7 @@ def parser_json(lines):
     return [json.loads(line+'}') for line in lines.split('}') if len(line) > 0]
 
 
-def plot(files, labels, attributes="accuracy", train=True):
+def plot(files, labels, attributes="accuracy", mode='train'):
     if isinstance(files, str):
         files = [files]
     if isinstance(labels, str):
@@ -19,7 +19,7 @@ def plot(files, labels, attributes="accuracy", train=True):
         with open(file, 'r') as f:
             data = parser_json(f.read())
             for d in data:
-                if d['train'] == train:
+                if d['mode'] == mode:
                     x.append(d['version'])
                     y.append(d[attributes])
         xs.append(x)
@@ -29,7 +29,7 @@ def plot(files, labels, attributes="accuracy", train=True):
     plt.figure()
     for x, y, l in zip(xs, ys, labels):
         plt.plot(x, y, label=l)
-    plt.title(f'train {attributes} curve' if train else f'test {attributes} curve')
+    plt.title(f'train {attributes} curve' if mode else f'test {attributes} curve')
     plt.legend(loc="upper left")
     plt.show()
 

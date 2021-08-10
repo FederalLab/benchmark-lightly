@@ -29,7 +29,7 @@ def plot(files, labels, attributes="accuracy", train=True):
     plt.figure()
     for x, y, l in zip(xs, ys, labels):
         plt.plot(x, y, label=l)
-
+    plt.title(f'train {attributes} curve' if train else f'test {attributes} curve')
     plt.legend(loc="upper left")
     plt.show()
 

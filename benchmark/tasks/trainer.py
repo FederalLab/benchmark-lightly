@@ -1,6 +1,7 @@
 import time
 import os
 import torch
+import warnings
 
 class Trainer(object):
     def __init__(self, openfed_api, model, optimizer, dataloader, cache_folder: str = '/tmp'):
@@ -10,7 +11,10 @@ class Trainer(object):
         self.dataloader = dataloader
         self.device = next(self.model.parameters()).device
         self.cache_folder = cache_folder
-
+        # Remove cache folder
+        if os.path.exists(self.cache_folder):
+            warnings.warn(f'cache folder: ({cache_folder}) already exists, deleting it now.')
+            os.remove(self.cache_folder)
         os.makedirs(self.cache_folder, exist_ok=True)
 
     def train_epoch(self, epoch=1):

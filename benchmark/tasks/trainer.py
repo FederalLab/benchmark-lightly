@@ -1,12 +1,17 @@
 import time
+import os
+import torch
 
 class Trainer(object):
-    def __init__(self, openfed_api, model, optimizer, dataloader):
+    def __init__(self, openfed_api, model, optimizer, dataloader, cache_folder: str = '/tmp'):
         self.openfed_api = openfed_api
         self.model = model
         self.optimizer = optimizer
         self.dataloader = dataloader
         self.device = next(self.model.parameters()).device
+        self.cache_folder = cache_folder
+
+        os.makedirs(self.cache_folder, exist_ok=True)
 
     def train_epoch(self, epoch=1):
         """Train model for several epochs. 
@@ -43,8 +48,7 @@ class Trainer(object):
         tic = time.time()
         self.optimizer.max_acg_step = max_acg_step
 
-        self.optimizer.acg(self.model, self.dataloader,
-                           loss_fn=self.model.loss_fn, device=self.device)
+        self.optimizer.acg(self.model, self.dataloader)
         toc = time.time()
         return toc - tic
 
@@ -55,6 +59,12 @@ class Trainer(object):
         """
         self.optimizer.round()
         self.openfed_api.update_version(task_info.version)
+
+        part_id = task_info.part_id
+        # Save inner state of self.optimizer
+        cache_file = os.path.join(self.cache_folder, f"{part_id}.pth")
+        torch.save(self.optimizer.state_dict(), cache_file)
+
         if not self.openfed_api.transfer(to=True, task_info=task_info):
             return False
         else:
@@ -64,3 +74,10 @@ class Trainer(object):
     def start_training(self, task_info):
         part_id = task_info.part_id  # type: ignore
         self.dataloader.dataset.set_part_id(part_id)
+
+        # Load inner state of self.optimizer
+        # This step is vital for that some optimizers, such as fedscaffold
+        # need the previous state to continue training.
+        cache_file = os.path.join(self.cache_folder, f'{part_id}.pth')
+        if os.path.exists(cache_file):
+            self.optimizer.load_state_dict(torch.load(cache_file))

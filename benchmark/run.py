@@ -7,7 +7,6 @@ sys.path.insert(0, "/Users/densechen/code/benchmark")
 import argparse
 import json
 import time
-from glob import glob
 from pprint import pprint
 
 import openfed
@@ -316,7 +315,7 @@ openfed_api.build_connection(address=address)
 @openfed.api.device_offline_care
 def follower_loop():
     # build a trainer and tester
-    trainer = Trainer(openfed_api, network, optimizer, train_dataloader)
+    trainer = Trainer(openfed_api, network, optimizer, train_dataloader, cache_folder=f'/tmp/{args.task}')
     tester = Tester(openfed_api, network, test_dataloader)
     task_info = openfed.TaskInfo()
 

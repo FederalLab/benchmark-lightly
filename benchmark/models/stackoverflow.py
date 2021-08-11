@@ -49,19 +49,21 @@ class Stackoverflow(Model):
         super().__init__()
         # For pad/bos/eos/oov.
         extended_vocab_size = vocab_size + 3 + num_oov_buckets
+        
         self.word_embeddings = nn.Embedding(
             num_embeddings = extended_vocab_size,
             embedding_dim  = embedding_size,
             padding_idx    = 0)
+
         self.lstm = nn.LSTM(
             input_size  = embedding_size,
             hidden_size = latent_size,
             num_layers  = num_layers)
 
-        self.fc1 = nn.Linear(latent_size, embedding_size)
-        self.fc2 = nn.Linear(embedding_size, extended_vocab_size)
-
+        self.fc1     = nn.Linear(latent_size, embedding_size)
+        self.fc2     = nn.Linear(embedding_size, extended_vocab_size)
         self.loss_fn = nn.CrossEntropyLoss()
+
         self.accuracy_fn  = top_one_acc
 
     def forward(self, input_seq, hidden_state=None):

@@ -41,3 +41,12 @@ i.e.
     (examples based on [Sentiment140 website](http://help.sentiment140.com/for-students/))
 - Run ```./stats.sh``` to get statistics of data (data/all_data/all_data.json must have been generated already)
 - In order to run reference implementations in ```../models``` directory, the ```-t sample``` tag must be used when running ```./preprocess.sh```
+
+## Test
+
+```bash
+python benchmark/datasets/sent140/sent140.py benchmark/datasets/sent140/data
+>>> Sent140(total_parts: 254555, total_samples: 908652, current_parts: 0)
+>>> vocab size: 400000
+>>> torch.Size([400000]) torch.Size([2])
+```

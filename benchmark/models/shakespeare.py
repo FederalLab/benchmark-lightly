@@ -41,7 +41,10 @@ class Shakespeare(Model):
         An un-compiled `torch.nn.Module`.
     """
 
-    def __init__(self, embedding_dim=8, vocab_size=90, hidden_size=256):
+    def __init__(self, 
+        embedding_dim: int = 80,
+        vocab_size   : int = 80,
+        hidden_size  : int = 256):
         super().__init__()
         self.embeddings = nn.Embedding(
             num_embeddings = vocab_size,
@@ -53,7 +56,6 @@ class Shakespeare(Model):
             num_layers  = 2,
             batch_first = True)
         self.logits = nn.Linear(hidden_size, vocab_size)
-
 
         self.loss_fn = nn.CrossEntropyLoss()
         self.accuracy_fn  = top_one_acc

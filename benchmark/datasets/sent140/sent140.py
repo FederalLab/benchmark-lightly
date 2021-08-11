@@ -15,7 +15,7 @@ class Sent140(SimulationDataset):
     max_words: int = 25
     num_classes: int = 2
 
-    def __init__(self, *args, task:str='bag_log_reg', **kwargs):
+    def __init__(self, *args, task: str = 'bag_log_reg', **kwargs):
         assert task in ['bag_log_reg', 'stacked_lstm']
         super().__init__(*args, **kwargs)
         self.task = task
@@ -42,11 +42,14 @@ class Sent140(SimulationDataset):
             y = self.transform_target(y)
         return x, y
 
-def get_sent140(root, train: bool = True):
+def get_sent140(root, task:str='bag_log_reg', train: bool = True):
 
     data_root = os.path.join(root, 'train' if train else 'test')
 
-    return Sent140(data_root, FloatTensor(), LongTensor())
+    return Sent140(data_root, 
+        task=task, 
+        transform=FloatTensor(), 
+        transform_target=LongTensor())
 
 
 if __name__ == '__main__':
@@ -56,6 +59,7 @@ if __name__ == '__main__':
     dataset = get_sent140(root=args.root, train=True)
 
     print(dataset)
+    print(f"vocab size: {dataset.vocab_size}")
 
     # fetch data
     x, y = dataset[0]

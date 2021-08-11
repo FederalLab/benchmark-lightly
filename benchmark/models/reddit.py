@@ -14,12 +14,21 @@ class Reddit(Model):
         An uncompiled `torch.nn.Module`.
     """
 
-    def __init__(self, embedding_dim=8, vocab_size=90, hidden_size=256):
+    def __init__(self, 
+                embedding_dim: int = 10,
+                vocab_size   : int = 10000,
+                hidden_size  : int = 256,
+            ):
         super().__init__()
         self.embeddings = nn.Embedding(
-            num_embeddings=vocab_size, embedding_dim=embedding_dim, padding_idx=0)
-        self.lstm = nn.LSTM(input_size=embedding_dim,
-                            hidden_size=hidden_size, num_layers=2, batch_first=True)
+            num_embeddings = vocab_size,
+            embedding_dim  = embedding_dim,
+            padding_idx    = 0)
+        self.lstm = nn.LSTM(
+            input_size  = embedding_dim,
+            hidden_size = hidden_size,
+            num_layers  = 2,
+            batch_first = True)
         self.logits = nn.Linear(hidden_size, vocab_size)
 
 

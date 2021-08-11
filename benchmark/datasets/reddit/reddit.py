@@ -57,6 +57,7 @@ if __name__ == '__main__':
     dataset = get_reddit(root=args.root, mode='val')
 
     print(dataset)
+    print(f"vocab size: {dataset.vocab_size}")
 
     # fetch data
     x, y = dataset[0]

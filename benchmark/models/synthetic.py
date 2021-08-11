@@ -5,12 +5,14 @@ from .utils import top_one_acc
 
 
 class Synthetic(Model):
-    def __init__(self, num_classes, input_dim):
+    def __init__(self, 
+        num_classes: int = 5,
+        input_dim  : int = 60):
         super().__init__()
 
-        self.logits = nn.Linear(input_dim, num_classes)
+        self.logits  = nn.Linear(input_dim, num_classes)
+        self.loss_fn = nn.CrossEntropyLoss()
 
-        self.loss_fn     = nn.CrossEntropyLoss()
         self.accuracy_fn = top_one_acc
 
     def forward(self, x):

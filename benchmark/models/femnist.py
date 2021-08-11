@@ -32,7 +32,7 @@ class Femnist(Model):
         McMahan B, Moore E, Ramage D, et al. Communication-efficient learning of deep networks from decentralized data[C]//Artificial Intelligence and Statistics. PMLR, 2017: 1273-1282.
     """
 
-    def __init__(self, only_digits: bool = True):
+    def __init__(self, num_classes: int = 62):
         super().__init__()
 
         self.conv1 = nn.Sequential(
@@ -54,7 +54,7 @@ class Femnist(Model):
             nn.ReLU()
         )
 
-        self.logits = nn.Linear(512, 10 if only_digits else 62)
+        self.logits = nn.Linear(512, num_classes)
 
         self.loss_fn = nn.CrossEntropyLoss()
         self.accuracy_fn = top_one_acc

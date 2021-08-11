@@ -12,7 +12,7 @@ from pprint import pprint
 
 import openfed
 import torch
-from openfed.core import World, follower, leader, is_leader
+from openfed.core import World, follower, is_leader, leader
 from openfed.optim import AutoReduceOp
 from openfed.tools import build_optim, builder
 from torch.utils.data import DataLoader
@@ -96,20 +96,29 @@ parser.add_argument('--rounds',
                     type=int,
                     default=10,
                     help='The total rounds for federated training.')
-parser.add_argument('--samples',
+parser.add_argument('--act_clts',
+                    '--activated_clients',
                     type=int,
                     default=None,
                     help='The number of parts used to train at each round.')
-parser.add_argument('--sample_ratio',
+parser.add_argument('--act_clts_rat',
+                    '--activated_clients_ratio',
                     type=float,
-                    default=None,
+                    default=1.0,
                     help="The portion of parts used to train at each time, in [0, 1]."
-                    "If `samples` set at the same time, this flag will be ignored."
                     )
-parser.add_argument('--test_samples',
+parser.add_argument('--tst_act_clts',
+                    '--test_activated_clients',
                     type=int,
                     default=10,
-                    help="The number of parts used to test at each round. If not specified, use full test dataset.")
+                    help="The number of parts used to test at each round."
+                        "If not specified, use full test dataset.")
+parser.add_argument('--tst_act_clts_rat',
+                    '--test_activated_clients_ratio',
+                    type=float,
+                    default=1.0,
+                    help="The portion of parts used to train at each time, in [0, 1]."
+                    )
 parser.add_argument('--max_acg_step',
                     type=int,
                     default=-1,
@@ -119,11 +128,13 @@ parser.add_argument('--optim',
                     default='fedsgd',
                     choices=list(builder.keys()),
                     help='Specify fed optimizer.')
-parser.add_argument('--follower_lr',
+parser.add_argument('--fl_lr',
+                    '--follower_lr',
                     type=float,
                     default=1e-2,
                     help='The learning rate of follower optimizer.')
-parser.add_argument('--leader_lr',
+parser.add_argument('--ld_lr',
+                    '--leader_lr',
                     type=float,
                     default=1.0,
                     help='The learning rate of leader optimizer.')
@@ -151,15 +162,6 @@ parser.add_argument('--exp_name',
                     type=str,
                     default='default',
                     help='The experiment name.')
-parser.add_argument('--pretrained',
-                    type=str,
-                    default='',
-                    help='The path to pretrained model.')
-parser.add_argument('--ckpt',
-                    type=str,
-                    default='',
-                    help='The folder to save checkpoints.')
-
 parser.add_argument('--seed',
                     type=int,
                     default=0,
@@ -167,7 +169,7 @@ parser.add_argument('--seed',
 
 args = parser.parse_args()
 
-print('# >>> Set log level...')
+print('>>> Set log level...')
 openfed.logger.log_level(level=args.log_level)
 openfed.utils.seed_everything(args.seed)
 
@@ -181,7 +183,7 @@ if is_leader(args.role):
     with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
         json.dump(args.__dict__, f)
 
-print('# >>> Device...')
+print('>>> Device...')
 if args.gpu and torch.cuda.is_available():
     args.gpu = args.fed_rank % torch.cuda.device_count()
     args.device = torch.device(args.gpu)
@@ -193,7 +195,7 @@ pprint(args.__dict__)
 
 print(f"Let's use {args.device}.")
 
-print("# >>> Dataset...")
+print(">>> Dataset...")
 
 if args.task == 'mnist':
     if args.partition == 'iid':
@@ -224,7 +226,7 @@ train_dataset = build_dataset(
 test_dataset = build_dataset(
     args.task, root=args.data_root, **test_args, **args.dataset_args)
 
-print('# >>> DataLoader...')
+print('>>> DataLoader...')
 train_dataloader = DataLoader(
     train_dataset,
     batch_size=args.bz,
@@ -238,61 +240,29 @@ test_dataloader = DataLoader(
     num_workers=0,
     drop_last=False)
 
-print('# >>> Network...')
+print('>>> Network...')
 network = build_model(args.task, **args.network_args)
 pprint(network)
 
-print("# >>> Move to device...")
+print(">>> Move to device...")
 network = network.to(args.device)
 
-print('# >>> Try to load pretrained model...')
-if os.path.exists(args.pretrained):
-    pretrained = torch.load(args.pretrained)
-    if 'state_dict' in pretrained:
-        state_dict = pretrained['state_dict']
-    else:
-        state_dict = pretrained
-    network.load_state_dict(state_dict)
-    print(f"Loaded pretrained model from {args.pretrained}")
-
-print('# >>> Try to load checkpoint...')
-# get the latest checkpoint name
-ckpt_files = glob(os.path.join(args.ckpt))
-if len(ckpt_files) == 0:
-    print("No checkpoint found.")
-    last_rounds = -1
-else:
-    versions = [int(n.split('.')[-1]) for n in ckpt_files]
-    latest_vertion = max(versions)
-    i = 0
-    for i, v in enumerate(versions):
-        if v == latest_vertion:
-            break
-    ckpt_file = ckpt_files[i]
-
-    # Load checkpoint
-    ckpt = torch.load(ckpt_file)
-    network.load_state_dict(ckpt['state_dict'])
-    last_rounds = ckpt['last_rounds']
-    print(f"Loaded checkpoint from {ckpt_file}")
-
-print('# >>> AutoReducer...')
+print('>>> AutoReducer...')
 auto_reducer = AutoReduceOp(
     weight_key='instances',
     reduce_keys=['accuracy', 'loss', 'duration', 'duration_acg'],
     ignore_keys=["part_id"],
     log_file=os.path.join(args.log_dir, f'{args.task}.json'))
 
-print('# >>> Federated Optimizer...')
+print('>>> Federated Optimizer...')
 optimizer, aggregator = build_optim(
     args.optim,
     network.parameters(),
-    lr=args.leader_lr if openfed.core.is_leader(
-        args.role) else args.follower_lr,
+    lr=args.ld_lr if is_leader(args.role) else args.fl_lr,
     role=args.role, 
     reducer=auto_reducer)
 
-print('# >>> World...')
+print('>>> World...')
 world = World(
     role=args.role,
     dal=True,
@@ -300,33 +270,36 @@ world = World(
 )
 print(world)
 
-print('# >>> API...')
+print('>>> API...')
 openfed_api = openfed.API(
     world=world,
     state_dict=network.state_dict(keep_vars=True),
     fed_optim=optimizer,
     aggregator=aggregator)
 
-print('# >>> Register step functions...')
-with openfed_api:
-    # Train samples at each round
-    assert args.samples or args.sample_ratio
-    test_samples = test_dataset.total_parts if args.test_samples < 0 else args.test_samples
-    samples = args.samples if args.samples is not None else int(
-        train_dataset.total_parts * args.sample_ratio)
-        
+print('>>> Register step functions...')
+with openfed_api: 
+    parts_list=list(range(train_dataset.total_parts))
+    act_clts = args.act_clts if args.act_clts is not None else\
+        int(len(parts_list) * args.act_clts_rat)
+
+    tst_parts_list = list(range(test_dataset.total_parts))
+    tst_act_clts = args.tst_act_clts if args.tst_act_clts is not None else\
+        int(len(tst_parts_list) * args.tst_act_clts_rat)
+
     openfed.hooks.Dispatch(
-        samples=dict(train=samples, test=test_samples),
+        activated_parts=dict(
+            train=act_clts,
+            test=tst_act_clts,
+        ),
         parts_list=dict(
-            train=list(range(train_dataset.total_parts)), 
-            test=list(range(test_dataset.total_parts))),
-        count=dict(train_phase=samples, test_phase=samples),
-        checkpoint=args.ckpt,
+            train=parts_list, 
+            test=tst_parts_list),
         max_version=args.rounds,
     )
 
 
-print('# >>> Address...')
+print('>>> Address...')
 address = openfed.build_address(
     backend=args.fed_backend,
     init_method=args.fed_init_method,
@@ -334,9 +307,9 @@ address = openfed.build_address(
     rank=args.fed_rank,
     group_name=args.fed_group_name,
 )
-print(address)
+pprint(address)
 
-print("# >>> Connecting...")
+print(">>> Connecting...")
 openfed_api.build_connection(address=address)
 
 
@@ -390,7 +363,7 @@ def follower_loop():
 # Otherwise, will use the default one which shared by global OpenFed world.
 if openfed_api.leader:
     openfed_api.run()
-    print('# >>> Finished.')
+    print('>>> Finished.')
     openfed_api.finish()
     # Wait all nodes to exit.
     time.sleep(1.0)

@@ -13,8 +13,7 @@ class Trainer(object):
         self.cache_folder = cache_folder
         # Remove cache folder
         if os.path.exists(self.cache_folder):
-            warnings.warn(f'cache folder: ({cache_folder}) already exists, deleting it now.')
-            os.remove(self.cache_folder)
+            warnings.warn(f'cache folder: ({cache_folder}) already exists.')
         os.makedirs(self.cache_folder, exist_ok=True)
 
     def train_epoch(self, epoch=1):

@@ -331,12 +331,12 @@ def follower_loop():
             acc, loss, duration = trainer.train_epoch(epoch=args.epochs)
 
             train_info = dict(
-                accuracy=acc,
-                loss=loss,
-                duration=duration,
-                duration_acg=duration_acg,
-                version = task_info.version + 1, # type: ignore
-                instances = len(trainer.dataloader.dataset), # type: ignore
+                accuracy     = acc,
+                loss         = loss,
+                duration     = duration,
+                duration_acg = duration_acg,
+                version      = task_info.version + 1,           # type: ignore
+                instances    = len(trainer.dataloader.dataset), # type: ignore
             )
 
             task_info.update(train_info)

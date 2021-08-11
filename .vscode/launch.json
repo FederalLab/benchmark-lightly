@@ -31,6 +31,8 @@
                 "10",
                 "--data_root",
                 "benchmark/datasets/celeba/data",
+                "--optim",
+                "fedela",
             ]
         },
         {
@@ -52,6 +54,8 @@
                 "10",
                 "--data_root",
                 "benchmark/datasets/celeba/data",
+                "--optim",
+                "fedela",
             ]
         }
     ]

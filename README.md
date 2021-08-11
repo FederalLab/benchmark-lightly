@@ -29,15 +29,14 @@ python benchmark/datasets/mnist/mnist.py benchmark/datasets/mnist/data
 
 # Do a simple test
 rm -rf /tmp/mnist.share
-python -m openfed.tools.launch --nproc_per_node 6  --logdir /tmp benchmark/run.py --fed_init_method file:///tmp/mnist.share --network_args input_dim:784 --samples 10 --gpu
-```
+python -m openfed.tools.launch --nproc_per_node 6  --logdir /tmp benchmark/run.py --fed_init_method file:///tmp/mnist.share --network_args input_dim:784 --act_clts 10 --gpu
 
 ## Debug
 
 ```bash
 # Client
-python benchmark/run.py --fed_rank 1 --fed_world_size 2 --task celeba --act_clts 10 --tst_act_clts 10 --data_root benchmark/datasets/celeba/data
+python benchmark/run.py --fed_rank 1 --fed_world_size 2 --task celeba --act_clts 10 --tst_act_clts 10 --data_root benchmark/datasets/celeba/data --optim fedscaffold
 
 # Server
-python benchmark/run.py --fed_rank 0 --fed_world_size 2 --task celeba --act_clts 10 --tst_act_clts 10 --data_root benchmark/datasets/celeba/data
+python benchmark/run.py --fed_rank 0 --fed_world_size 2 --task celeba --act_clts 10 --tst_act_clts 10 --data_root benchmark/datasets/celeba/data --optim fedscaffold
 ```

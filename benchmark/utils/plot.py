@@ -29,8 +29,8 @@ def plot(files, labels, attributes="accuracy", mode='train'):
     plt.figure()
     for x, y, l in zip(xs, ys, labels):
         plt.plot(x, y, label=l)
-    plt.title(f'train {attributes} curve' if mode else f'test {attributes} curve')
-    plt.legend(loc="upper left")
+    plt.title(f'{mode} {attributes} curve')
+    plt.legend(loc="lower right" if attributes == 'accuracy' else "upper right")
     plt.show()
 
 

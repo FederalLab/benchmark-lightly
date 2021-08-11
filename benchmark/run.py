@@ -12,7 +12,7 @@ from pprint import pprint
 
 import openfed
 import torch
-from openfed.core import World, follower, leader
+from openfed.core import World, follower, leader, is_leader
 from openfed.optim import AutoReduceOp
 from openfed.tools import build_optim, builder
 from torch.utils.data import DataLoader
@@ -177,8 +177,9 @@ args.log_dir = os.path.join(args.log_dir, args.task, args.exp_name)
 
 os.makedirs(args.log_dir, exist_ok=True)
 
-with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
-    json.dump(args.__dict__, f)
+if is_leader(args.role):
+    with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
+        json.dump(args.__dict__, f)
 
 print('# >>> Device...')
 if args.gpu and torch.cuda.is_available():

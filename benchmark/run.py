@@ -1,3 +1,4 @@
+from ast import Store
 import os
 import sys
 
@@ -76,9 +77,18 @@ parser.add_argument('--partition',
                     help='How to split the dataset into different parts.'
                     'Only be used with not federated dataset, such as mnist.'
                     )
+parser.add_argument('--partition_args', 
+                    nargs='+',
+                    action=StoreDict,
+                    default=dict(),
+                    help="extra partition args passed in.")
 parser.add_argument('--num_parts',
                     type=int,
                     default=100,
+                    help='The number of the parts to split into.')
+parser.add_argument('--tst_num_parts',
+                    type=int,
+                    default=-1,
                     help='The number of the parts to split into.')
 parser.add_argument('--dataset_args',
                     nargs='+',
@@ -98,7 +108,7 @@ parser.add_argument('--rounds',
 parser.add_argument('--act_clts',
                     '--activated_clients',
                     type=int,
-                    default=None,
+                    default=10,
                     help='The number of parts used to train at each round.')
 parser.add_argument('--act_clts_rat',
                     '--activated_clients_ratio',
@@ -127,6 +137,12 @@ parser.add_argument('--optim',
                     default='fedsgd',
                     choices=list(builder.keys()),
                     help='Specify fed optimizer.')
+parser.add_argument('--optim_args',
+                    nargs='+',
+                    action=StoreDict,
+                    default=dict(),
+                    help="extra optim args passed in."
+                    )
 parser.add_argument('--fl_lr',
                     '--follower_lr',
                     type=float,
@@ -168,6 +184,8 @@ parser.add_argument('--seed',
 
 args = parser.parse_args()
 
+args.tst_num_parts = args.tst_num_parts if args.tst_num_parts > 0 else args.fed_world_size-1
+
 print('>>> Set log level...')
 openfed.logger.log_level(level=args.log_level)
 openfed.utils.seed_everything(args.seed)
@@ -200,9 +218,9 @@ if args.task == 'mnist':
     if args.partition == 'iid':
         partitioner = openfed.data.IIDPartitioner()
     elif args.partition == 'dirichlet':
-        partitioner = openfed.data.DirichletPartitioner()
+        partitioner = openfed.data.DirichletPartitioner(**args.partition_args)
     elif args.partition == 'power-law':
-        partitioner = openfed.data.PowerLawPartitioner()
+        partitioner = openfed.data.PowerLawPartitioner(**args.partition_args)
     else:
         raise NotImplementedError
     train_args = dict(
@@ -210,7 +228,7 @@ if args.task == 'mnist':
         partitioner=partitioner
     )
     test_args = dict(
-        total_parts=args.num_parts,
+        total_parts=args.tst_num_parts,
         partitioner=partitioner,
     )
 elif args.task == 'reddit':
@@ -259,7 +277,12 @@ optimizer, aggregator = build_optim(
     network.parameters(),
     lr=args.ld_lr if is_leader(args.role) else args.fl_lr,
     role=args.role, 
-    reducer=auto_reducer)
+    reducer=auto_reducer,
+    **args.optim_args if is_leader(args.role) else dict())
+
+print(">>> Lr Scheduler...")
+lr_scheduler = \
+    torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.rounds)
 
 print('>>> World...')
 world = World(
@@ -279,13 +302,18 @@ openfed_api = openfed.API(
 print('>>> Register step functions...')
 with openfed_api: 
     parts_list=list(range(train_dataset.total_parts))
-    act_clts = args.act_clts if args.act_clts is not None else\
+    act_clts = args.act_clts if args.act_clts > 0 else\
         int(len(parts_list) * args.act_clts_rat)
 
     tst_parts_list = list(range(test_dataset.total_parts))
-    tst_act_clts = args.tst_act_clts if args.tst_act_clts is not None else\
+    tst_act_clts = args.tst_act_clts if args.tst_act_clts > 0 else\
         int(len(tst_parts_list) * args.tst_act_clts_rat)
 
+    print(f"Train Part: {len(parts_list)}")
+    print(f"Activated Train Part: {act_clts}")
+    print(f"Test Part: {len(tst_parts_list)}")
+    print(f"Activated Test Part: {tst_act_clts}")
+    
     openfed.hooks.Dispatch(
         activated_parts=dict(
             train=act_clts,
@@ -295,6 +323,7 @@ with openfed_api:
             train=parts_list, 
             test=tst_parts_list),
         max_version=args.rounds,
+        clip_grad_norm=1.0,
     )
 
 
@@ -343,6 +372,7 @@ def follower_loop():
             task_info.update(train_info)
 
             trainer.finish_training(task_info)
+            lr_scheduler.step(task_info.version) # type: ignore
         else:
             tester.start_testing(task_info)
 

@@ -1,5 +1,7 @@
 # A high speed simulation benchmark of federated learning
 
+Under development. Coming soon...
+
 This simulation benchmark can do federated learning within a single node with/without GPU.
 
 ## Setup

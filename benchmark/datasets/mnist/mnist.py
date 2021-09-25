@@ -7,8 +7,8 @@
 import argparse
 import os
 
-from openfed.data import (Analysis, IIDPartitioner, Partitioner,
-                          PartitionerDataset)
+from openfed.data import (IIDPartitioner, Partitioner, PartitionerDataset,
+                          samples_distribution)
 from torchvision.datasets import MNIST
 from torchvision.transforms import ToTensor
 
@@ -29,4 +29,4 @@ if __name__ == '__main__':
     parser.add_argument('root', type=str, help='root directory')
     args = parser.parse_args()
     dataset = get_mnist(root=args.root, train=True, total_parts=100)
-    Analysis.digest(dataset)
+    samples_distribution(dataset)

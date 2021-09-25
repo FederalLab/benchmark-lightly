@@ -1,5 +1,7 @@
 # A high speed simulation benchmark of federated learning
 
+Under development. Coming soon...
+
 This simulation benchmark can do federated learning within a single node with/without GPU.
 
 ## Setup
@@ -39,4 +41,17 @@ python benchmark/run.py --fed_rank 1 --fed_world_size 2 --task celeba --act_clts
 
 # Server
 python benchmark/run.py --fed_rank 0 --fed_world_size 2 --task celeba --act_clts 10 --tst_act_clts 10 --data_root benchmark/datasets/celeba/data --optim fedscaffold
+```
+
+## Citation
+
+If you find this project useful in your research, please consider cite:
+
+```
+@misc{OpenFed,
+Author = {Chen Dengsheng},
+Title = {OpenFed: An Open-Source Security and Privacy Guaranteed Federated Learning Framework},
+Year = {2021},
+Eprint = {arXiv:2109.07852},
+}
 ```

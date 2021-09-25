@@ -1,3 +1,8 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:24:27
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:24:27
+# Copyright (c) FederalLab. All rights reserved.
 """Builds vocabulary file from data."""
 
 import argparse
@@ -15,7 +20,7 @@ def build_counter(train_data, initial_counter=None):
 
     all_tokens = []
     for i in train_tokens:
-        all_tokens.extend(i)    
+        all_tokens.extend(i)
     train_tokens = []
 
     if initial_counter is None:
@@ -32,7 +37,8 @@ def build_counter(train_data, initial_counter=None):
 def build_vocab(counter, vocab_size=10000):
     pad_symbol, unk_symbol = 0, 1
     count_pairs = sorted(counter.items(), key=lambda x: (-x[1], x[0]))
-    count_pairs = count_pairs[:(vocab_size - 2)] # -2 to account for the unknown and pad symbols
+    count_pairs = count_pairs[:(
+        vocab_size - 2)]  # -2 to account for the unknown and pad symbols
 
     words, _ = list(zip(*count_pairs))
 
@@ -44,20 +50,26 @@ def build_vocab(counter, vocab_size=10000):
         if w != '<PAD>':
             vocab[w] = i + 1
 
-    return {'vocab': vocab, 'size': vocab_size, 'unk_symbol': unk_symbol, 'pad_symbol': pad_symbol}
+    return {
+        'vocab': vocab,
+        'size': vocab_size,
+        'unk_symbol': unk_symbol,
+        'pad_symbol': pad_symbol
+    }
 
 
 def load_leaf_data(file_path):
     with open(file_path) as json_file:
-        data   = json.load(json_file)
+        data = json.load(json_file)
         to_ret = data['user_data']
-        data   = None
+        data = None
     return to_ret
 
 
 def save_vocab(vocab, target_dir):
     os.makedirs(target_dir, exist_ok=True)
-    pickle.dump(vocab, open(os.path.join(target_dir, 'reddit_vocab.pck'), 'wb'))
+    pickle.dump(vocab, open(os.path.join(target_dir, 'reddit_vocab.pck'),
+                            'wb'))
 
 
 def main():
@@ -86,20 +98,20 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--data-dir', 
-        help     = 'dir with training file;',
-        type     = str,
-        required = True)
-    parser.add_argument('--vocab-size', 
-        help     = 'size of the vocabulary;',
-        type     = int,
-        default  = 10000,
-        required = False)
-    parser.add_argument('--target-dir', 
-        help     = 'dir with training file;',
-        type     = str,
-        default  = './',
-        required = False)
+    parser.add_argument('--data-dir',
+                        help='dir with training file;',
+                        type=str,
+                        required=True)
+    parser.add_argument('--vocab-size',
+                        help='size of the vocabulary;',
+                        type=int,
+                        default=10000,
+                        required=False)
+    parser.add_argument('--target-dir',
+                        help='dir with training file;',
+                        type=str,
+                        default='./',
+                        required=False)
 
     return parser.parse_args()
 

@@ -1,3 +1,8 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:32:08
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:32:08
+# Copyright (c) FederalLab. All rights reserved.
 '''
 Creates .pkl files for:
 1. list of directories of every image in 'by_class'
@@ -12,64 +17,61 @@ import sys
 
 from benchmark.datasets.femnist.preprocess.utils import save_obj
 
-utils_dir = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
+utils_dir = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 utils_dir = os.path.join(utils_dir, 'utils')
 sys.path.append(utils_dir)
-
 
 parent_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 class_files = []  # (class, file directory)
 write_files = []  # (writer, file directory)
 
-class_dir     = os.path.join(parent_path, 'data', 'raw_data', 'by_class')
+class_dir = os.path.join(parent_path, 'data', 'raw_data', 'by_class')
 rel_class_dir = os.path.join('data', 'raw_data', 'by_class')
-classes       = os.listdir(class_dir)
-classes       = [c for c in classes if len(c) == 2]
+classes = os.listdir(class_dir)
+classes = [c for c in classes if len(c) == 2]
 
-for cl in classes: 
-    cldir     = os.path.join(class_dir, cl)
+for cl in classes:
+    cldir = os.path.join(class_dir, cl)
     rel_cldir = os.path.join(rel_class_dir, cl)
-    subcls    = os.listdir(cldir)
+    subcls = os.listdir(cldir)
 
     subcls = [s for s in subcls if (('hsf' in s) and ('mit' not in s))]
 
     for subcl in subcls:
-        subcldir     = os.path.join(cldir, subcl)
+        subcldir = os.path.join(cldir, subcl)
         rel_subcldir = os.path.join(rel_cldir, subcl)
-        images       = os.listdir(subcldir)
+        images = os.listdir(subcldir)
         image_dirs = [os.path.join(rel_subcldir, i) for i in images]
 
         for image_dir in image_dirs:
             class_files.append((cl, image_dir))
 
-write_dir     = os.path.join(parent_path, 'data', 'raw_data', 'by_write')
+write_dir = os.path.join(parent_path, 'data', 'raw_data', 'by_write')
 rel_write_dir = os.path.join('data', 'raw_data', 'by_write')
-write_parts   = os.listdir(write_dir)
+write_parts = os.listdir(write_dir)
 
 for write_part in write_parts:
-    writers_dir     = os.path.join(write_dir, write_part)
+    writers_dir = os.path.join(write_dir, write_part)
     rel_writers_dir = os.path.join(rel_write_dir, write_part)
-    writers         = os.listdir(writers_dir)
+    writers = os.listdir(writers_dir)
 
     for writer in writers:
-        writer_dir     = os.path.join(writers_dir, writer)
+        writer_dir = os.path.join(writers_dir, writer)
         rel_writer_dir = os.path.join(rel_writers_dir, writer)
-        wtypes         = os.listdir(writer_dir)
+        wtypes = os.listdir(writer_dir)
 
         for wtype in wtypes:
-            type_dir     = os.path.join(writer_dir, wtype)
+            type_dir = os.path.join(writer_dir, wtype)
             rel_type_dir = os.path.join(rel_writer_dir, wtype)
-            images       = os.listdir(type_dir)
-            image_dirs   = [os.path.join(rel_type_dir, i) for i in images]
+            images = os.listdir(type_dir)
+            image_dirs = [os.path.join(rel_type_dir, i) for i in images]
 
             for image_dir in image_dirs:
                 write_files.append((writer, image_dir))
 
-save_obj(
-    class_files,
-    os.path.join(parent_path, 'data', 'intermediate', 'class_file_dirs'))
-save_obj(
-    write_files,
-    os.path.join(parent_path, 'data', 'intermediate', 'write_file_dirs'))
+save_obj(class_files,
+         os.path.join(parent_path, 'data', 'intermediate', 'class_file_dirs'))
+save_obj(write_files,
+         os.path.join(parent_path, 'data', 'intermediate', 'write_file_dirs'))

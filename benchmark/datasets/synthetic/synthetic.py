@@ -1,6 +1,11 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:25:44
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:25:44
+# Copyright (c) FederalLab. All rights reserved.
 import argparse
 import os
-os.sys.path.insert(0, '/Users/densechen/code/benchmark')
+
 from torchvision import transforms
 
 from benchmark.datasets.simulation_dataset import SimulationDataset

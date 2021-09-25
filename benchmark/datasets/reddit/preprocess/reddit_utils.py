@@ -1,26 +1,30 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:32:53
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:32:53
+# Copyright (c) FederalLab. All rights reserved.
 import html
 import re
 
 from nltk.tokenize import TweetTokenizer
 
-URL_TOKEN       = '<URL>'
-USER_TOKEN      = '<USER>'
+URL_TOKEN = '<URL>'
+USER_TOKEN = '<USER>'
 SUBREDDIT_TOKEN = '<SUBREDDIT>'
 
-URL_REGEX       = r'http\S+'
-USER_REGEX      = r'(?:\/?u\/\w+)'
+URL_REGEX = r'http\S+'
+USER_REGEX = r'(?:\/?u\/\w+)'
 SUBREDDIT_REGEX = r'(?:\/?r\/\w+)'
 
 
 class RedditComment:
-
     def __init__(self, reddit_dict):
-        self.body         = reddit_dict['body']
-        self.author       = reddit_dict['author']
-        self.subreddit    = reddit_dict['subreddit']
+        self.body = reddit_dict['body']
+        self.author = reddit_dict['author']
+        self.subreddit = reddit_dict['subreddit']
         self.subreddit_id = reddit_dict['subreddit_id']
-        self.created_utc  = reddit_dict['created_utc']
-        self.score        = reddit_dict['score']
+        self.created_utc = reddit_dict['created_utc']
+        self.score = reddit_dict['score']
 
     def clean_body(self, tknzr=None):
         if tknzr is None:

@@ -19,10 +19,6 @@
             "program": "benchmark/run.py",
             "console": "integratedTerminal",
             "args": [
-                "--fed_rank",
-                "1",
-                "--fed_world_size",
-                "2",
                 "--task",
                 "celeba",
                 "--act_clts",
@@ -42,10 +38,6 @@
             "program": "benchmark/run.py",
             "console": "integratedTerminal",
             "args": [
-                "--fed_rank",
-                "0",
-                "--fed_world_size",
-                "2",
                 "--task",
                 "celeba",
                 "--act_clts",

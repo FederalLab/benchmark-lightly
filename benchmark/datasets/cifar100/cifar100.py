@@ -1,29 +1,14 @@
-# MIT License
-
-# Copyright (c) 2021 FederalLab
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:23:40
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:23:40
+# Copyright (c) FederalLab. All rights reserved.
 
 # type: ignore
 
-import os
 import argparse
+import os
+
 import h5py
 import numpy as np
 import torch
@@ -33,7 +18,7 @@ from openfed.data import Analysis, FederatedDataset
 from openfed.data.utils import tar_xvf, wget_https
 
 DEFAULT_TRAIN_FILE = 'fed_cifar100_train.h5'
-DEFAULT_TEST_FILE  = 'fed_cifar100_test.h5'
+DEFAULT_TEST_FILE = 'fed_cifar100_test.h5'
 
 # group name defined by tff in h5 file
 _EXAMPLE = 'examples'
@@ -47,8 +32,8 @@ class CIFAR100(FederatedDataset):
     Loads a federated version of the CIFAR-100 dataset.
     The dataset is downloaded and cached locally. If previously downloaded, it
     tries to load the dataset from cache.
-    The dataset is derived from the [CIFAR-100 dataset](https://www.cs.toronto.edu/~kriz/cifar.html). The training and testing examples are partitioned across 500 and 100 clients (respectively). 
-    No clients share any data samples, so it is a true partition of CIFAR-100. 
+    The dataset is derived from the [CIFAR-100 dataset](https://www.cs.toronto.edu/~kriz/cifar.html). The training and testing examples are partitioned across 500 and 100 clients (respectively).
+    No clients share any data samples, so it is a true partition of CIFAR-100.
     The train clients have string client IDs in the range [0-499], while the test
     clients have string client IDs in the range [0-99]. The train clients form a
     true partition of the CIFAR-100 training split, while the test clients form a
@@ -73,27 +58,27 @@ class CIFAR100(FederatedDataset):
         -   train: 50,000 examples
         -   test: 10,000 examples
     """
-
-    def __init__(self, 
-        root: str, 
-        train: bool = True, 
-        transform=None, 
-        target_transform=None, 
-        download: bool=False):
+    def __init__(self,
+                 root: str,
+                 train: bool = True,
+                 transform=None,
+                 target_transform=None,
+                 download: bool = False):
         data_file = os.path.join(
             root, DEFAULT_TRAIN_FILE if train else DEFAULT_TEST_FILE)
         if not os.path.isfile(data_file):
             if download:
                 url = 'https://fedml.s3-us-west-1.amazonaws.com/fed_cifar100.tar.bz2'
-                logger.debug(f"Download dataset from {url} to {root}")
+                logger.debug(f'Download dataset from {url} to {root}')
                 if wget_https(url, root):
-                    if tar_xvf(os.path.join(root, "fed_cifar100.tar.bz2"), output_dir=root):
-                        logger.debug("Downloaded.")
+                    if tar_xvf(os.path.join(root, 'fed_cifar100.tar.bz2'),
+                               output_dir=root):
+                        logger.debug('Downloaded.')
                 else:
-                    raise RuntimeError("Download dataset failed.")
+                    raise RuntimeError('Download dataset failed.')
             else:
-                raise FileNotFoundError(f"{data_file} not exists.")
-        data_h5 = h5py.File(data_file, "r")
+                raise FileNotFoundError(f'{data_file} not exists.')
+        data_h5 = h5py.File(data_file, 'r')
 
         client_ids = list(data_h5[_EXAMPLE].keys())
 
@@ -122,7 +107,8 @@ class CIFAR100(FederatedDataset):
         return len(self.part_data_list[self.part_id])
 
     def __getitem__(self, index: int):
-        data, target = self.part_data_list[self.part_id][index], self.part_target_list[self.part_id][index]
+        data, target = self.part_data_list[
+            self.part_id][index], self.part_target_list[self.part_id][index]
 
         data = torch.tensor(data).float().permute(2, 0, 1)
         target = torch.tensor(target).long()
@@ -142,13 +128,13 @@ def get_cifar100(root, train: bool = True):
     root = os.path.join(root, 'raw')
     mean, std = [0.507, 0.486, 0.441], [0.267, 0.256, 0.276]
     if train:
-        transform = transforms.Compose(
-            [transforms.ToPILImage(),
-             transforms.RandomCrop(24),
-             transforms.RandomHorizontalFlip(),
-             transforms.ToTensor(),
-             transforms.Normalize(mean=mean, std=std)
-             ])
+        transform = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.RandomCrop(24),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=mean, std=std)
+        ])
     else:
         transform = transforms.Compose([
             transforms.ToPILImage(),

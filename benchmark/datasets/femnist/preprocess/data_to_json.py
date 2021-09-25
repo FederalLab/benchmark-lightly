@@ -1,3 +1,8 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:32:01
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:32:01
+# Copyright (c) FederalLab. All rights reserved.
 # Converts a list of (writer, [list of (file,class)]) tuples into a json object
 # of the form:
 #   {users: [bob, etc], num_samples: [124, etc.],
@@ -14,8 +19,8 @@ from PIL import Image
 
 from benchmark.datasets.femnist.preprocess.utils import load_obj
 
-utils_dir = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
+utils_dir = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 utils_dir = os.path.join(utils_dir, 'utils')
 sys.path.append(utils_dir)
 
@@ -40,8 +45,8 @@ def relabel_class(c):
 
 parent_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-by_writer_dir = os.path.join(
-    parent_path, 'data', 'intermediate', 'images_by_writer')
+by_writer_dir = os.path.join(parent_path, 'data', 'intermediate',
+                             'images_by_writer')
 writers = load_obj(by_writer_dir)
 
 num_json = int(math.ceil(len(writers) / MAX_WRITERS))

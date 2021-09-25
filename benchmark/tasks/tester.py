@@ -1,5 +1,12 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:29:23
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:29:23
+# Copyright (c) FederalLab. All rights reserved.
 import time
+
 import torch
+
 
 class Tester(object):
     def __init__(self, openfed_api, model, dataloader):
@@ -11,7 +18,8 @@ class Tester(object):
 
     @torch.no_grad()
     def test_epoch(self):
-        """Train model for several epochs. 
+        """Train model for several epochs.
+
         Returns:
             average training accuracy
             average training loss
@@ -30,7 +38,8 @@ class Tester(object):
             accuracies.append(acc.item())
             losses.append(loss.item())
         toc = time.time()
-        return sum(accuracies)/len(accuracies), sum(losses)/len(losses), toc-tic
+        return sum(accuracies) / len(accuracies), sum(losses) / len(
+            losses), toc - tic
 
     def finish_testing(self, task_info):
         self.openfed_api.update_version(task_info.version)

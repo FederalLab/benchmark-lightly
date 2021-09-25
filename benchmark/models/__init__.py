@@ -1,3 +1,8 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:27:51
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:27:51
+# Copyright (c) FederalLab. All rights reserved.
 from .base import Model
 from .celeba import Celeba
 from .cifar100 import Cifar100

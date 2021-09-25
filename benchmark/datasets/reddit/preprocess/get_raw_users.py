@@ -1,11 +1,16 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:32:44
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:32:44
+# Copyright (c) FederalLab. All rights reserved.
 import json
 import os
 import pickle
 
 from reddit_utils import RedditComment
 
-data_root = os.path.join(os.path.dirname(
-    os.path.dirname(os.path.realpath(__file__))), "data")
+data_root = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'data')
 
 NUM_USERS = 100000
 MAX_REPEATS = 500
@@ -96,10 +101,19 @@ def get_users():
             # A preliminary check with a subsample of the data corroborated this.
             comment = RedditComment(j_line)
 
-            if (any([comment.author.casefold() == u.casefold() for u in USERS_TO_REMOVE])
-                    or any([comment.subreddit.casefold() == s.casefold() for s in SUBS_TO_REMOVE])
-                    or any([w.casefold() in comment.author.casefold() for w in WORDS_TO_REMOVE])
-                    or any([w.casefold() in comment.subreddit.casefold() for w in WORDS_TO_REMOVE])):
+            if (any([
+                    comment.author.casefold() == u.casefold()
+                    for u in USERS_TO_REMOVE
+            ]) or any([
+                    comment.subreddit.casefold() == s.casefold()
+                    for s in SUBS_TO_REMOVE
+            ]) or any([
+                    w.casefold() in comment.author.casefold()
+                    for w in WORDS_TO_REMOVE
+            ]) or any([
+                    w.casefold() in comment.subreddit.casefold()
+                    for w in WORDS_TO_REMOVE
+            ])):
                 continue
 
             if comment.author not in info_dict:
@@ -119,8 +133,10 @@ def get_users():
                 print('num_repeats', num_repeats, num_lines)
                 print()
 
-                pickle.dump(info_dict, open('{}_{}.pck'.format(
-                    draft_users_file, num_repeats), 'wb'))
+                pickle.dump(
+                    info_dict,
+                    open('{}_{}.pck'.format(draft_users_file, num_repeats),
+                         'wb'))
 
                 info_dict = {}
                 num_users = 0
@@ -129,8 +145,9 @@ def get_users():
                 break
 
     if num_users > 0 and num_users < NUM_USERS:
-        pickle.dump(info_dict, open('{}_{}.pck'.format(
-            draft_users_file, num_repeats + 1), 'wb'))
+        pickle.dump(
+            info_dict,
+            open('{}_{}.pck'.format(draft_users_file, num_repeats + 1), 'wb'))
 
 
 def main():

@@ -1,3 +1,8 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:27:59
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:27:59
+# Copyright (c) FederalLab. All rights reserved.
 import torch.nn as nn
 
 from .base import Model
@@ -5,36 +10,24 @@ from .utils import top_one_acc
 
 
 class Celeba(Model):
-    def __init__(self, num_classes: int=2):
+    def __init__(self, num_classes: int = 2):
         super().__init__()
 
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(3, 32, 3, padding=1),
-            nn.BatchNorm2d(32),
-            nn.MaxPool2d(2),
-            nn.ReLU()
-        )
+        self.conv1 = nn.Sequential(nn.Conv2d(3, 32, 3, padding=1),
+                                   nn.BatchNorm2d(32), nn.MaxPool2d(2),
+                                   nn.ReLU())
 
-        self.conv2 = nn.Sequential(
-            nn.Conv2d(32, 32, 3, padding=1),
-            nn.BatchNorm2d(32),
-            nn.MaxPool2d(2),
-            nn.ReLU()
-        )
+        self.conv2 = nn.Sequential(nn.Conv2d(32, 32, 3, padding=1),
+                                   nn.BatchNorm2d(32), nn.MaxPool2d(2),
+                                   nn.ReLU())
 
-        self.conv3 = nn.Sequential(
-            nn.Conv2d(32, 32, 3, padding=1),
-            nn.BatchNorm2d(32),
-            nn.MaxPool2d(2),
-            nn.ReLU()
-        )
+        self.conv3 = nn.Sequential(nn.Conv2d(32, 32, 3, padding=1),
+                                   nn.BatchNorm2d(32), nn.MaxPool2d(2),
+                                   nn.ReLU())
 
-        self.conv4 = nn.Sequential(
-            nn.Conv2d(32, 32, 3, padding=1),
-            nn.BatchNorm2d(32),
-            nn.MaxPool2d(2),
-            nn.ReLU()
-        )
+        self.conv4 = nn.Sequential(nn.Conv2d(32, 32, 3, padding=1),
+                                   nn.BatchNorm2d(32), nn.MaxPool2d(2),
+                                   nn.ReLU())
 
         self.logits = nn.Linear(32 * 5 * 5, num_classes)
 

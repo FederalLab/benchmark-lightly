@@ -32,12 +32,12 @@ i.e.
 - Each .json file is an object with 3 keys:
   1. 'users', a list of users
   2. 'num_samples', a list of the number of samples for each user, and
-  3. 'user_data', an object with user names as keys and their respective data as values; for each user, data is represented as a list of attribute lists, with each attribute list containing the following string-valued features at the corresponding indices:  
-     - ```0```: id of the tweet; i.e '2087'  
-     - ```1```: date of the tweet; i.e. 'Sat May 16 23:58:44 UTC 2009'  
-     - ```2```: query; i.e. 'lyx'; if there is no query, then this value is 'NO_QUERY'  
-     - ```3```: user that tweeted; i.e. 'robotickilldozr'  
-     - ```4```: text of the tweet; i.e. 'Lyx is cool'  
+  3. 'user_data', an object with user names as keys and their respective data as values; for each user, data is represented as a list of attribute lists, with each attribute list containing the following string-valued features at the corresponding indices:
+     - ```0```: id of the tweet; i.e '2087'
+     - ```1```: date of the tweet; i.e. 'Sat May 16 23:58:44 UTC 2009'
+     - ```2```: query; i.e. 'lyx'; if there is no query, then this value is 'NO_QUERY'
+     - ```3```: user that tweeted; i.e. 'robotickilldozr'
+     - ```4```: text of the tweet; i.e. 'Lyx is cool'
     (examples based on [Sentiment140 website](http://help.sentiment140.com/for-students/))
 - Run ```./stats.sh``` to get statistics of data (data/all_data/all_data.json must have been generated already)
 - In order to run reference implementations in ```../models``` directory, the ```-t sample``` tag must be used when running ```./preprocess.sh```

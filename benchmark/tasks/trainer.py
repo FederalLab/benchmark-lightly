@@ -1,10 +1,22 @@
-import time
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:29:26
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:29:26
+# Copyright (c) FederalLab. All rights reserved.
 import os
-import torch
+import time
 import warnings
 
+import torch
+
+
 class Trainer(object):
-    def __init__(self, openfed_api, model, optimizer, dataloader, cache_folder: str = '/tmp'):
+    def __init__(self,
+                 openfed_api,
+                 model,
+                 optimizer,
+                 dataloader,
+                 cache_folder: str = '/tmp'):
         self.openfed_api = openfed_api
         self.model = model
         self.optimizer = optimizer
@@ -17,7 +29,8 @@ class Trainer(object):
         os.makedirs(self.cache_folder, exist_ok=True)
 
     def train_epoch(self, epoch=1):
-        """Train model for several epochs. 
+        """Train model for several epochs.
+
         Returns:
             average training accuracy
             average training loss
@@ -41,10 +54,12 @@ class Trainer(object):
                 accuracies.append(acc.item())
                 losses.append(loss.item())
         toc = time.time()
-        return sum(accuracies)/len(accuracies), sum(losses)/len(losses), toc-tic
+        return sum(accuracies) / len(accuracies), sum(losses) / len(
+            losses), toc - tic
 
     def acg_epoch(self, max_acg_step=-1):
         """Do acg step to accumulate gradient for some federated optimizer.
+
         Returns:
             duration: time in seconds
         """
@@ -57,7 +72,7 @@ class Trainer(object):
 
     def finish_training(self, task_info):
         """
-        Args: 
+        Args:
             kwargs: extra  information added to task info.
         """
         self.optimizer.round()
@@ -65,7 +80,7 @@ class Trainer(object):
 
         part_id = task_info.part_id
         # Save inner state of self.optimizer
-        cache_file = os.path.join(self.cache_folder, f"{part_id}.pth")
+        cache_file = os.path.join(self.cache_folder, f'{part_id}.pth')
         torch.save(self.optimizer.state_dict(), cache_file)
 
         if not self.openfed_api.transfer(to=True, task_info=task_info):

@@ -1,8 +1,13 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:32:38
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:32:38
+# Copyright (c) FederalLab. All rights reserved.
 import os
 import pickle
 
-data_root = os.path.join(os.path.dirname(
-    os.path.dirname(os.path.realpath(__file__))), "data")
+data_root = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'data')
 DIR = os.path.join(data_root, 'reddit_clean')
 FINAL_DIR = os.path.join(data_root, 'reddit_subsampled')
 
@@ -20,7 +25,8 @@ def subsample_file(f):
 
     pickle.dump(
         subsampled_reddit,
-        open(os.path.join(FINAL_DIR, f.replace('cleaned', 'subsampled')), 'wb'))
+        open(os.path.join(FINAL_DIR, f.replace('cleaned', 'subsampled')),
+             'wb'))
 
 
 def main():

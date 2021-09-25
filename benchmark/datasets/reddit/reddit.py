@@ -1,31 +1,42 @@
-import os
-os.sys.path.insert(0, '/Users/densechen/code/benchmark')
-
-from benchmark.datasets.utils.transforms import FloatTensor, LongTensor
-from benchmark.datasets.simulation_dataset import SimulationDataset
-import numpy as np
-from collections import defaultdict
-import pickle
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:24:36
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:24:36
+# Copyright (c) FederalLab. All rights reserved.
 import argparse
+import os
+import pickle
+from collections import defaultdict
+
+import numpy as np
+
+from benchmark.datasets.simulation_dataset import SimulationDataset
+from benchmark.datasets.utils.transforms import FloatTensor, LongTensor
 
 VOCABULARY_PATH = 'reddit_vocab.pck'
 
 
 class Reddit(SimulationDataset):
-    """You should put the `reddit_vocab.pck` under `data_root/reddit_vocab.pck`, but not `data_root/xxx/reddit_vocab.pck`.
+    """You should put the `reddit_vocab.pck` under
+    `data_root/reddit_vocab.pck`, but not `data_root/xxx/reddit_vocab.pck`.
+
     It will take a quite long time to load data from disk.
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.vocab, self.vocab_size, self.unk_symbol, self.pad_symbol = self.load_vocab()
+        self.vocab, self.vocab_size, self.unk_symbol, self.pad_symbol = self.load_vocab(
+        )
 
     def load_vocab(self):
         vocab_file = pickle.load(
-            open(os.path.join(os.path.dirname(self.data_root), VOCABULARY_PATH), 'rb'))
+            open(
+                os.path.join(os.path.dirname(self.data_root), VOCABULARY_PATH),
+                'rb'))
         vocab = defaultdict(lambda: vocab_file['unk_symbol'])
         vocab.update(vocab_file['vocab'])
 
-        return vocab, vocab_file['size'], vocab_file['unk_symbol'], vocab_file['pad_symbol']
+        return vocab, vocab_file['size'], vocab_file['unk_symbol'], vocab_file[
+            'pad_symbol']
 
     def _tokens_to_ids(self, tokens):
         return np.array([self.vocab[word] for word in tokens])
@@ -34,7 +45,8 @@ class Reddit(SimulationDataset):
         data = self.data[self.parts[self.part_id]]
         x, y = data['x'][index], data['y'][index]  # type: ignore
 
-        x, y = self._tokens_to_ids(x[0]), self._tokens_to_ids(y['target_tokens'][0])
+        x, y = self._tokens_to_ids(x[0]), self._tokens_to_ids(
+            y['target_tokens'][0])
 
         if self.transform is not None:
             x = self.transform(x)
@@ -57,7 +69,7 @@ if __name__ == '__main__':
     dataset = get_reddit(root=args.root, mode='val')
 
     print(dataset)
-    print(f"vocab size: {dataset.vocab_size}")
+    print(f'vocab size: {dataset.vocab_size}')
 
     # fetch data
     x, y = dataset[0]

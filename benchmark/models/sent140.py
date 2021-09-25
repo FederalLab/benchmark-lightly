@@ -1,4 +1,8 @@
-
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:28:24
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:28:24
+# Copyright (c) FederalLab. All rights reserved.
 import torch.nn as nn
 
 from .base import Model
@@ -13,35 +17,30 @@ class Sent140(Model):
     Returns:
         An un-compiled `torch.nn.Module`.
     """
-
-    def __init__(self, 
-            task: str = 'bag_log_reg',
-            num_classes  : int = 2,
-            embedding_dim: int = 25,
-            vocab_size   : int = 400000,
-            hidden_size  : int = 100):
+    def __init__(self,
+                 task: str = 'bag_log_reg',
+                 num_classes: int = 2,
+                 embedding_dim: int = 25,
+                 vocab_size: int = 400000,
+                 hidden_size: int = 100):
         super().__init__()
         assert task in ['bag_log_reg', 'stacked_lstm']
         self.task = task
 
-        self.embeddings = nn.Embedding(
-            num_embeddings = vocab_size,
-            embedding_dim  = embedding_dim,
-            padding_idx    = 0)
+        self.embeddings = nn.Embedding(num_embeddings=vocab_size,
+                                       embedding_dim=embedding_dim,
+                                       padding_idx=0)
         if task == 'stacked_lstm':
-            self.lstm = nn.LSTM(
-                input_size  = embedding_dim,
-                hidden_size = hidden_size,
-                num_layers  = 2,
-                batch_first = True)
+            self.lstm = nn.LSTM(input_size=embedding_dim,
+                                hidden_size=hidden_size,
+                                num_layers=2,
+                                batch_first=True)
             self.logits = nn.Linear(hidden_size, num_classes)
         else:
             self.logits = nn.Linear(vocab_size, num_classes)
 
-
         self.loss_fn = nn.CrossEntropyLoss()
         self.accuracy_fn = top_one_acc
-
 
     def forward(self, input_seq):
         embeds = self.embeddings(input_seq)

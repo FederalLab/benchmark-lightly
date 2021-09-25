@@ -1,13 +1,18 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:25:54
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:25:54
+# Copyright (c) FederalLab. All rights reserved.
 import openfed.data as data
 
 from .utils.util import read_dir
 
 
 class SimulationDataset(data.FederatedDataset):
-    '''parses data in given train and test data directories
+    """parses data in given train and test data directories.
 
     assumes:
-    - the data in the input directories are .json files with 
+    - the data in the input directories are .json files with
         keys 'users' and 'user_data'
     - the set of train set users is the same as the set of test set users
 
@@ -16,12 +21,11 @@ class SimulationDataset(data.FederatedDataset):
         groups: list of group ids; empty list if none found
         train_data: dictionary of train data
         test_data: dictionary of test data
-    '''
-
+    """
     def __init__(self, data_root: str, transform=None, transform_target=None):
         super().__init__()
         self.data_root = data_root
-        
+
         self.parts, self.groups, self.data = read_dir(data_root)
 
         self.total_parts = len(self.parts)
@@ -31,7 +35,7 @@ class SimulationDataset(data.FederatedDataset):
 
     @property
     def total_samples(self):
-        return sum([len(x['x']) for x in self.data.values()]) # type:ignore
+        return sum([len(x['x']) for x in self.data.values()])  # type:ignore
 
     def __len__(self):
         return len(self.data[self.parts[self.part_id]]['x'])  # type:ignore

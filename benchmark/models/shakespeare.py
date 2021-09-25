@@ -1,25 +1,8 @@
-# MIT License
-
-# Copyright (c) 2021 FederalLab
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:28:27
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:28:27
+# Copyright (c) FederalLab. All rights reserved.
 
 import torch.nn as nn
 
@@ -28,7 +11,9 @@ from .utils import top_one_acc
 
 
 class Shakespeare(Model):
-    """Creates a RNN model using LSTM layers for Shakespeare language models (next character prediction task).
+    """Creates a RNN model using LSTM layers for Shakespeare language models
+    (next character prediction task).
+
     This replicates the model structure in the paper:
         Communication-Efficient Learning of Deep Networks from Decentralized Data
         H. Brendan McMahan, Eider Moore, Daniel Ramage, Seth Hampson, Blaise Agueray Arcas. AISTATS 2017.
@@ -40,25 +25,22 @@ class Shakespeare(Model):
     Returns:
         An un-compiled `torch.nn.Module`.
     """
-
-    def __init__(self, 
-        embedding_dim: int = 80,
-        vocab_size   : int = 80,
-        hidden_size  : int = 256):
+    def __init__(self,
+                 embedding_dim: int = 80,
+                 vocab_size: int = 80,
+                 hidden_size: int = 256):
         super().__init__()
-        self.embeddings = nn.Embedding(
-            num_embeddings = vocab_size,
-            embedding_dim  = embedding_dim,
-            padding_idx    = 0)
-        self.lstm = nn.LSTM(
-            input_size  = embedding_dim,
-            hidden_size = hidden_size,
-            num_layers  = 2,
-            batch_first = True)
+        self.embeddings = nn.Embedding(num_embeddings=vocab_size,
+                                       embedding_dim=embedding_dim,
+                                       padding_idx=0)
+        self.lstm = nn.LSTM(input_size=embedding_dim,
+                            hidden_size=hidden_size,
+                            num_layers=2,
+                            batch_first=True)
         self.logits = nn.Linear(hidden_size, vocab_size)
 
         self.loss_fn = nn.CrossEntropyLoss()
-        self.accuracy_fn  = top_one_acc
+        self.accuracy_fn = top_one_acc
 
     def forward(self, input_seq):
         embeds = self.embeddings(input_seq)
@@ -69,4 +51,3 @@ class Shakespeare(Model):
         # use the final hidden state as the next character prediction
         final_hidden_state = lstm_out[:, -1]
         return self.logits(final_hidden_state)
-

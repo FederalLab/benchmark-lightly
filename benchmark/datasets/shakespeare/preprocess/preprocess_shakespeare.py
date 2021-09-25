@@ -1,4 +1,10 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:33:24
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:33:24
+# Copyright (c) FederalLab. All rights reserved.
 """Preprocesses the Shakespeare dataset for federated training.
+
 Copyright 2017 Google Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,21 +36,21 @@ import sys
 RANDOM_SEED = 1234
 # Regular expression to capture an actors name, and line continuation
 CHARACTER_RE = re.compile(r'^  ([a-zA-Z][a-zA-Z ]*)\. (.*)')
-CONT_RE      = re.compile(r'^    (.*)')
+CONT_RE = re.compile(r'^    (.*)')
 # The Comedy of Errors has errors in its indentation so we need to use
 # different regular expressions.
 COE_CHARACTER_RE = re.compile(r'^([a-zA-Z][a-zA-Z ]*)\. (.*)')
-COE_CONT_RE      = re.compile(r'^(.*)')
+COE_CONT_RE = re.compile(r'^(.*)')
 
 
 def _match_character_regex(line, comedy_of_errors=False):
-    return (COE_CHARACTER_RE.match(line) if comedy_of_errors
-            else CHARACTER_RE.match(line))
+    return (COE_CHARACTER_RE.match(line)
+            if comedy_of_errors else CHARACTER_RE.match(line))
 
 
 def _match_continuation_regex(line, comedy_of_errors=False):
-    return (
-        COE_CONT_RE.match(line) if comedy_of_errors else CONT_RE.match(line))
+    return (COE_CONT_RE.match(line)
+            if comedy_of_errors else CONT_RE.match(line))
 
 
 def _split_into_plays(shakespeare_full):
@@ -66,7 +72,7 @@ def _split_into_plays(shakespeare_full):
     slines = slines[start_i:]
 
     current_character = None
-    comedy_of_errors  = False
+    comedy_of_errors = False
     for i, line in enumerate(slines):
         # This marks the end of the plays in the file.
         if i > 124195 - start_i:
@@ -91,8 +97,8 @@ def _split_into_plays(shakespeare_full):
             title = title.strip()
 
             assert title, (
-                'Parsing error on line %d. Expecting title 2 or 3 lines above.' %
-                i)
+                'Parsing error on line %d. Expecting title 2 or 3 lines above.'
+                % i)
             comedy_of_errors = (title == 'THE COMEDY OF ERRORS')
             # Degenerate plays are removed at the end of the method.
             plays.append((title, characters))
@@ -106,7 +112,7 @@ def _split_into_plays(shakespeare_full):
             # recent fix.
             character = character.upper()
             if not (comedy_of_errors and character.startswith('ACT ')):
-                characters[character].append(snippet) # type: ignore
+                characters[character].append(snippet)  # type: ignore
                 current_character = character
                 continue
             else:
@@ -119,7 +125,8 @@ def _split_into_plays(shakespeare_full):
                     current_character = None
                     continue
                 else:
-                    characters[current_character].append(match.group(1)) # type: ignore
+                    characters[current_character].append(
+                        match.group(1))  # type: ignore
                     continue
         # Didn't consume the line.
         line = line.strip()
@@ -139,20 +146,20 @@ def play_and_character(play, character):
 
 
 def _get_train_test_by_character(plays, test_fraction=0.2):
-    """
-      Splits character data into train and test sets.
-      if test_fraction <= 0, returns {} for all_test_examples
-      plays := list of (play, dict) tuples where play is a string and dict
-      is a dictionary with character names as keys
+    """Splits character data into train and test sets.
+
+    if test_fraction <= 0, returns {} for all_test_examples plays := list of
+    (play, dict) tuples where play is a string and dict is a dictionary with
+    character names as keys
     """
     skipped_characters = 0
     all_train_examples = collections.defaultdict(list)
-    all_test_examples  = collections.defaultdict(list)
+    all_test_examples = collections.defaultdict(list)
 
-    def add_examples(example_dict, example_tuple_list): 
+    def add_examples(example_dict, example_tuple_list):
         for play, character, sound_bite in example_tuple_list:
-            example_dict[play_and_character(
-                play, character)].append(sound_bite)
+            example_dict[play_and_character(play,
+                                            character)].append(sound_bite)
 
     users_and_plays = {}
     for play, characters in plays:
@@ -169,9 +176,9 @@ def _get_train_test_by_character(plays, test_fraction=0.2):
                 continue
             train_examples = examples
             if test_fraction > 0:
-                num_test       = max(int(len(examples) * test_fraction), 1)
+                num_test = max(int(len(examples) * test_fraction), 1)
                 train_examples = examples[:-num_test]
-                test_examples  = examples[-num_test:]
+                test_examples = examples[-num_test:]
                 assert len(test_examples) == num_test
                 assert len(train_examples) >= len(test_examples)
                 add_examples(all_test_examples, test_examples)
@@ -200,11 +207,11 @@ def main(argv):
     users_and_plays, all_examples, _ = _get_train_test_by_character(
         plays, test_fraction=-1.0)
     output_directory = argv[1]
-    with open(os.path.join(output_directory, 'users_and_plays.json'), 'w') as ouf:
+    with open(os.path.join(output_directory, 'users_and_plays.json'),
+              'w') as ouf:
         json.dump(users_and_plays, ouf)
-    _write_data_by_character(all_examples,
-                             os.path.join(output_directory,
-                                          'by_play_and_character/'))
+    _write_data_by_character(
+        all_examples, os.path.join(output_directory, 'by_play_and_character/'))
 
 
 if __name__ == '__main__':

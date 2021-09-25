@@ -1,10 +1,15 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:32:14
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:32:14
+# Copyright (c) FederalLab. All rights reserved.
 import os
 import sys
 
 from benchmark.datasets.femnist.preprocess.utils import load_obj, save_obj
 
-utils_dir = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
+utils_dir = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 utils_dir = os.path.join(utils_dir, 'utils')
 sys.path.append(utils_dir)
 

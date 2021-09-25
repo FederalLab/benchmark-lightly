@@ -1,10 +1,15 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:32:36
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:32:36
+# Copyright (c) FederalLab. All rights reserved.
 import os
 import pickle
 
 from nltk.tokenize import TweetTokenizer
 
-data_root = os.path.join(os.path.dirname(
-    os.path.dirname(os.path.realpath(__file__))), "data")
+data_root = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'data')
 
 DIR = os.path.join(data_root, 'reddit_merged')
 FINAL_DIR = os.path.join(data_root, 'reddit_clean')
@@ -33,7 +38,8 @@ def clean_file(f, tknzr):
         clean_comments = []
         for c in comments:
             c.clean_body(tknzr)
-            if len(c.body) > 0 and not any([p in c.body for p in PHRASES_TO_AVOID]):
+            if len(c.body) > 0 and not any(
+                [p in c.body for p in PHRASES_TO_AVOID]):
                 clean_comments.append(c)
 
         if len(clean_comments) > 0:

@@ -1,18 +1,23 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:32:12
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:32:12
+# Copyright (c) FederalLab. All rights reserved.
 import hashlib
 import os
 import sys
 
 from benchmark.datasets.femnist.preprocess.utils import load_obj, save_obj
 
-utils_dir = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
+utils_dir = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 utils_dir = os.path.join(utils_dir, 'utils')
 sys.path.append(utils_dir)
 
 parent_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-cfd             = os.path.join(parent_path, 'data', 'intermediate', 'class_file_dirs')
-wfd             = os.path.join(parent_path, 'data', 'intermediate', 'write_file_dirs')
+cfd = os.path.join(parent_path, 'data', 'intermediate', 'class_file_dirs')
+wfd = os.path.join(parent_path, 'data', 'intermediate', 'write_file_dirs')
 class_file_dirs = load_obj(cfd)
 write_file_dirs = load_obj(wfd)
 

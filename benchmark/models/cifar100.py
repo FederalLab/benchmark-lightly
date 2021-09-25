@@ -1,4 +1,10 @@
-"""mobilenetv2 in pytorch
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:28:03
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:28:03
+# Copyright (c) FederalLab. All rights reserved.
+"""mobilenetv2 in pytorch.
+
 [1] Mark Sandler, Andrew Howard, Menglong Zhu, Andrey Zhmoginov, Liang-Chieh Chen
     MobileNetV2: Inverted Residuals and Linear Bottlenecks
     https://arxiv.org/abs/1801.04381
@@ -14,23 +20,20 @@ from .utils import top_one_acc
 
 
 class LinearBottleNeck(nn.Module):
-
     def __init__(self, in_channels, out_channels, stride, t=6, class_num=100):
         super().__init__()
 
         self.residual = nn.Sequential(
             nn.Conv2d(in_channels, in_channels * t, 1),
-            nn.BatchNorm2d(in_channels * t),
-            nn.ReLU6(inplace=True),
-
-            nn.Conv2d(in_channels * t, in_channels * t, 3,
-                      stride=stride, padding=1, groups=in_channels * t),
-            nn.BatchNorm2d(in_channels * t),
-            nn.ReLU6(inplace=True),
-
-            nn.Conv2d(in_channels * t, out_channels, 1),
-            nn.BatchNorm2d(out_channels)
-        )
+            nn.BatchNorm2d(in_channels * t), nn.ReLU6(inplace=True),
+            nn.Conv2d(in_channels * t,
+                      in_channels * t,
+                      3,
+                      stride=stride,
+                      padding=1,
+                      groups=in_channels * t), nn.BatchNorm2d(in_channels * t),
+            nn.ReLU6(inplace=True), nn.Conv2d(in_channels * t, out_channels,
+                                              1), nn.BatchNorm2d(out_channels))
 
         self.stride = stride
         self.in_channels = in_channels
@@ -47,15 +50,11 @@ class LinearBottleNeck(nn.Module):
 
 
 class Cifar100(Model):
-
     def __init__(self, num_classes=100):
         super().__init__()
 
-        self.pre = nn.Sequential(
-            nn.Conv2d(3, 32, 1, padding=1),
-            nn.BatchNorm2d(32),
-            nn.ReLU6(inplace=True)
-        )
+        self.pre = nn.Sequential(nn.Conv2d(3, 32, 1, padding=1),
+                                 nn.BatchNorm2d(32), nn.ReLU6(inplace=True))
 
         self.stage1 = LinearBottleNeck(32, 16, 1, 1)
         self.stage2 = self._make_stage(2, 16, 24, 2, 6)
@@ -65,11 +64,9 @@ class Cifar100(Model):
         self.stage6 = self._make_stage(3, 96, 160, 1, 6)
         self.stage7 = LinearBottleNeck(160, 320, 1, 6)
 
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(320, 1280, 1),
-            nn.BatchNorm2d(1280),
-            nn.ReLU6(inplace=True)
-        )
+        self.conv1 = nn.Sequential(nn.Conv2d(320, 1280,
+                                             1), nn.BatchNorm2d(1280),
+                                   nn.ReLU6(inplace=True))
 
         self.conv2 = nn.Conv2d(1280, num_classes, 1)
 

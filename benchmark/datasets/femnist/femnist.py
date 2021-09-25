@@ -1,6 +1,10 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:23:57
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:23:57
+# Copyright (c) FederalLab. All rights reserved.
 import argparse
 import os
-os.sys.path.insert(0, '/Users/densechen/code/benchmark')
 
 from benchmark.datasets.simulation_dataset import SimulationDataset
 from benchmark.datasets.utils.transforms import FloatTensor, LongTensor

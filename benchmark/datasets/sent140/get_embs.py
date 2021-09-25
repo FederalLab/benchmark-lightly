@@ -1,12 +1,18 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:24:48
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:24:48
+# Copyright (c) FederalLab. All rights reserved.
 import argparse
 import json
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-f',
-                    help='path to .txt file containing word embedding information;',
-                    type=str,
-                    default='data/glove.6B.300d.txt')
+parser.add_argument(
+    '-f',
+    help='path to .txt file containing word embedding information;',
+    type=str,
+    default='data/glove.6B.300d.txt')
 
 args = parser.parse_args()
 

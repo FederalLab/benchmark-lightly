@@ -1,13 +1,21 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:29:34
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:29:34
+# Copyright (c) FederalLab. All rights reserved.
 import json
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def parser_json(lines):
-    return [json.loads(line+'}') for line in lines.split('}') if len(line) > 0]
+    return [
+        json.loads(line + '}') for line in lines.split('}') if len(line) > 0
+    ]
 
 
-def plot(files, labels, attributes="accuracy", mode='train'):
+def plot(files, labels, attributes='accuracy', mode='train'):
     if isinstance(files, str):
         files = [files]
     if isinstance(labels, str):
@@ -30,7 +38,8 @@ def plot(files, labels, attributes="accuracy", mode='train'):
     for x, y, l in zip(xs, ys, labels):
         plt.plot(x, y, label=l)
     plt.title(f'{mode} {attributes} curve')
-    plt.legend(loc="lower right" if attributes == 'accuracy' else "upper right")
+    plt.legend(
+        loc='lower right' if attributes == 'accuracy' else 'upper right')
     plt.show()
 
 

@@ -1,24 +1,8 @@
-# MIT License
-
-# Copyright (c) 2021 FederalLab
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:25:18
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:25:18
+# Copyright (c) FederalLab. All rights reserved.
 
 # type: ignore
 import collections
@@ -34,32 +18,31 @@ from openfed.data.utils import *
 from torchvision.transforms import ToTensor
 
 word_count_file_path = None
-word_dict            = None
-word_list            = None
-_pad                 = '<pad>'
-_bos                 = '<bos>'
-_eos                 = '<eos>'
+word_dict = None
+word_list = None
+_pad = '<pad>'
+_bos = '<bos>'
+_eos = '<eos>'
 '''
-This code follows the steps of preprocessing in tff stackoverflow dataset: 
+This code follows the steps of preprocessing in tff stackoverflow dataset:
 https://github.com/google-research/federated/blob/master/utils/datasets/stackoverflow_dataset.py
 '''
 DEFAULT_TRAIN_CLIENTS_NUM = 342477
-DEFAULT_TEST_CLIENTS_NUM  = 204088
-DEFAULT_BATCH_SIZE        = 100
-DEFAULT_TRAIN_FILE        = 'stackoverflow_train.h5'
-DEFAULT_TEST_FILE         = 'stackoverflow_test.h5'
-_EXAMPLE                  = 'examples'
-_TOKENS                   = 'tokens'
-_TITLE                    = 'title'
-_TAGS                     = 'tags'
-
+DEFAULT_TEST_CLIENTS_NUM = 204088
+DEFAULT_BATCH_SIZE = 100
+DEFAULT_TRAIN_FILE = 'stackoverflow_train.h5'
+DEFAULT_TEST_FILE = 'stackoverflow_test.h5'
+_EXAMPLE = 'examples'
+_TOKENS = 'tokens'
+_TITLE = 'title'
+_TAGS = 'tags'
 
 DEFAULT_WORD_COUNT_FILE = 'stackoverflow.word_count'
-DEFAULT_TAG_COUNT_FILE  = 'stackoverflow.tag_count'
-word_count_file_path    = None
-tag_count_file_path     = None
-word_dict               = None
-tag_dict                = None
+DEFAULT_TAG_COUNT_FILE = 'stackoverflow.tag_count'
+word_count_file_path = None
+tag_count_file_path = None
+word_dict = None
+tag_dict = None
 
 
 def get_tag_count_file(data_dir):
@@ -68,6 +51,7 @@ def get_tag_count_file(data_dir):
     if tag_count_file_path is None:
         tag_count_file_path = os.path.join(data_dir, DEFAULT_TAG_COUNT_FILE)
     return tag_count_file_path
+
 
 def get_tags(data_dir=None, tag_size=500):
     with open(get_tag_count_file(data_dir), 'r') as f:
@@ -78,7 +62,7 @@ def get_tags(data_dir=None, tag_size=500):
 def get_tag_dict(data_dir):
     global tag_dict
     if tag_dict == None:
-        tags     = get_tags(data_dir)
+        tags = get_tags(data_dir)
         tag_dict = collections.OrderedDict()
         for i, w in enumerate(tags):
             tag_dict[w] = i
@@ -87,7 +71,7 @@ def get_tag_dict(data_dir):
 
 def preprocess_inputs(sentences, data_dir):
 
-    sentences  = [sentence.split(' ') for sentence in sentences]
+    sentences = [sentence.split(' ') for sentence in sentences]
     vocab_size = len(get_word_dict(data_dir))
 
     def word_to_id(word):
@@ -108,7 +92,7 @@ def preprocess_inputs(sentences, data_dir):
 
 def preprocess_targets(tags, data_dir):
 
-    tags     = [tag.split('|') for tag in tags]
+    tags = [tag.split('|') for tag in tags]
     tag_size = len(get_tag_dict(data_dir))
 
     def tag_to_id(tag):
@@ -119,7 +103,7 @@ def preprocess_targets(tags, data_dir):
             return len(tag_dict)
 
     def to_bag_of_words(tag):
-        tag    = [tag_to_id(t) for t in tag]
+        tag = [tag_to_id(t) for t in tag]
         onehot = np.zeros((len(tag), tag_size + 1))
         onehot[np.arange(len(tag)), tag] = 1
         return np.sum(onehot, axis=0, dtype=np.float32)  # [:tag_size]
@@ -129,7 +113,7 @@ def preprocess_targets(tags, data_dir):
 
 def preprocess_input(sentence, data_dir):
 
-    sentence   = sentence.split(' ')
+    sentence = sentence.split(' ')
     vocab_size = len(get_word_dict(data_dir))
 
     def word_to_id(word):
@@ -161,7 +145,7 @@ def preprocess_target(tag, data_dir):
             return len(tag_dict)
 
     def to_bag_of_words(tag):
-        tag    = [tag_to_id(t) for t in tag]
+        tag = [tag_to_id(t) for t in tag]
         onehot = np.zeros((len(tag), tag_size + 1))
         onehot[np.arange(len(tag)), tag] = 1
         return np.sum(onehot, axis=0, dtype=np.float32)[:tag_size]
@@ -188,8 +172,8 @@ def get_word_dict(data_dir):
     global word_dict
     if word_dict == None:
         frequent_words = get_most_frequent_words(data_dir)
-        words          = [_pad] + frequent_words + [_bos] + [_eos]
-        word_dict      = collections.OrderedDict()
+        words = [_pad] + frequent_words + [_bos] + [_eos]
+        word_dict = collections.OrderedDict()
         for i, w in enumerate(words):
             word_dict[w] = i
     return word_dict
@@ -226,13 +210,17 @@ def tokenizer(sentence, data_dir, max_seq_len=20):
 
 def split(dataset):
     ds = np.array(dataset)
-    x  = ds[:, :-1]
-    y  = ds[:, -1]
+    x = ds[:, :-1]
+    y = ds[:, -1]
     return x, y
 
 
 class StackOverFlow(FederatedDataset):
-    def __init__(self, root: str, train: bool = True, download: bool = True, transform=None):
+    def __init__(self,
+                 root: str,
+                 train: bool = True,
+                 download: bool = True,
+                 transform=None):
 
         data_file = os.path.join(
             root, DEFAULT_TRAIN_FILE if train else DEFAULT_TEST_FILE)
@@ -242,26 +230,30 @@ class StackOverFlow(FederatedDataset):
                     'https://fedml.s3-us-west-1.amazonaws.com/stackoverflow.tag_count.tar.bz2',
                     'https://fedml.s3-us-west-1.amazonaws.com/stackoverflow.word_count.tar.bz2',
                     'https://fedml.s3-us-west-1.amazonaws.com/stackoverflow.tar.bz2',
-                    'https://fedml.s3-us-west-1.amazonaws.com/stackoverflow_nwp.pkl', ]
+                    'https://fedml.s3-us-west-1.amazonaws.com/stackoverflow_nwp.pkl',
+                ]
                 for url in urls:
-                    logger.debug(f"Download dataset from {url} to {root}")
+                    logger.debug(f'Download dataset from {url} to {root}')
                     if wget_https(url, root):
-                        if url.endswith(".bz2"):
-                            if tar_xvf(os.path.join(root, url.split("/")[-1]), output_dir=root):
-                                logger.debug("Downloaded.")
+                        if url.endswith('.bz2'):
+                            if tar_xvf(os.path.join(root,
+                                                    url.split('/')[-1]),
+                                       output_dir=root):
+                                logger.debug('Downloaded.')
                     else:
-                        raise RuntimeError("Download dataset failed.")
+                        raise RuntimeError('Download dataset failed.')
             else:
-                raise FileNotFoundError(f"{data_file} not exists.")
+                raise FileNotFoundError(f'{data_file} not exists.')
 
         self.data_file = data_file
-        self.root      = root
+        self.root = root
         self.transform = transform
 
 
 class StackOverFlowTP(StackOverFlow):
-    """Federated StackOverFlow Dataset from [TFF](https://github.com/tensorflow/federated).
-    Used for Tag Prediction.
+    """Federated StackOverFlow Dataset from.
+
+    [TFF](https://github.com/tensorflow/federated). Used for Tag Prediction.
 
     Downloads and caches the dataset locally. If previously downloaded, tries to
     load the dataset from cache.
@@ -312,15 +304,14 @@ class StackOverFlowTP(StackOverFlow):
     -   `'type'`: a `tf.Tensor` with `dtype=tf.string` and shape []
         containing either the string 'question' or 'answer'.
     """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        with h5py.File(self.data_file, "r") as data_h5:
+        with h5py.File(self.data_file, 'r') as data_h5:
             client_ids = list(data_h5[_EXAMPLE].keys())
 
         self.total_parts = len(client_ids)
-        self.parts_name  = client_ids
+        self.parts_name = client_ids
 
         self.classes = len(get_tag_dict(self.root))
 
@@ -330,15 +321,15 @@ class StackOverFlowTP(StackOverFlow):
             return len(data_h5[_EXAMPLE][part_name][_TAGS][()])
 
     def __getitem__(self, index: int):
-        with h5py.File(self.data_file, "r") as data_h5:
+        with h5py.File(self.data_file, 'r') as data_h5:
             part_name = self.parts_name[self.part_id]
-            raw_token = data_h5[_EXAMPLE][part_name][_TOKENS][()][index].decode(
-                'utf-8')
-            raw_title = data_h5[_EXAMPLE][part_name][_TITLE][()][index].decode(
-                'utf-8')
+            raw_token = data_h5[_EXAMPLE][part_name][_TOKENS][(
+            )][index].decode('utf-8')
+            raw_title = data_h5[_EXAMPLE][part_name][_TITLE][(
+            )][index].decode('utf-8')
             sample = ' '.join([raw_token, raw_title])
-            tag = data_h5[_EXAMPLE][part_name][_TAGS][()
-                                                      ][index].decode('utf-8')
+            tag = data_h5[_EXAMPLE][part_name][_TAGS][(
+            )][index].decode('utf-8')
 
             sample = preprocess_input(sample, self.root)
             tag = preprocess_target(tag, self.root)
@@ -358,20 +349,18 @@ class StackOverFlowTP(StackOverFlow):
 
 
 class StackOverFlowNWP(StackOverFlow):
-    """next work prediction.
-    """
-
+    """next work prediction."""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        with h5py.File(self.data_file, "r") as data_h5:
+        with h5py.File(self.data_file, 'r') as data_h5:
             client_ids = list(data_h5[_EXAMPLE].keys())
 
-        with h5py.File(self.data_file, "r") as data_h5:
+        with h5py.File(self.data_file, 'r') as data_h5:
             client_ids = list(data_h5[_EXAMPLE].keys())
 
         self.total_parts = len(client_ids)
-        self.parts_name  = client_ids
+        self.parts_name = client_ids
 
         self.classes = len(get_word_dict(self.root)) + 1
 
@@ -381,10 +370,10 @@ class StackOverFlowNWP(StackOverFlow):
             return len(data_h5[_EXAMPLE][part_name][_TOKENS][()])
 
     def __getitem__(self, index: int):
-        with h5py.File(self.data_file, "r") as data_h5:
+        with h5py.File(self.data_file, 'r') as data_h5:
             part_name = self.parts_name[self.part_id]
-            raw_token = data_h5[_EXAMPLE][part_name][_TOKENS][()][index].decode(
-                'utf-8')
+            raw_token = data_h5[_EXAMPLE][part_name][_TOKENS][(
+            )][index].decode('utf-8')
             sample = tokenizer(raw_token, self.root)
         x, y = sample[:-1], torch.tensor(sample[1:])
         if self.transform:
@@ -399,6 +388,7 @@ class StackOverFlowNWP(StackOverFlow):
 
         return sum(samples)
 
+
 def get_stackoverflow(root, mode='tp', train: bool = True):
     assert mode in ['tp', 'nwp']
     root = os.path.join(root, 'raw')
@@ -409,11 +399,14 @@ def get_stackoverflow(root, mode='tp', train: bool = True):
     else:
         raise NotImplementedError('')
 
+
 if __name__ == '__main__':
-    dataset = get_stackoverflow(
-        root='benchmark/datasets/stackoverflow/data', mode='tp', train=True)
+    dataset = get_stackoverflow(root='benchmark/datasets/stackoverflow/data',
+                                mode='tp',
+                                train=True)
     Analysis.digest(dataset)
 
-    dataset = get_stackoverflow(
-        root='benchmark/datasets/stackoverflow/data', mode='nwp', train=True)
+    dataset = get_stackoverflow(root='benchmark/datasets/stackoverflow/data',
+                                mode='nwp',
+                                train=True)
     Analysis.digest(dataset)

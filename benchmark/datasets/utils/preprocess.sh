@@ -34,7 +34,7 @@ CHECKSUM_FNAME="${META_DIR}/dir-checksum.md5"
 while [[ $# -gt 0 ]]
 do
     key="$1"
-    
+
     case $key in
         --name)
             NAME="$2"
@@ -179,18 +179,18 @@ if [ "$CONT_SCRIPT" = true ] && [ ! $SAMPLE = "na" ]; then
         if [ ! -d "data/sampled_data" ]; then
             mkdir data/sampled_data
         fi
-        
+
         cd ../utils
-        
+
         # Defaults to -1 if not specified, causes script to randomly generate seed
         SEED_ARGUMENT="${SAMPLING_SEED:--1}"
-        
+
         if [ $SAMPLE = "iid" ]; then
             LEAF_DATA_META_DIR=${META_DIR} python3 sample.py $NAMETAG --iid $IUSERTAG $SFRACTAG --seed ${SEED_ARGUMENT}
         else
             LEAF_DATA_META_DIR=${META_DIR} python3 sample.py $NAMETAG $SFRACTAG --seed ${SEED_ARGUMENT}
         fi
-        
+
         cd ../$NAME
     fi
 fi
@@ -203,15 +203,15 @@ if [ "$CONT_SCRIPT" = true ] && [ ! $MINSAMPLES = "na" ]; then
         if [ ! -d "data/rem_user_data" ]; then
             mkdir data/rem_user_data
         fi
-        
+
         cd ../utils
-        
+
         if [ -z $MINSAMPLES ]; then
             python3 remove_users.py $NAMETAG
         else
             python3 remove_users.py $NAMETAG --min_samples $MINSAMPLES
         fi
-        
+
         cd ../$NAME
     fi
 fi
@@ -232,12 +232,12 @@ if [ "$CONT_SCRIPT" = true ] && [ ! $TRAIN = "na" ]; then
         if [ ! -d "data/test" ]; then
             mkdir data/test
         fi
-        
+
         cd ../utils
-        
+
         # Defaults to -1 if not specified, causes script to randomly generate seed
         SEED_ARGUMENT="${SPLIT_SEED:--1}"
-        
+
         if [ -z $TRAIN ]; then
             LEAF_DATA_META_DIR=${META_DIR} python3 split_data.py $NAMETAG $TFRACTAG --seed ${SEED_ARGUMENT}
             elif [ $TRAIN = "user" ]; then
@@ -245,7 +245,7 @@ if [ "$CONT_SCRIPT" = true ] && [ ! $TRAIN = "na" ]; then
             elif [ $TRAIN = "sample" ]; then
             LEAF_DATA_META_DIR=${META_DIR} python3 split_data.py $NAMETAG --by_sample $TFRACTAG --seed ${SEED_ARGUMENT}
         fi
-        
+
         cd ../$NAME
     fi
 fi

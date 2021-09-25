@@ -1,22 +1,25 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:23:11
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:23:11
+# Copyright (c) FederalLab. All rights reserved.
 import argparse
 import os
-os.sys.path.insert(0, '/Users/densechen/code/benchmark')
+
 from torchvision import transforms
 
 from benchmark.datasets.simulation_dataset import SimulationDataset
-from benchmark.datasets.utils.transforms import LoadImage, BinaryTensor
+from benchmark.datasets.utils.transforms import BinaryTensor, LoadImage
 
 IMAGE_SIZE = 84
 
 
 def get_celeba(root, train: bool = True):
-    transform = transforms.Compose(
-        [
-            LoadImage(os.path.join(root, 'raw', 'img_align_celeba')),
-            transforms.Resize([IMAGE_SIZE, IMAGE_SIZE]),
-            transforms.ToTensor(),
-        ]
-    )
+    transform = transforms.Compose([
+        LoadImage(os.path.join(root, 'raw', 'img_align_celeba')),
+        transforms.Resize([IMAGE_SIZE, IMAGE_SIZE]),
+        transforms.ToTensor(),
+    ])
     transform_target = BinaryTensor()
 
     data_root = os.path.join(root, 'train' if train else 'test')

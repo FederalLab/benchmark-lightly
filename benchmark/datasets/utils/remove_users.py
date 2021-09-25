@@ -1,7 +1,9 @@
-
-'''
-removes users with less than the given number of samples
-'''
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:34:07
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:34:07
+# Copyright (c) FederalLab. All rights reserved.
+"""removes users with less than the given number of samples."""
 
 import argparse
 import json
@@ -12,15 +14,16 @@ from constants import DATASETS
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--name',
-                    help    = 'name of dataset to parse; default: sent140;',
-                    type    = str,
-                    choices = DATASETS,
-                    default = 'sent140')
+                    help='name of dataset to parse; default: sent140;',
+                    type=str,
+                    choices=DATASETS,
+                    default='sent140')
 
-parser.add_argument('--min_samples',
-                    help    = 'users with less than x samples are discarded; default: 10;',
-                    type    = int,
-                    default = 10)
+parser.add_argument(
+    '--min_samples',
+    help='users with less than x samples are discarded; default: 10;',
+    type=int,
+    default=10)
 
 args = parser.parse_args()
 
@@ -28,21 +31,21 @@ print('------------------------------')
 print('removing users with less than %d samples' % args.min_samples)
 
 parent_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-dir         = os.path.join(parent_path, args.name, 'data')
-subdir      = os.path.join(dir, 'sampled_data')
-files       = []
+dir = os.path.join(parent_path, args.name, 'data')
+subdir = os.path.join(dir, 'sampled_data')
+files = []
 if os.path.exists(subdir):
     files = os.listdir(subdir)
 if len(files) == 0:
     subdir = os.path.join(dir, 'all_data')
-    files  = os.listdir(subdir)
+    files = os.listdir(subdir)
 files = [f for f in files if f.endswith('.json')]
 
 for f in files:
-    users       = []
+    users = []
     hierarchies = []
     num_samples = []
-    user_data   = {}
+    user_data = {}
 
     file_dir = os.path.join(subdir, f)
     with open(file_dir, 'r') as inf:
@@ -50,7 +53,7 @@ for f in files:
 
     num_users = len(data['users'])
     for i in range(num_users):
-        curr_user      = data['users'][i]
+        curr_user = data['users'][i]
         curr_hierarchy = None
         if 'hierarchies' in data:
             curr_hierarchy = data['hierarchies'][i]
@@ -67,7 +70,7 @@ for f in files:
     if len(hierarchies) == len(users):
         all_data['hierarchies'] = hierarchies
     all_data['num_samples'] = num_samples
-    all_data['user_data']   = user_data
+    all_data['user_data'] = user_data
 
     file_name = '%s_keep_%d.json' % ((f[:-5]), args.min_samples)
     ouf_dir = os.path.join(dir, 'rem_user_data', file_name)

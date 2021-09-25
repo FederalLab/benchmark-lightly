@@ -1,12 +1,16 @@
 import argparse
 import os
 
-os.sys.path.insert(0, '/Users/densechen/code/benchmark')
 from benchmark.datasets.simulation_dataset import SimulationDataset
-from benchmark.datasets.utils.language_utils import (word_to_indices, letter_to_vec, NUM_LETTERS)
+from benchmark.datasets.utils.language_utils import (NUM_LETTERS,
+                                                     letter_to_vec,
+                                                     word_to_indices)
 from benchmark.datasets.utils.transforms import FloatTensor, LongTensor
 
+os.sys.path.insert(0, '/Users/densechen/code/benchmark')
+
 VOCAB_DIR = 'embs.json'
+
 
 class Shakespeare(SimulationDataset):
     vocab_size: int = NUM_LETTERS
@@ -25,6 +29,7 @@ class Shakespeare(SimulationDataset):
             y = self.transform_target(y)
         return x, y
 
+
 def get_shakespeare(root, train: bool = True):
 
     data_root = os.path.join(root, 'train' if train else 'test')
@@ -39,9 +44,9 @@ if __name__ == '__main__':
     dataset = get_shakespeare(root=args.root, train=True)
 
     print(dataset)
-    print(f"vocab size: {dataset.vocab_size}")
+    print(f'vocab size: {dataset.vocab_size}')
 
     # fetch data
     x, y = dataset[0]
 
-    print(x.shape, y.shape) # type: ignore
+    print(x.shape, y.shape)  # type: ignore

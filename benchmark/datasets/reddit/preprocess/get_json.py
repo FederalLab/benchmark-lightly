@@ -1,10 +1,15 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:32:41
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:32:41
+# Copyright (c) FederalLab. All rights reserved.
 import json
 import math
 import os
 import pickle
 
-data_root = os.path.join(os.path.dirname(
-    os.path.dirname(os.path.realpath(__file__))), "data")
+data_root = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'data')
 DIR = os.path.join(data_root, 'reddit_subsampled')
 FINAL_DIR = os.path.join(data_root, 'reddit_json')
 FILES_PER_JSON = 10
@@ -74,12 +79,10 @@ def main():
 
     last_user_idx = 0
     for i in range(num_json):
-        cur_files = files[i * FILES_PER_JSON: (i+1) * FILES_PER_JSON]
-        print('processing until', (i+1) * FILES_PER_JSON)
-        last_user_idx = files_to_json(
-            cur_files,
-            'reddit_{}.json'.format(i),
-            last_user_idx)
+        cur_files = files[i * FILES_PER_JSON:(i + 1) * FILES_PER_JSON]
+        print('processing until', (i + 1) * FILES_PER_JSON)
+        last_user_idx = files_to_json(cur_files, 'reddit_{}.json'.format(i),
+                                      last_user_idx)
 
 
 if __name__ == '__main__':

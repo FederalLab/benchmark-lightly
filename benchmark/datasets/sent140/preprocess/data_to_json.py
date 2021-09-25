@@ -1,3 +1,8 @@
+# @Author            : FederalLab
+# @Date              : 2021-09-26 00:33:07
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 00:33:07
+# Copyright (c) FederalLab. All rights reserved.
 import csv
 import json
 import os
@@ -9,7 +14,7 @@ data_dir = os.path.join(parent_path, 'data', 'intermediate', 'all_data.csv')
 data = []
 with open(data_dir, 'rt', encoding='ISO-8859-1') as f:
     reader = csv.reader(f)
-    data   = list(reader)
+    data = list(reader)
 
 data = sorted(data, key=lambda x: x[4])
 
@@ -17,29 +22,29 @@ data = sorted(data, key=lambda x: x[4])
 # get # of users in data, and list of users (note automatically sorted)
 
 num_users = 1
-cuser     = data[0][4]
-users     = [cuser]
+cuser = data[0][4]
+users = [cuser]
 
 for i in range(len(data)):
     row = data[i]
     tuser = row[4]
     if tuser != cuser:
         num_users += 1
-        cuser      = tuser
+        cuser = tuser
         users.append(tuser)
 
 # ------------
 # get # of samples for each user
 
 num_samples = [0 for _ in range(num_users)]
-cuser       = data[0][4]
-user_i      = 0
+cuser = data[0][4]
+user_i = 0
 
 for i in range(len(data)):
-    row   = data[i]
+    row = data[i]
     tuser = row[4]
     if tuser != cuser:
-        cuser   = tuser
+        cuser = tuser
         user_i += 1
     num_samples[user_i] += 1
 
@@ -54,7 +59,7 @@ for u in users:
 
     while ((row_i < len(data)) and (data[row_i][4] == u)):
         row = data[row_i]
-        y = 1 if row[0] == "4" else 0
+        y = 1 if row[0] == '4' else 0
         user_data[u]['x'].append(row[1:])
         user_data[u]['y'].append(y)
 
@@ -64,9 +69,9 @@ for u in users:
 # create .json file
 
 all_data = {}
-all_data['users']       = users
+all_data['users'] = users
 all_data['num_samples'] = num_samples
-all_data['user_data']   = user_data
+all_data['user_data'] = user_data
 
 file_path = os.path.join(parent_path, 'data', 'all_data', 'all_data.json')
 

@@ -256,10 +256,12 @@ print('>>> Register hooks...')
 parts_list = list(range(train_dataset.total_parts))
 act_clts = args.act_clts if args.act_clts > 0 else\
     int(len(parts_list) * args.act_clts_rat)
+assert act_clts <= len(parts_list)
 
 tst_parts_list = list(range(test_dataset.total_parts))
 tst_act_clts = args.tst_act_clts if args.tst_act_clts > 0 else\
     int(len(tst_parts_list) * args.tst_act_clts_rat)
+assert tst_act_clts <= len(tst_parts_list)
 
 print(f'\tTrain Part: {len(parts_list)}')
 print(f'\tActivated Train Part: {act_clts}')
@@ -300,7 +302,7 @@ def step():
                 loss=loss,
                 duration=duration,
                 duration_acg=duration_acg,
-                version=task_info.version + 1,  # type: ignore
+                version=task_info.version,  # type: ignore
                 instances=len(trainer.dataloader.dataset),  # type: ignore
             )
 
@@ -316,7 +318,7 @@ def step():
                 accuracy=acc,
                 loss=loss,
                 duration=duration,
-                version=task_info.version + 1,  # type: ignore
+                version=task_info.version,  # type: ignore
                 instances=len(tester.dataloader.dataset),  # type: ignore
             )
             task_info.update(test_info)

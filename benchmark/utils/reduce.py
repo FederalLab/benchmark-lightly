@@ -13,6 +13,7 @@ def meta_reduce_log(meta_list: List[Dict[str, Any]], log_dir: str = None):
 
     if log_dir is not None:
         with open(log_dir, 'a') as f:
-            json.dump(reduce_meta, f)
+            json.dump(reduce_meta, f, )
+            f.write('\n')
     return f"loss: {reduce_meta['loss']:.2f}, "\
         f"accuracy: {reduce_meta['accuracy']:.2f}"

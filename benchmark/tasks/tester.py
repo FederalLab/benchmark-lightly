@@ -43,10 +43,9 @@ class Tester(object):
 
     def finish_testing(self, task_info):
         self.maintainer.update_version(task_info.version)
-        if not self.maintainer.transfer(to=True, task_info=task_info):
-            return False
-        else:
-            return True
+        self.maintainer.package()
+        self.maintainer.step(download=False, meta=task_info)
+
 
     def start_testing(self, task_info):
         part_id = task_info.part_id  # type: ignore

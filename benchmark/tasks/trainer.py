@@ -83,11 +83,12 @@ class Trainer(object):
         cache_file = os.path.join(self.cache_folder, f'{part_id}.pth')
         torch.save(self.optimizer.state_dict(), cache_file)
 
-        if not self.maintainer.transfer(to=True, task_info=task_info):
-            return False
-        else:
-            self.optimizer.clear_buffer()
-            return True
+
+        self.maintainer.package(self.optimizer)
+        self.maintainer.step(download=False, meta=task_info)
+
+        self.optimizer.clear_state_dict()
+
 
     def start_training(self, task_info):
         part_id = task_info.part_id  # type: ignore

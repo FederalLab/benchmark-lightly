@@ -10,13 +10,12 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["benchmark/datasets/reddit/data"]
         },
         {
             "name": "Python: client",
             "type": "python",
             "request": "launch",
-            "program": "benchmark/run.py",
+            "program": "main.py",
             "console": "integratedTerminal",
             "args": [
                 "--task",
@@ -28,14 +27,16 @@
                 "--data_root",
                 "benchmark/datasets/celeba/data",
                 "--optim",
-                "fedela",
+                "fedavg",
+                "--props",
+                "/tmp/collaborator-1.json"
             ]
         },
         {
             "name": "Python: server",
             "type": "python",
             "request": "launch",
-            "program": "benchmark/run.py",
+            "program": "main.py",
             "console": "integratedTerminal",
             "args": [
                 "--task",
@@ -47,7 +48,9 @@
                 "--data_root",
                 "benchmark/datasets/celeba/data",
                 "--optim",
-                "fedela",
+                "fedavg",
+                "--props",
+                "/tmp/aggregator.json"
             ]
         }
     ]

@@ -1,26 +1,21 @@
 # @Author            : FederalLab
-# @Date              : 2021-09-26 00:29:44
+# @Date              : 2021-09-26 11:03:42
 # @Last Modified by  : Chen Dengsheng
-# @Last Modified time: 2021-09-26 00:29:44
+# @Last Modified time: 2021-09-26 11:03:42
 # Copyright (c) FederalLab. All rights reserved.
 import argparse
 import json
 import os
-import sys
 import time
-from pprint import pprint
 
 import openfed
 import torch
-from openfed.core import follower, is_leader, leader
-from openfed.optim import AutoReduceOp
-from openfed.tools import build_optim, builder
 from torch.utils.data import DataLoader
 
 from benchmark.datasets import build_dataset
 from benchmark.models import build_model
 from benchmark.tasks import Tester, Trainer
-from benchmark.utils import StoreDict
+from benchmark.utils import StoreDict, meta_reduce_log
 
 parser = argparse.ArgumentParser('benchmark-lightly')
 
@@ -107,24 +102,23 @@ parser.add_argument(
     help='The number of samples used to compute acg. -1 used all train data.')
 parser.add_argument('--optim',
                     type=str,
-                    default='fedsgd',
-                    choices=list(builder.keys()),
+                    default='fedavg',
                     help='Specify fed optimizer.')
 parser.add_argument('--optim_args',
                     nargs='+',
                     action=StoreDict,
                     default=dict(),
                     help='extra optim args passed in.')
-parser.add_argument('--fl_lr',
-                    '--follower_lr',
+parser.add_argument('--co_lr',
+                    '--collaborator_lr',
                     type=float,
                     default=1e-2,
-                    help='The learning rate of follower optimizer.')
-parser.add_argument('--ld_lr',
-                    '--leader_lr',
+                    help='The learning rate of collaborator optimizer.')
+parser.add_argument('--ag_lr',
+                    '--aggregator_lr',
                     type=float,
                     default=1.0,
-                    help='The learning rate of leader optimizer.')
+                    help='The learning rate of aggregator optimizer.')
 parser.add_argument('--bz',
                     '--batch_size',
                     type=int,
@@ -136,11 +130,6 @@ parser.add_argument('--gpu',
                     help='Whether to use gpu.')
 
 # log
-parser.add_argument('--log_level',
-                    type=str,
-                    default='SUCCESS',
-                    choices=['SUCCESS', 'INFO', 'DEBUG', 'ERROR'],
-                    help='The log level of openfed bk.')
 parser.add_argument('--log_dir',
                     type=str,
                     default=f'logs/',
@@ -151,25 +140,28 @@ parser.add_argument('--exp_name',
                     help='The experiment name.')
 parser.add_argument('--seed', type=int, default=0, help='Seed for everything.')
 
+# props
+parser.add_argument('--props', type=str, default='/tmp/aggregator.json')
 args = parser.parse_args()
 
-args.tst_num_parts = args.tst_num_parts if args.tst_num_parts > 0 else args.fed_world_size - 1
+print('>>> Load Props')
+props = openfed.federated.FederatedProperties.load(args.props)
+assert len(props) == 1
+props = props[0]
+print(props)
 
-print('>>> Set log level...')
-openfed.logger.log_level(level=args.log_level)
+print('>>> Seed everything...')
 openfed.utils.seed_everything(args.seed)
 
-args.role = leader if args.fed_rank == 0 else follower
-
+print('>>> Log argparse to json...')
 args.log_dir = os.path.join(args.log_dir, args.task, args.exp_name)
 
 os.makedirs(args.log_dir, exist_ok=True)
-
-if is_leader(args.role):
+if props.aggregator:
     with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
         json.dump(args.__dict__, f)
 
-print('>>> Device...')
+print('>>> Config device...')
 if args.gpu and torch.cuda.is_available():
     args.gpu = args.fed_rank % torch.cuda.device_count()
     args.device = torch.device(args.gpu)
@@ -177,11 +169,11 @@ if args.gpu and torch.cuda.is_available():
 else:
     args.device = torch.device('cpu')
 
-pprint(args.__dict__)
+print(args.__dict__)
 
-print(f"Let's use {args.device}.")
+print(f"\tLet's use {args.device}.")
 
-print('>>> Dataset...')
+print('>>> Load dataset...')
 
 if args.task == 'mnist':
     if args.partition == 'iid':
@@ -213,7 +205,10 @@ test_dataset = build_dataset(args.task,
                              **test_args,
                              **args.dataset_args)
 
-print('>>> DataLoader...')
+print(train_dataset)
+print(test_dataset)
+
+print('>>> Load dataLoader...')
 train_dataloader = DataLoader(train_dataset,
                               batch_size=args.bz,
                               shuffle=True,
@@ -225,102 +220,75 @@ test_dataloader = DataLoader(test_dataset,
                              num_workers=0,
                              drop_last=False)
 
-print('>>> Network...')
+print('>>> Build network...')
 network = build_model(args.task, **args.network_args)
-pprint(network)
+print(network)
 
 print('>>> Move to device...')
 network = network.to(args.device)
 
-print('>>> AutoReducer...')
-auto_reducer = AutoReduceOp(
-    weight_key='instances',
-    reduce_keys=['accuracy', 'loss', 'duration', 'duration_acg'],
-    ignore_keys=['part_id'],
-    log_file=os.path.join(args.log_dir, f'{args.task}.json'))
-
 print('>>> Federated Optimizer...')
-optimizer, aggregator = build_optim(
-    args.optim,
-    network.parameters(),
-    lr=args.ld_lr if is_leader(args.role) else args.fl_lr,
-    role=args.role,
-    reducer=auto_reducer,
-    **args.optim_args if is_leader(args.role) else dict())
+if args.optim == 'fedavg':
+    optim = torch.optim.SGD(network.parameters(),
+                            lr=args.ag_lr if props.aggregator else args.co_lr)
+    fed_optim = openfed.optim.FederatedOptimizer(optim, role=props.role)
+    aggregator = openfed.functional.average_aggregation
+    aggregator_kwargs = {}
+elif args.optim == 'fedela':
+    optim = torch.optim.SGD(network.parameters(),
+                            lr=args.ag_lr if props.aggregator else args.co_lr)
+    fed_optim = openfed.optim.ElasticOptimizer(optim, role=props.role)
+    aggregator = openfed.functional.elastic_aggregation
+    aggregator_kwargs = {'quantile': 0.5}
+else:
+    raise NotImplementedError(f'{args.optim} is not implemented.')
 
 print('>>> Lr Scheduler...')
 lr_scheduler = \
-    torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.rounds)
+    torch.optim.lr_scheduler.CosineAnnealingLR(optim, T_max=args.rounds)
 
-print('>>> World...')
-world = World(
-    role=args.role,
-    dal=True,
-    mtt=5,
-)
-print(world)
+print('>>> Maintainer...')
+maintainer = openfed.core.Maintainer(props, network.state_dict(keep_vars=True))
 
-print('>>> API...')
-openfed_api = openfed.API(state_dict=network.state_dict(keep_vars=True),
-                          fed_optim=optimizer,
-                          aggregator=aggregator)
+print('>>> Register hooks...')
+parts_list = list(range(train_dataset.total_parts))
+act_clts = args.act_clts if args.act_clts > 0 else\
+    int(len(parts_list) * args.act_clts_rat)
 
-print('>>> Register step functions...')
-with openfed_api:
-    parts_list = list(range(train_dataset.total_parts))
-    act_clts = args.act_clts if args.act_clts > 0 else\
-        int(len(parts_list) * args.act_clts_rat)
+tst_parts_list = list(range(test_dataset.total_parts))
+tst_act_clts = args.tst_act_clts if args.tst_act_clts > 0 else\
+    int(len(tst_parts_list) * args.tst_act_clts_rat)
 
-    tst_parts_list = list(range(test_dataset.total_parts))
-    tst_act_clts = args.tst_act_clts if args.tst_act_clts > 0 else\
-        int(len(tst_parts_list) * args.tst_act_clts_rat)
-
-    print(f'Train Part: {len(parts_list)}')
-    print(f'Activated Train Part: {act_clts}')
-    print(f'Test Part: {len(tst_parts_list)}')
-    print(f'Activated Test Part: {tst_act_clts}')
-
-    openfed.hooks.Dispatch(
-        activated_parts=dict(
-            train=act_clts,
-            test=tst_act_clts,
-        ),
-        parts_list=dict(train=parts_list, test=tst_parts_list),
-        max_version=args.rounds,
-        clip_grad_norm=1.0,
-    )
-
-print('>>> Address...')
-address = openfed.build_address(
-    backend=args.fed_backend,
-    init_method=args.fed_init_method,
-    world_size=args.fed_world_size,
-    rank=args.fed_rank,
-    group_name=args.fed_group_name,
-)
-pprint(address)
-
-print('>>> Connecting...')
-openfed_api.build_connection(address=address)
+print(f'\tTrain Part: {len(parts_list)}')
+print(f'\tActivated Train Part: {act_clts}')
+print(f'\tTest Part: {len(tst_parts_list)}')
+print(f'\tActivated Test Part: {tst_act_clts}')
+with maintainer:
+    openfed.functional.device_alignment()
+    openfed.functional.dispatch_step(counts=[act_clts, tst_act_clts],
+                                     parts_list=dict(
+                                         train=parts_list,
+                                         test=tst_parts_list,
+                                     ))
 
 
-@openfed.api.device_offline_care
-def follower_loop():
+def step():
     # build a trainer and tester
-    trainer = Trainer(openfed_api,
+    trainer = Trainer(maintainer,
                       network,
-                      optimizer,
+                      fed_optim,
                       train_dataloader,
                       cache_folder=f'/tmp/{args.task}/{args.exp_name}')
-    tester = Tester(openfed_api, network, test_dataloader)
-    task_info = openfed.TaskInfo()
+    tester = Tester(maintainer, network, test_dataloader)
+    task_info = openfed.Meta()
 
-    while True:
-        if not openfed_api.transfer(to=False, task_info=task_info):
+    while not maintainer.is_offline:
+        if not maintainer.step(upload=False, meta=task_info):
             break
-
         if task_info.mode == 'train':  # type: ignore
             trainer.start_training(task_info)
+            lr_scheduler.last_epoch = task_info.version  # type: ignore
+            lr_scheduler.step()
 
             duration_acg = trainer.acg_epoch(max_acg_step=args.max_acg_step)
             acc, loss, duration = trainer.train_epoch(epoch=args.epochs)
@@ -337,7 +305,6 @@ def follower_loop():
             task_info.update(train_info)
 
             trainer.finish_training(task_info)
-            lr_scheduler.step(task_info.version)  # type: ignore
         else:
             tester.start_testing(task_info)
 
@@ -357,11 +324,21 @@ def follower_loop():
 
 # Context `with openfed_api` will go into the specified settings about openfed_api.
 # Otherwise, will use the default one which shared by global OpenFed world.
-if openfed_api.leader:
-    openfed_api.run()
-    print('>>> Finished.')
-    openfed_api.finish()
-    # Wait all nodes to exit.
+if maintainer.aggregator:
+    openfed_api = openfed.API(
+        maintainer,
+        fed_optim,
+        rounds=args.rounds,
+        agg_func=aggregator,
+        agg_func_kwargs=aggregator_kwargs,
+        reduce_func=meta_reduce_log,
+        reduce_func_kwargs=dict(
+            log_dir=os.path.join(args.log_dir, f'{args.task}.json')),
+        with_test_round=True)
+    openfed_api.start()
+    openfed_api.join()
+
+    maintainer.killed()
     time.sleep(1.0)
 else:
-    follower_loop()
+    step()

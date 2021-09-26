@@ -100,14 +100,3 @@ def get_cifar100(root, train: bool = True):
             transforms.Normalize(mean=mean, std=std),
         ])
     return CIFAR100(root, train, transform=transform)
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('root',
-                        type=str,
-                        help='root directory',
-                        default='data')
-    args = parser.parse_args()
-    dataset = get_cifar100(root=args.root)
-    samples_distribution(dataset)

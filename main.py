@@ -341,6 +341,5 @@ if maintainer.aggregator:
     openfed_api.join()
 
     maintainer.killed()
-    time.sleep(1.0)
 else:
     step()

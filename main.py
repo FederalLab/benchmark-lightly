@@ -150,6 +150,8 @@ assert len(props) == 1
 props = props[0]
 print(props)
 
+args.tst_num_parts = args.tst_num_parts if args.tst_num_parts > 0 else props.address.world_size - 1
+
 print('>>> Seed everything...')
 openfed.utils.seed_everything(args.seed)
 

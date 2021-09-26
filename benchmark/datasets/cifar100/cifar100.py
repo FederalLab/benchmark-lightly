@@ -6,14 +6,13 @@
 
 # type: ignore
 
-import argparse
 import os
 
 import h5py
 import numpy as np
 import torch
 import torchvision.transforms as transforms
-from openfed.data import FederatedDataset, samples_distribution
+from openfed.data import FederatedDataset
 
 DEFAULT_TRAIN_FILE = 'fed_cifar100_train.h5'
 DEFAULT_TEST_FILE = 'fed_cifar100_test.h5'

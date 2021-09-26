@@ -19,9 +19,9 @@ args = parser.parse_args()
 lines = []
 with open(args.f, 'r') as inf:
     lines = inf.readlines()
-lines = [l.split() for l in lines]
-vocab = [l[0] for l in lines]
-emb_floats = [[float(n) for n in l[1:]] for l in lines]
+lines = [line.split() for line in lines]
+vocab = [line[0] for line in lines]
+emb_floats = [[float(n) for n in line[1:]] for line in lines]
 emb_floats.append([0.0 for _ in range(300)])  # for unknown word
 js = {'vocab': vocab, 'emba': emb_floats}
 with open('data/embs.json', 'w') as ouf:

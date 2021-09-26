@@ -12,7 +12,8 @@ from .utils import top_one_acc
 class Reddit(Model):
     """
     Args:
-        vocab_size: the size of the vocabulary, used as a dimension in the input embedding.
+        vocab_size: the size of the vocabulary, used as a dimension
+            in the input embedding.
         sequence_length: the length of input sequences.
     Returns:
         An uncompiled `torch.nn.Module`.
@@ -38,7 +39,8 @@ class Reddit(Model):
 
     def forward(self, input_seq):
         embeds = self.embeddings(input_seq)
-        # Note that the order of mini-batch is random so there is no hidden relationship among batches.
+        # Note that the order of mini-batch is random so there is no
+        # hidden relationship among batches.
         # So we do not input the previous batch's hidden state,
         # leaving the first hidden state zero `self.lstm(embeds, None)`.
         lstm_out, _ = self.lstm(embeds)

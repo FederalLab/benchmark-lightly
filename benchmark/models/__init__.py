@@ -14,17 +14,6 @@ from .shakespeare import Shakespeare
 from .stackoverflow import Stackoverflow
 from .synthetic import Synthetic
 
-del base
-del celeba
-del cifar100
-del femnist
-del mnist
-del reddit
-del sent140
-del shakespeare
-del stackoverflow
-del synthetic
-
 
 def build_model(name, *args, **kwargs):
     if name == 'celeba':

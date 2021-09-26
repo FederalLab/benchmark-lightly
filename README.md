@@ -1,47 +1,19 @@
-# A high speed simulation benchmark of federated learning
+# Federated Learning Simulator on Light Task
 
-Under development. Coming soon...
+We include several most common used federated tasks in this benchmark. You can validate and compare different federated algorithms under various experiment settings efficiently.
 
-This simulation benchmark can do federated learning within a single node with/without GPU.
-
-## Setup
-
-### Install
+## Install
 
 ```bash
 git clone git@github.com:FederalLab/benchmark-lightly.git
 cd benchmark-lightly
 pip install -r requirements.txt
+python setup.py install
 ```
 
-### Download dataset
+## Benchmark
 
-`md5sum` is required in your system path.
-Refer to `datasets/xxx/README.md` for more details about preparing dataset.
-
-## Experiment
-
-Refer to `docs/xxx.ipynb` for more details about different experiments settings and results.
-
-## Fast Test
-
-```bash
-# Download mnist
-python benchmark/datasets/mnist/mnist.py benchmark/datasets/mnist/data
-
-# Do a simple test
-rm -rf /tmp/mnist.share
-python -m openfed.tools.launch --nproc_per_node 6  --logdir /tmp benchmark/run.py --fed_init_method file:///tmp/mnist.share --network_args input_dim:784 --act_clts 10 --gpu
-
-## Debug
-
-```bash
-# Client
-python benchmark/run.py --fed_rank 1 --fed_world_size 2 --task celeba --act_clts 10 --tst_act_clts 10 --data_root benchmark/datasets/celeba/data --optim fedscaffold
-
-# Server
-python benchmark/run.py --fed_rank 0 --fed_world_size 2 --task celeba --act_clts 10 --tst_act_clts 10 --data_root benchmark/datasets/celeba/data --optim fedscaffold
-```
+Refer to `docs/` for more details.
 
 ## Citation
 

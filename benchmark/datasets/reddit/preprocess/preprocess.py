@@ -55,10 +55,6 @@ def create_seqs(comments, meta_data, seq_len=SEQ_LEN):
         target_metadata.append(meta)
         all_counts.append(count_tokens.tolist())
 
-    #all_tokens = np.concatenate(all_tokens)
-    #target_tokens = np.concatenate(target_tokens)
-    #all_counts = np.concatenate(all_counts)
-
     def build_labels_dict(targets, counts, other_meta):
         labels = []
         for i, m in enumerate(other_meta):

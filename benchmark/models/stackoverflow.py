@@ -16,10 +16,12 @@ class Stackoverflow(Model):
     prediction task).
 
     This replicates the model structure in the paper:
-    "Adaptive Federated Optimization. ICML 2020" (https://arxiv.org/pdf/2003.00295.pdf)
+    "Adaptive Federated Optimization. ICML 2020"
+    (https://arxiv.org/pdf/2003.00295.pdf)
     Table 9
     Args:
-        vocab_size: the size of the vocabulary, used as a dimension in the input embedding.
+        vocab_size: the size of the vocabulary,
+            used as a dimension in the input embedding.
         sequence_length: the length of input sequences.
     Returns:
         An un-compiled `torch.nn.Module`.

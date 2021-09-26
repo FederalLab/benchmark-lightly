@@ -24,8 +24,8 @@ class Reddit(SimulationDataset):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.vocab, self.vocab_size, self.unk_symbol, self.pad_symbol = self.load_vocab(
-        )
+        self.vocab, self.vocab_size, self.unk_symbol, self.pad_symbol = \
+            self.load_vocab()
 
     def load_vocab(self):
         vocab_file = pickle.load(

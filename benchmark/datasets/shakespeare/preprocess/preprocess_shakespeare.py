@@ -77,11 +77,13 @@ def _split_into_plays(shakespeare_full):
         # This marks the end of the plays in the file.
         if i > 124195 - start_i:
             break
-        # This is a pretty good heuristic for detecting the start of a new play:
+        # This is a pretty good heuristic for
+        # detecting the start of a new play:
         if 'by William Shakespeare' in line:
             current_character = None
             characters = collections.defaultdict(list)
-            # The title will be 2, 3, 4, 5, 6, or 7 lines above "by William Shakespeare".
+            # The title will be 2, 3, 4, 5, 6, or 7 lines above
+            # "by William Shakespeare".
             if slines[i - 2].strip():
                 title = slines[i - 2]
             elif slines[i - 3].strip():
@@ -106,10 +108,12 @@ def _split_into_plays(shakespeare_full):
         match = _match_character_regex(line, comedy_of_errors)
         if match:
             character, snippet = match.group(1), match.group(2)
-            # Some character names are written with multiple casings, e.g., SIR_Toby
-            # and SIR_TOBY. To normalize the character names, we uppercase each name.
-            # Note that this was not done in the original preprocessing and is a
-            # recent fix.
+            # Some character names are written with multiple casings,
+            # e.g., SIR_Toby
+            # and SIR_TOBY. To normalize the character names,
+            # we uppercase each name.
+            # Note that this was not done in the original preprocessing
+            # and is a recent fix.
             character = character.upper()
             if not (comedy_of_errors and character.startswith('ACT ')):
                 characters[character].append(snippet)  # type: ignore
@@ -171,8 +175,8 @@ def _get_train_test_by_character(plays, test_fraction=0.2):
                         for sound_bite in sound_bites]
             if len(examples) <= 2:
                 skipped_characters += 1
-                # Skip characters with fewer than 2 lines since we need at least one
-                # train and one test line.
+                # Skip characters with fewer than 2 lines since we need
+                # at least one train and one test line.
                 continue
             train_examples = examples
             if test_fraction > 0:

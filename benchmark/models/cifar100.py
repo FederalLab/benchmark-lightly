@@ -5,7 +5,8 @@
 # Copyright (c) FederalLab. All rights reserved.
 """mobilenetv2 in pytorch.
 
-[1] Mark Sandler, Andrew Howard, Menglong Zhu, Andrey Zhmoginov, Liang-Chieh Chen
+[1] Mark Sandler, Andrew Howard, Menglong Zhu, Andrey Zhmoginov,
+    Liang-Chieh Chen
     MobileNetV2: Inverted Residuals and Linear Bottlenecks
     https://arxiv.org/abs/1801.04381
 """
@@ -16,7 +17,7 @@ import torch.nn.functional as F
 from .base import Model
 from .utils import top_one_acc
 
-# Modified from https://github.com/weiaicunzai/pytorch-cifar100/blob/master/models/mobilenetv2.py
+# Modified from https://github.com/weiaicunzai/pytorch-cifar100/
 
 
 class LinearBottleNeck(nn.Module):

@@ -46,7 +46,6 @@ class Tester(object):
         self.maintainer.package()
         self.maintainer.step(download=False, meta=task_info)
 
-
     def start_testing(self, task_info):
         part_id = task_info.part_id  # type: ignore
         self.dataloader.dataset.set_part_id(part_id)

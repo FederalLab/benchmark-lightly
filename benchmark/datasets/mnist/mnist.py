@@ -26,7 +26,10 @@ def get_mnist(root,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('root', type=str, help='root directory')
+    parser.add_argument('--root',
+                        type=str,
+                        help='root directory',
+                        default='data/raw')
     args = parser.parse_args()
     dataset = get_mnist(root=args.root, train=True, total_parts=100)
     samples_distribution(dataset)

@@ -3,17 +3,13 @@
 # @Last Modified by  : Chen Dengsheng
 # @Last Modified time: 2021-09-26 00:24:51
 # Copyright (c) FederalLab. All rights reserved.
-import argparse
+
 import os
 
-from benchmark.datasets.simulation_dataset import SimulationDataset
-from benchmark.datasets.utils.language_utils import (bag_of_words,
-                                                     get_word_emb_arr,
-                                                     line_to_indices,
-                                                     val_to_vec)
-from benchmark.datasets.utils.transforms import FloatTensor, LongTensor
-
-os.sys.path.insert(0, '/Users/densechen/code/benchmark')
+from ..simulation_dataset import SimulationDataset
+from ..utils.language_utils import (bag_of_words, get_word_emb_arr,
+                                    line_to_indices, val_to_vec)
+from ..utils.transforms import FloatTensor, LongTensor
 
 VOCAB_DIR = 'embs.json'
 
@@ -59,18 +55,3 @@ def get_sent140(root, task: str = 'bag_log_reg', train: bool = True):
                    task=task,
                    transform=FloatTensor(),
                    transform_target=LongTensor())
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('root', type=str, help='root directory')
-    args = parser.parse_args()
-    dataset = get_sent140(root=args.root, train=True)
-
-    print(dataset)
-    print(f'vocab size: {dataset.vocab_size}')
-
-    # fetch data
-    x, y = dataset[0]
-
-    print(x.shape, y.shape)  # type: ignore

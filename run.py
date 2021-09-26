@@ -1,29 +1,21 @@
 # @Author            : FederalLab
-# @Date              : 2021-09-26 00:29:44
+# @Date              : 2021-09-26 11:03:42
 # @Last Modified by  : Chen Dengsheng
-# @Last Modified time: 2021-09-26 00:29:44
+# @Last Modified time: 2021-09-26 11:03:42
 # Copyright (c) FederalLab. All rights reserved.
 import argparse
 import json
 import os
-import sys
 import time
-from pprint import pprint
 
 import openfed
 import torch
-from openfed.core import follower, is_leader, leader
-from openfed.optim import AutoReduceOp
-from openfed.tools import build_optim, builder
 from torch.utils.data import DataLoader
 
 from benchmark.datasets import build_dataset
 from benchmark.models import build_model
 from benchmark.tasks import Tester, Trainer
 from benchmark.utils import StoreDict
-
-sys.path.insert(0, '/Users/densechen/code/OpenFed')
-sys.path.insert(0, '/Users/densechen/code/benchmark-lightly')
 
 parser = argparse.ArgumentParser('benchmark-lightly')
 
@@ -111,7 +103,6 @@ parser.add_argument(
 parser.add_argument('--optim',
                     type=str,
                     default='fedsgd',
-                    choices=list(builder.keys()),
                     help='Specify fed optimizer.')
 parser.add_argument('--optim_args',
                     nargs='+',
@@ -139,11 +130,6 @@ parser.add_argument('--gpu',
                     help='Whether to use gpu.')
 
 # log
-parser.add_argument('--log_level',
-                    type=str,
-                    default='SUCCESS',
-                    choices=['SUCCESS', 'INFO', 'DEBUG', 'ERROR'],
-                    help='The log level of openfed bk.')
 parser.add_argument('--log_dir',
                     type=str,
                     default=f'logs/',
@@ -154,25 +140,27 @@ parser.add_argument('--exp_name',
                     help='The experiment name.')
 parser.add_argument('--seed', type=int, default=0, help='Seed for everything.')
 
+# props
+parser.add_argument('--props', type=str, default='/tmp/aggregator.json')
 args = parser.parse_args()
 
-args.tst_num_parts = args.tst_num_parts if args.tst_num_parts > 0 else args.fed_world_size - 1
+print('>>> Load Props')
+props = openfed.federated.FederatedProperties.load(args.props)
+assert len(props) == 1
+props = props[0]
 
-print('>>> Set log level...')
-openfed.logger.log_level(level=args.log_level)
+print('>>> Seed everything...')
 openfed.utils.seed_everything(args.seed)
 
-args.role = leader if args.fed_rank == 0 else follower
-
+print('>>> Log argparse to json...')
 args.log_dir = os.path.join(args.log_dir, args.task, args.exp_name)
 
 os.makedirs(args.log_dir, exist_ok=True)
-
-if is_leader(args.role):
+if props.aggregator:
     with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
         json.dump(args.__dict__, f)
 
-print('>>> Device...')
+print('>>> Config device...')
 if args.gpu and torch.cuda.is_available():
     args.gpu = args.fed_rank % torch.cuda.device_count()
     args.device = torch.device(args.gpu)
@@ -180,11 +168,11 @@ if args.gpu and torch.cuda.is_available():
 else:
     args.device = torch.device('cpu')
 
-pprint(args.__dict__)
+print(args.__dict__)
 
-print(f"Let's use {args.device}.")
+print(f"\tLet's use {args.device}.")
 
-print('>>> Dataset...')
+print('>>> Load dataset...')
 
 if args.task == 'mnist':
     if args.partition == 'iid':
@@ -216,7 +204,10 @@ test_dataset = build_dataset(args.task,
                              **test_args,
                              **args.dataset_args)
 
-print('>>> DataLoader...')
+print(train_dataset)
+print(test_dataset)
+
+print('>>> Load dataLoader...')
 train_dataloader = DataLoader(train_dataset,
                               batch_size=args.bz,
                               shuffle=True,
@@ -228,9 +219,9 @@ test_dataloader = DataLoader(test_dataset,
                              num_workers=0,
                              drop_last=False)
 
-print('>>> Network...')
+print('>>> Build network...')
 network = build_model(args.task, **args.network_args)
-pprint(network)
+print(network)
 
 print('>>> Move to device...')
 network = network.to(args.device)

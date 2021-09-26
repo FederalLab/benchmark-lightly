@@ -12,12 +12,12 @@ import torch
 
 class Trainer(object):
     def __init__(self,
-                 openfed_api,
+                 maintainer,
                  model,
                  optimizer,
                  dataloader,
                  cache_folder: str = '/tmp'):
-        self.openfed_api = openfed_api
+        self.maintainer = maintainer
         self.model = model
         self.optimizer = optimizer
         self.dataloader = dataloader
@@ -76,14 +76,14 @@ class Trainer(object):
             kwargs: extra  information added to task info.
         """
         self.optimizer.round()
-        self.openfed_api.update_version(task_info.version)
+        self.maintainer.update_version(task_info.version)
 
         part_id = task_info.part_id
         # Save inner state of self.optimizer
         cache_file = os.path.join(self.cache_folder, f'{part_id}.pth')
         torch.save(self.optimizer.state_dict(), cache_file)
 
-        if not self.openfed_api.transfer(to=True, task_info=task_info):
+        if not self.maintainer.transfer(to=True, task_info=task_info):
             return False
         else:
             self.optimizer.clear_buffer()

@@ -3,7 +3,7 @@
 # @Last Modified by  : Chen Dengsheng
 # @Last Modified time: 2021-09-26 00:24:36
 # Copyright (c) FederalLab. All rights reserved.
-import argparse
+
 import os
 import pickle
 from collections import defaultdict
@@ -60,18 +60,3 @@ def get_reddit(root, mode: str = 'train'):
     data_root = os.path.join(root, mode)
 
     return Reddit(data_root, FloatTensor(), LongTensor())
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('root', type=str, help='root directory')
-    args = parser.parse_args()
-    dataset = get_reddit(root=args.root, mode='val')
-
-    print(dataset)
-    print(f'vocab size: {dataset.vocab_size}')
-
-    # fetch data
-    x, y = dataset[0]
-
-    print(x.shape, y.shape)

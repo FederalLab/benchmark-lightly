@@ -9,8 +9,8 @@ import torch
 
 
 class Tester(object):
-    def __init__(self, openfed_api, model, dataloader):
-        self.openfed_api = openfed_api
+    def __init__(self, maintainer, model, dataloader):
+        self.maintainer = maintainer
         self.model = model
 
         self.dataloader = dataloader
@@ -42,8 +42,8 @@ class Tester(object):
             losses), toc - tic
 
     def finish_testing(self, task_info):
-        self.openfed_api.update_version(task_info.version)
-        if not self.openfed_api.transfer(to=True, task_info=task_info):
+        self.maintainer.update_version(task_info.version)
+        if not self.maintainer.transfer(to=True, task_info=task_info):
             return False
         else:
             return True

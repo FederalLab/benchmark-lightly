@@ -6,10 +6,8 @@
 import argparse
 import os
 
-from torchvision import transforms
-
-from benchmark.datasets.simulation_dataset import SimulationDataset
-from benchmark.datasets.utils.transforms import FloatTensor, LongTensor
+from ..simulation_dataset import SimulationDataset
+from ..utils.transforms import FloatTensor, LongTensor
 
 IMAGE_SIZE = 84
 

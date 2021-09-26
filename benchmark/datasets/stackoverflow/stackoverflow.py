@@ -12,10 +12,9 @@ import os
 import h5py
 import numpy as np
 import torch
-from openfed.common import logger
-from openfed.data import Analysis, FederatedDataset
-from openfed.data.utils import *
-from torchvision.transforms import ToTensor
+from openfed.data import FederatedDataset
+
+from ..utils.transforms import FloatTensor
 
 word_count_file_path = None
 word_dict = None
@@ -216,34 +215,12 @@ def split(dataset):
 
 
 class StackOverFlow(FederatedDataset):
-    def __init__(self,
-                 root: str,
-                 train: bool = True,
-                 download: bool = True,
-                 transform=None):
+    def __init__(self, root: str, train: bool = True, transform=None):
 
         data_file = os.path.join(
             root, DEFAULT_TRAIN_FILE if train else DEFAULT_TEST_FILE)
         if not os.path.isfile(data_file):
-            if download:
-                urls = [
-                    'https://fedml.s3-us-west-1.amazonaws.com/stackoverflow.tag_count.tar.bz2',
-                    'https://fedml.s3-us-west-1.amazonaws.com/stackoverflow.word_count.tar.bz2',
-                    'https://fedml.s3-us-west-1.amazonaws.com/stackoverflow.tar.bz2',
-                    'https://fedml.s3-us-west-1.amazonaws.com/stackoverflow_nwp.pkl',
-                ]
-                for url in urls:
-                    logger.debug(f'Download dataset from {url} to {root}')
-                    if wget_https(url, root):
-                        if url.endswith('.bz2'):
-                            if tar_xvf(os.path.join(root,
-                                                    url.split('/')[-1]),
-                                       output_dir=root):
-                                logger.debug('Downloaded.')
-                    else:
-                        raise RuntimeError('Download dataset failed.')
-            else:
-                raise FileNotFoundError(f'{data_file} not exists.')
+            raise FileNotFoundError(f'{data_file} not exists.')
 
         self.data_file = data_file
         self.root = root
@@ -393,20 +370,8 @@ def get_stackoverflow(root, mode='tp', train: bool = True):
     assert mode in ['tp', 'nwp']
     root = os.path.join(root, 'raw')
     if mode == 'tp':
-        return StackOverFlowTP(root, train=train, transform=ToTensor())
+        return StackOverFlowTP(root, train=train, transform=FloatTensor())
     elif mode == 'nwp':
-        return StackOverFlowNWP(root, train=train, transform=ToTensor())
+        return StackOverFlowNWP(root, train=train, transform=FloatTensor())
     else:
         raise NotImplementedError('')
-
-
-if __name__ == '__main__':
-    dataset = get_stackoverflow(root='benchmark/datasets/stackoverflow/data',
-                                mode='tp',
-                                train=True)
-    Analysis.digest(dataset)
-
-    dataset = get_stackoverflow(root='benchmark/datasets/stackoverflow/data',
-                                mode='nwp',
-                                train=True)
-    Analysis.digest(dataset)

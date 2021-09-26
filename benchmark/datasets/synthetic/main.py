@@ -3,6 +3,7 @@
 # @Last Modified by  : Chen Dengsheng
 # @Last Modified time: 2021-09-26 00:25:37
 # Copyright (c) FederalLab. All rights reserved.
+# type: ignore
 import argparse
 import json
 import os

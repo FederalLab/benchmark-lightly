@@ -125,8 +125,8 @@ def _split_into_plays(shakespeare_full):
                     current_character = None
                     continue
                 else:
-                    characters[current_character].append(
-                        match.group(1))  # type: ignore
+                    characters[current_character].append(  # type: ignore
+                        match.group(1))
                     continue
         # Didn't consume the line.
         line = line.strip()

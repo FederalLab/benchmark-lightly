@@ -1,13 +1,14 @@
-import argparse
+# @Author            : FederalLab
+# @Date              : 2021-09-26 10:19:57
+# @Last Modified by  : Chen Dengsheng
+# @Last Modified time: 2021-09-26 10:19:57
+# Copyright (c) FederalLab. All rights reserved.
+
 import os
 
-from benchmark.datasets.simulation_dataset import SimulationDataset
-from benchmark.datasets.utils.language_utils import (NUM_LETTERS,
-                                                     letter_to_vec,
-                                                     word_to_indices)
-from benchmark.datasets.utils.transforms import FloatTensor, LongTensor
-
-os.sys.path.insert(0, '/Users/densechen/code/benchmark')
+from ..simulation_dataset import SimulationDataset
+from ..utils.language_utils import NUM_LETTERS, letter_to_vec, word_to_indices
+from ..utils.transforms import FloatTensor, LongTensor
 
 VOCAB_DIR = 'embs.json'
 
@@ -35,18 +36,3 @@ def get_shakespeare(root, train: bool = True):
     data_root = os.path.join(root, 'train' if train else 'test')
 
     return Shakespeare(data_root, FloatTensor(), LongTensor())
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('root', type=str, help='root directory')
-    args = parser.parse_args()
-    dataset = get_shakespeare(root=args.root, train=True)
-
-    print(dataset)
-    print(f'vocab size: {dataset.vocab_size}')
-
-    # fetch data
-    x, y = dataset[0]
-
-    print(x.shape, y.shape)  # type: ignore

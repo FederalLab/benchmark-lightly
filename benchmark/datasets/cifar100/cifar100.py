@@ -13,9 +13,7 @@ import h5py
 import numpy as np
 import torch
 import torchvision.transforms as transforms
-from openfed.common.logging import logger
-from openfed.data import Analysis, FederatedDataset
-from openfed.data.utils import tar_xvf, wget_https
+from openfed.data import FederatedDataset, samples_distribution
 
 DEFAULT_TRAIN_FILE = 'fed_cifar100_train.h5'
 DEFAULT_TEST_FILE = 'fed_cifar100_test.h5'
@@ -27,37 +25,6 @@ _LABEL = 'label'
 
 
 class CIFAR100(FederatedDataset):
-    """Federated CIFAR100 Dataset from https://github.com/tensorflow/federated.
-
-    Loads a federated version of the CIFAR-100 dataset.
-    The dataset is downloaded and cached locally. If previously downloaded, it
-    tries to load the dataset from cache.
-    The dataset is derived from the [CIFAR-100 dataset](https://www.cs.toronto.edu/~kriz/cifar.html). The training and testing examples are partitioned across 500 and 100 clients (respectively).
-    No clients share any data samples, so it is a true partition of CIFAR-100.
-    The train clients have string client IDs in the range [0-499], while the test
-    clients have string client IDs in the range [0-99]. The train clients form a
-    true partition of the CIFAR-100 training split, while the test clients form a
-    true partition of the CIFAR-100 testing split.
-    The data partitioning is done using a hierarchical Latent Dirichlet Allocation
-    (LDA) process, referred to as the [Pachinko Allocation Method]
-    (https://people.cs.umass.edu/~mccallum/papers/pam-icml06.pdf) (PAM).
-    This method uses a two-stage LDA process, where each client has an associated
-    multinomial distribution over the coarse labels of CIFAR-100, and a
-    coarse-to-fine label multinomial distribution for that coarse label over the
-    labels under that coarse label. The coarse label multinomial is drawn from a
-    symmetric Dirichlet with parameter 0.1, and each coarse-to-fine multinomial
-    distribution is drawn from a symmetric Dirichlet with parameter 10. Each
-    client has 100 samples. To generate a sample for the client, we first select
-    a coarse label by drawing from the coarse label multinomial distribution, and
-    then draw a fine label using the coarse-to-fine multinomial distribution. We
-    then randomly draw a sample from CIFAR-100 with that label (without
-    replacement). If this exhausts the set of samples with this label, we
-    remove the label from the coarse-to-fine multinomial and renormalize the
-    multinomial distribution.
-    Data set sizes:
-        -   train: 50,000 examples
-        -   test: 10,000 examples
-    """
     def __init__(self,
                  root: str,
                  train: bool = True,
@@ -67,17 +34,7 @@ class CIFAR100(FederatedDataset):
         data_file = os.path.join(
             root, DEFAULT_TRAIN_FILE if train else DEFAULT_TEST_FILE)
         if not os.path.isfile(data_file):
-            if download:
-                url = 'https://fedml.s3-us-west-1.amazonaws.com/fed_cifar100.tar.bz2'
-                logger.debug(f'Download dataset from {url} to {root}')
-                if wget_https(url, root):
-                    if tar_xvf(os.path.join(root, 'fed_cifar100.tar.bz2'),
-                               output_dir=root):
-                        logger.debug('Downloaded.')
-                else:
-                    raise RuntimeError('Download dataset failed.')
-            else:
-                raise FileNotFoundError(f'{data_file} not exists.')
+            raise FileNotFoundError(f'{root} does not exist.')
         data_h5 = h5py.File(data_file, 'r')
 
         client_ids = list(data_h5[_EXAMPLE].keys())
@@ -147,7 +104,10 @@ def get_cifar100(root, train: bool = True):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('root', type=str, help='root directory')
+    parser.add_argument('root',
+                        type=str,
+                        help='root directory',
+                        default='data')
     args = parser.parse_args()
     dataset = get_cifar100(root=args.root)
-    Analysis.digest(dataset)
+    samples_distribution(dataset)

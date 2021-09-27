@@ -233,7 +233,7 @@ if args.optim == 'fedavg':
     optim = torch.optim.SGD(network.parameters(),
                             lr=args.ag_lr if props.aggregator else args.co_lr)
     fed_optim = openfed.optim.FederatedOptimizer(optim, role=props.role)
-    aggregator = openfed.functional.average_aggregation
+    aggregator = openfed.functional.naive_aggregation
     aggregator_kwargs = {}
 elif args.optim == 'fedela':
     optim = torch.optim.SGD(network.parameters(),
@@ -241,6 +241,24 @@ elif args.optim == 'fedela':
     fed_optim = openfed.optim.ElasticOptimizer(optim, role=props.role)
     aggregator = openfed.functional.elastic_aggregation
     aggregator_kwargs = {'quantile': 0.5}
+elif args.optim == 'fedsgd':
+    optim = torch.optim.SGD(network.parameters(),
+                            lr=args.ag_lr if props.aggregator else args.co_lr)
+    fed_optim = openfed.optim.FederatedOptimizer(optim, role=props.role)
+    aggregator = openfed.functional.average_aggregation
+    aggregator_kwargs = {}
+elif args.optim == 'fedprox':
+    optim = torch.optim.SGD(network.parameters(),
+                            lr=args.ag_lr if props.aggregator else args.co_lr)
+    fed_optim = openfed.optim.ProxOptimizer(optim, role=props.role)
+    aggregator = openfed.functional.naive_aggregation
+    aggregator_kwargs = {}
+elif args.optim == 'scaffold':
+    optim = torch.optim.SGD(network.parameters(),
+                            lr=args.ag_lr if props.aggregator else args.co_lr)
+    fed_optim = openfed.optim.ScaffoldOptimizer(optim, role=props.role)
+    aggregator = openfed.functional.naive_aggregation
+    aggregator_kwargs = {}
 else:
     raise NotImplementedError(f'{args.optim} is not implemented.')
 

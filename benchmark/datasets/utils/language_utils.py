@@ -13,7 +13,8 @@ import numpy as np
 # ------------------------
 # utils for shakespeare dataset
 
-ALL_LETTERS = "\n !\"&'(),-.0123456789:;>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]abcdefghijklmnopqrstuvwxyz}"
+ALL_LETTERS = '''\n !\"&'(),-.0123456789:;>
+?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]abcdefghijklmnopqrstuvwxyz}'''
 NUM_LETTERS = len(ALL_LETTERS)
 
 

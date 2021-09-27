@@ -6,8 +6,6 @@
 
 from .simulation_dataset import SimulationDataset
 
-del simulation_dataset
-
 
 def build_dataset(name, *args, **kwargs):
     if name == 'celeba':
@@ -39,3 +37,9 @@ def build_dataset(name, *args, **kwargs):
         return get_synthetic(*args, **kwargs)
     else:
         raise ValueError('Unknown dataset')
+
+
+__all__ = [
+    'SimulationDataset',
+    'build_dataset',
+]

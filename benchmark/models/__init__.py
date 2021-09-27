@@ -36,3 +36,9 @@ def build_model(name, *args, **kwargs):
         return Synthetic(*args, **kwargs)
     else:
         raise ValueError('Unknown model.')
+
+
+__all__ = [
+    'Model',
+    'build_model',
+]

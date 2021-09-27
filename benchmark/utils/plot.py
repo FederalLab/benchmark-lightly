@@ -9,27 +9,27 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def parser_json(lines):
-    return [
-        json.loads(line + '}') for line in lines.split('}') if len(line) > 0
-    ]
-
-
 def plot(files, labels, attributes='accuracy', mode='train'):
     if isinstance(files, str):
-        files = [files]
+        files = [
+            files,
+        ]
     if isinstance(labels, str):
-        labels = [labels]
+        labels = [
+            labels,
+        ]
+
+    assert mode in ['train', 'test'], 'Invalid mode.'
 
     xs, ys = [], []
     for file in files:
         x, y = [], []
         with open(file, 'r') as f:
-            data = parser_json(f.read())
-            for d in data:
-                if d['mode'] == mode:
-                    x.append(d['version'])
-                    y.append(d[attributes])
+            for line in f.readlines():
+                data = json.loads(line)
+                if data['mode'] == mode:
+                    x.append(data['version'])
+                    y.append(data[attributes])
         xs.append(x)
         ys.append(y)
     xs, ys = np.array(xs), np.array(ys)
@@ -41,7 +41,3 @@ def plot(files, labels, attributes='accuracy', mode='train'):
     plt.legend(
         loc='lower right' if attributes == 'accuracy' else 'upper right')
     plt.show()
-
-
-if __name__ == '__main__':
-    plot('logs/celeba/default/celeba.json', 'default')

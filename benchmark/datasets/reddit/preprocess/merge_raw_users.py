@@ -42,9 +42,9 @@ num_lots = (num_users // USERS_PER_REPEAT) + 1
 print('num_lots', num_lots)
 
 cur_file = 1
-for l in range(num_lots):
-    min_idx, max_idx = l * USERS_PER_REPEAT, min((l + 1) * USERS_PER_REPEAT,
-                                                 num_users)
+for lots in range(num_lots):
+    min_idx, max_idx = lots * USERS_PER_REPEAT, min(
+        (lots + 1) * USERS_PER_REPEAT, num_users)
 
     cur_user_keys = user_keys[min_idx:max_idx]
     num_cur_users = len(cur_user_keys)
@@ -80,4 +80,4 @@ for l in range(num_lots):
         written_users += USERS_PER_FILE
         cur_file += 1
 
-    print(l + 1)
+    print(lots + 1)

@@ -16,7 +16,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 To run:
-  python preprocess_shakespeare.py path/to/raw/shakespeare.txt output_directory/
+  python preprocess_shakespeare.py path/to/raw/shakespeare.txt output_directory
 The raw data can be downloaded from:
   http://www.gutenberg.org/cache/epub/100/pg100.txt
 (The Plain Text UTF-8 file format, md5sum: 036d0f9cf7296f41165c2e6da1e52a0e)

@@ -98,7 +98,8 @@ def get_users():
             j_line = json.loads(line)
 
             # I'm assuming subreddit_id and subreddit correspond one to one.
-            # A preliminary check with a subsample of the data corroborated this.
+            # A preliminary check with a subsample of the data
+            # corroborated this.
             comment = RedditComment(j_line)
 
             if (any([

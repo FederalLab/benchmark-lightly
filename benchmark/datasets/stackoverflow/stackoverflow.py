@@ -60,7 +60,7 @@ def get_tags(data_dir=None, tag_size=500):
 
 def get_tag_dict(data_dir):
     global tag_dict
-    if tag_dict == None:
+    if tag_dict is None:
         tags = get_tags(data_dir)
         tag_dict = collections.OrderedDict()
         for i, w in enumerate(tags):
@@ -169,7 +169,7 @@ def get_most_frequent_words(data_dir, vocab_size=10000):
 
 def get_word_dict(data_dir):
     global word_dict
-    if word_dict == None:
+    if word_dict is None:
         frequent_words = get_most_frequent_words(data_dir)
         words = [_pad] + frequent_words + [_bos] + [_eos]
         word_dict = collections.OrderedDict()
@@ -232,9 +232,9 @@ class StackOverFlowTP(StackOverFlow):
 
     [TFF](https://github.com/tensorflow/federated). Used for Tag Prediction.
 
-    Downloads and caches the dataset locally. If previously downloaded, tries to
-    load the dataset from cache.
-    This dataset is derived from the Stack Overflow Data hosted by kaggle.com and
+    Downloads and caches the dataset locally. If previously downloaded, tries
+    to load the dataset from cache. This dataset is derived from the Stack
+    Overflow Data hosted by kaggle.com and
     available to query through Kernels using the BigQuery API:
     https://www.kaggle.com/stackoverflow/stackoverflow. The Stack Overflow Data
     is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported
@@ -247,7 +247,8 @@ class StackOverFlowTP(StackOverFlow):
     1. Lowercase the text,
     2. Unescape HTML symbols,
     3. Remove non-ascii symbols,
-    4. Separate punctuation as individual tokens (except apostrophes and hyphens),
+    4. Separate punctuation as individual tokens
+        (except apostrophes and hyphens),
     5. Removing extraneous whitespace,
     6. Replacing URLS with a special token.
     In addition the following metadata is available:
@@ -264,8 +265,9 @@ class StackOverFlowTP(StackOverFlow):
     -   Test: All examples after 2018-01-01 UTC except from held-out users.
         204,088 unique users with 16,586,035 examples.
     The `tf.data.Datasets` returned by
-    `tff.simulation.datasets.ClientData.create_tf_dataset_for_client` will yield
-    `collections.OrderedDict` objects at each iteration, with the following keys
+    `tff.simulation.datasets.ClientData.create_tf_dataset_for_client`
+    will yield `collections.OrderedDict` objects at each iteration,
+    with the following keys
     and values, in lexicographic order by key:
     -   `'creation_date'`: a `tf.Tensor` with `dtype=tf.string` and shape []
         containing the date/time of the question or answer in UTC format.

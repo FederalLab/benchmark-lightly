@@ -24,8 +24,8 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/FederalLab/benchmark-lightly',
-    download_url=
-    'https://github.com/FederalLab/benchmark-lightly/archive/main.zip',
+    download_url='https://github.com/FederalLab/'
+    'benchmark-lightly/archive/main.zip',
     packages=find_packages(),
     # https://pypi.org/pypi?%3Aaction=list_classifiers
     classifiers=[

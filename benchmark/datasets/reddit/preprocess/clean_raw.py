@@ -38,9 +38,11 @@ def clean_file(f, tknzr):
         clean_comments = []
         for c in comments:
             c.clean_body(tknzr)
-            if len(c.body) > 0 and not any(
-                [p in c.body for p in PHRASES_TO_AVOID]):
-                clean_comments.append(c)
+
+            if len(c.body) > 0:
+                flag = not any([p in c.body for p in PHRASES_TO_AVOID])
+                if flag:
+                    clean_comments.append(c)
 
         if len(clean_comments) > 0:
             clean_reddit[u] = clean_comments

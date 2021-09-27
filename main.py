@@ -6,7 +6,6 @@
 import argparse
 import json
 import os
-import time
 
 import openfed
 import torch
@@ -132,17 +131,16 @@ parser.add_argument('--gpu',
 # log
 parser.add_argument('--log_dir',
                     type=str,
-                    default=f'logs/',
+                    default='logs/',
                     help='The dir to log train and test information.')
-parser.add_argument('--exp_name',
-                    type=str,
-                    default='default',
-                    help='The experiment name.')
 parser.add_argument('--seed', type=int, default=0, help='Seed for everything.')
 
 # props
 parser.add_argument('--props', type=str, default='/tmp/aggregator.json')
 args = parser.parse_args()
+
+args.exp_name = args.optim + '_' + (args.partition
+                                    if args.task == 'mnist' else '')
 
 print('>>> Load Props')
 props = openfed.federated.FederatedProperties.load(args.props)
@@ -150,7 +148,8 @@ assert len(props) == 1
 props = props[0]
 print(props)
 
-args.tst_num_parts = args.tst_num_parts if args.tst_num_parts > 0 else props.address.world_size - 1
+args.tst_num_parts = args.tst_num_parts if args.tst_num_parts > 0 \
+    else props.address.world_size - 1
 
 print('>>> Seed everything...')
 openfed.utils.seed_everything(args.seed)
@@ -326,19 +325,20 @@ def step():
             tester.finish_testing(task_info)
 
 
-# Context `with openfed_api` will go into the specified settings about openfed_api.
-# Otherwise, will use the default one which shared by global OpenFed world.
 if maintainer.aggregator:
-    openfed_api = openfed.API(
-        maintainer,
-        fed_optim,
-        rounds=args.rounds,
-        agg_func=aggregator,
-        agg_func_kwargs=aggregator_kwargs,
-        reduce_func=meta_reduce_log,
-        reduce_func_kwargs=dict(
-            log_dir=os.path.join(args.log_dir, f'{args.task}.json')),
-        with_test_round=True)
+    result_path = os.path.join(args.log_dir, f'{args.task}.json')
+    with open(result_path, 'w') as f:
+        # clear last result
+        f.write('')
+
+    openfed_api = openfed.API(maintainer,
+                              fed_optim,
+                              rounds=args.rounds,
+                              agg_func=aggregator,
+                              agg_func_kwargs=aggregator_kwargs,
+                              reduce_func=meta_reduce_log,
+                              reduce_func_kwargs=dict(log_dir=result_path),
+                              with_test_round=True)
     openfed_api.start()
     openfed_api.join()
 

@@ -15,12 +15,15 @@ class Shakespeare(Model):
     (next character prediction task).
 
     This replicates the model structure in the paper:
-        Communication-Efficient Learning of Deep Networks from Decentralized Data
-        H. Brendan McMahan, Eider Moore, Daniel Ramage, Seth Hampson, Blaise Agueray Arcas. AISTATS 2017.
+        Communication-Efficient Learning of Deep Networks from Decentralized
+        Data H. Brendan McMahan, Eider Moore, Daniel Ramage, Seth Hampson,
+        Blaise Agueray Arcas. AISTATS 2017.
         https://arxiv.org/abs/1602.05629
-    This is also recommended model by "Adaptive Federated Optimization. ICML 2020" (https://arxiv.org/pdf/2003.00295.pdf)
+    This is also recommended model by "Adaptive Federated Optimization.
+    ICML 2020" (https://arxiv.org/pdf/2003.00295.pdf)
     Args:
-        vocab_size: the size of the vocabulary, used as a dimension in the input embedding.
+        vocab_size: the size of the vocabulary, used as a dimension
+            in the input embedding.
         sequence_length: the length of input sequences.
     Returns:
         An un-compiled `torch.nn.Module`.
@@ -44,7 +47,8 @@ class Shakespeare(Model):
 
     def forward(self, input_seq):
         embeds = self.embeddings(input_seq)
-        # Note that the order of mini-batch is random so there is no hidden relationship among batches.
+        # Note that the order of mini-batch is random so there is no hidden
+        # relationship among batches.
         # So we do not input the previous batch's hidden state,
         # leaving the first hidden state zero `self.lstm(embeds, None)`.
         lstm_out, _ = self.lstm(embeds)

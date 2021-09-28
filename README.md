@@ -13,6 +13,8 @@ python setup.py install
 
 ## Benchmark
 
+
+
 Refer to `docs/` for more details.
 We provide a flexible settings configuration for benchmark, rather than given an specified settings, since different settings will have a large impact on performance. It is more convenient to validate different algorithms in there ideal situation, such as non-iid or iid distribution, full-activated or partially activated clients.
 

@@ -84,7 +84,10 @@ class Trainer(object):
         torch.save(self.optimizer.state_dict(), cache_file)
 
         self.maintainer.package(self.optimizer)
-        self.maintainer.step(download=False, meta=task_info)
+        while not self.maintainer.step(download=False, meta=task_info):
+            time.sleep(1.0)
+            if self.maintainer.is_offline:
+                break
 
         self.optimizer.clear_state_dict()
 

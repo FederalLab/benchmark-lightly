@@ -44,7 +44,10 @@ class Tester(object):
     def finish_testing(self, task_info):
         self.maintainer.update_version(task_info.version)
         self.maintainer.package()
-        self.maintainer.step(download=False, meta=task_info)
+        while not self.maintainer.step(download=False, meta=task_info):
+            time.sleep(1.0)
+            if self.maintainer.is_offline:
+                break
 
     def start_testing(self, task_info):
         part_id = task_info.part_id  # type: ignore

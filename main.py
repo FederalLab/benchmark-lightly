@@ -6,6 +6,7 @@
 import argparse
 import json
 import os
+import time
 
 import openfed
 import torch
@@ -99,10 +100,12 @@ parser.add_argument(
     type=int,
     default=-1,
     help='The number of samples used to compute acg. -1 used all train data.')
-parser.add_argument('--optim',
-                    type=str,
-                    default='fedavg',
-                    help='Specify fed optimizer.')
+parser.add_argument(
+    '--optim',
+    type=str,
+    default='fedavg',
+    choices=['fedavg', 'fedsgd', 'fedela', 'fedprox', 'scaffold'],
+    help='Specify fed optimizer.')
 parser.add_argument('--optim_args',
                     nargs='+',
                     action=StoreDict,
@@ -303,8 +306,12 @@ def step():
     tester = Tester(maintainer, network, test_dataloader)
     task_info = openfed.Meta()
 
-    while not maintainer.is_offline:
-        if not maintainer.step(upload=False, meta=task_info):
+    while True:
+        while not maintainer.step(upload=False, meta=task_info):
+            time.sleep(1.0)
+            if maintainer.is_offline:
+                break
+        if maintainer.is_offline:
             break
         if task_info.mode == 'train':  # type: ignore
             trainer.start_training(task_info)
